@@ -1,0 +1,239 @@
+{
+  "_comment": "Companies whose applicant tracking board has been verified with `jsa probe`. Add more with `python3 -m jsa probe <slug> --add`. A slug that resolves to a board with only one or two roles is usually a different company with the same name — check before trusting it.",
+  "companies": [
+    {
+      "company": "Adyen",
+      "provider": "greenhouse",
+      "handle": "adyen",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "AlixPartners",
+      "provider": "greenhouse",
+      "handle": "alixpartners",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Cabify",
+      "provider": "greenhouse",
+      "handle": "cabify",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Canva",
+      "provider": "smartrecruiters",
+      "handle": "canva",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Celonis",
+      "provider": "greenhouse",
+      "handle": "celonis",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Culture Amp",
+      "provider": "greenhouse",
+      "handle": "cultureamp",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Datadog",
+      "provider": "greenhouse",
+      "handle": "datadog",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Delivery Hero",
+      "provider": "smartrecruiters",
+      "handle": "deliveryhero",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Docplanner",
+      "provider": "ashby",
+      "handle": "docplanner",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Ebury",
+      "provider": "greenhouse",
+      "handle": "ebury",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Elastic",
+      "provider": "greenhouse",
+      "handle": "elastic",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "FREENOW",
+      "provider": "greenhouse",
+      "handle": "freenow",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Forto",
+      "provider": "ashby",
+      "handle": "forto",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "GitLab",
+      "provider": "greenhouse",
+      "handle": "gitlab",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Humaans",
+      "provider": "ashby",
+      "handle": "humaans",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "InPost",
+      "provider": "smartrecruiters",
+      "handle": "inpost",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Jobandtalent",
+      "provider": "lever",
+      "handle": "jobandtalent",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Lattice",
+      "provider": "greenhouse",
+      "handle": "lattice",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Leapsome",
+      "provider": "ashby",
+      "handle": "leapsome",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Miro",
+      "provider": "ashby",
+      "handle": "miro",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Mollie",
+      "provider": "ashby",
+      "handle": "mollie",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Moneyfarm",
+      "provider": "workable",
+      "handle": "moneyfarm",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Monzo",
+      "provider": "greenhouse",
+      "handle": "monzo",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "N26",
+      "provider": "greenhouse",
+      "handle": "n26",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Nium",
+      "provider": "lever",
+      "handle": "nium",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Oliver Wyman",
+      "provider": "lever",
+      "handle": "oliverwyman",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Payhawk",
+      "provider": "personio",
+      "handle": "payhawk",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Pleo",
+      "provider": "ashby",
+      "handle": "pleo",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Qonto",
+      "provider": "lever",
+      "handle": "qonto",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Satispay",
+      "provider": "ashby",
+      "handle": "satispay",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Stripe",
+      "provider": "greenhouse",
+      "handle": "stripe",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "SumUp",
+      "provider": "greenhouse",
+      "handle": "sumup",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Treatwell",
+      "provider": "workable",
+      "handle": "treatwell",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Trustly",
+      "provider": "ashby",
+      "handle": "trustly",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Typeform",
+      "provider": "greenhouse",
+      "handle": "typeform",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Wise",
+      "provider": "smartrecruiters",
+      "handle": "wise",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Wolt",
+      "provider": "greenhouse",
+      "handle": "wolt",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "Workhuman",
+      "provider": "ashby",
+      "handle": "workhuman",
+      "verified": "2026-09-02"
+    },
+    {
+      "company": "bunq",
+      "provider": "recruitee",
+      "handle": "bunq",
+      "verified": "2026-09-02"
+    }
+  ]
+}

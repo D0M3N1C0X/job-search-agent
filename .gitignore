@@ -1,0 +1,25 @@
+# The engine is public; the profile is not.
+/profile/
+!/profile.example/
+
+# Runtime artefacts
+*.db
+*.db-journal
+.cache/
+output/
+inbox/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+*.swp

@@ -1,0 +1,335 @@
+{
+  "_comment": "Positioning tracks. Each job is scored against all of them; the winning track picks the CV variant, the bullet selection and the cover-letter angle. This is how three hand-written CV versions become one system.",
+  "tracks": [
+    {
+      "id": "hr_advisory",
+      "label": "HR Advisory & Employee Relations",
+      "summary_key": "hr_advisory",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "projects",
+        "education",
+        "additional",
+        "languages"
+      ],
+      "skill_groups": [
+        "hr_core",
+        "analytics",
+        "ways_of_working"
+      ],
+      "cover_angle": "Italian-market HR advisor inside a European people-operations team: policy applied to real cases, at volume, across jurisdictions.",
+      "titles": {
+        "strong": [
+          "hr advisor",
+          "hr adviser",
+          "employee relations",
+          "employee relations specialist",
+          "hr specialist",
+          "people advisor",
+          "hr operations",
+          "people operations",
+          "hr generalist",
+          "hr services",
+          "people partner",
+          "hr business partner"
+        ],
+        "good": [
+          "hr coordinator",
+          "people specialist",
+          "hr administrator",
+          "hr shared services",
+          "people experience",
+          "employee experience",
+          "hr case management",
+          "hr consultant",
+          "hr officer",
+          "people coordinator"
+        ],
+        "weak": [
+          "hr",
+          "human resources",
+          "people",
+          "talent"
+        ]
+      },
+      "must_have_any": [
+        "employee relations",
+        "hr policy",
+        "case management",
+        "labour law",
+        "labor law",
+        "employment law",
+        "payroll",
+        "leave",
+        "onboarding",
+        "grievance",
+        "disciplinary",
+        "hr operations",
+        "hris",
+        "employee lifecycle",
+        "ticketing",
+        "employee queries"
+      ],
+      "must_have_target": 3,
+      "nice_to_have": [
+        "italian",
+        "multi country",
+        "emea",
+        "gdpr",
+        "workday",
+        "servicenow",
+        "sla",
+        "shared services",
+        "process improvement",
+        "people analytics",
+        "stakeholder management",
+        "knowledge base",
+        "sop"
+      ],
+      "nice_to_have_target": 4,
+      "domain": [
+        "hr",
+        "human resources",
+        "people team",
+        "employee",
+        "workforce",
+        "talent",
+        "people operations"
+      ],
+      "domain_target": 3,
+      "anti": [
+        "recruitment agency",
+        "360 recruiter",
+        "cold calling",
+        "door to door",
+        "commission only"
+      ]
+    },
+    {
+      "id": "people_analytics",
+      "label": "People Analytics & Workforce Data",
+      "summary_key": "people_analytics",
+      "sections": [
+        "summary",
+        "skills",
+        "projects",
+        "experience",
+        "education",
+        "research",
+        "additional",
+        "languages"
+      ],
+      "skill_groups": [
+        "technical",
+        "analytics",
+        "hr_core"
+      ],
+      "cover_angle": "Builds the analytical layer, not only works inside it — two published pipelines on attrition, pay equity and engagement, with the HR domain knowledge to read the numbers correctly.",
+      "titles": {
+        "strong": [
+          "people analytics",
+          "hr analytics",
+          "workforce analytics",
+          "people data",
+          "hr data analyst",
+          "people insights",
+          "workforce intelligence",
+          "hr reporting analyst",
+          "people analytics analyst",
+          "people analytics specialist"
+        ],
+        "good": [
+          "hr data",
+          "reporting analyst",
+          "hris analyst",
+          "people operations analyst",
+          "compensation analyst",
+          "reward analyst",
+          "workforce planning",
+          "hr systems analyst"
+        ],
+        "weak": [
+          "data analyst",
+          "insights analyst",
+          "reporting specialist"
+        ]
+      },
+      "must_have_any": [
+        "python",
+        "sql",
+        "stata",
+        "tableau",
+        "power bi",
+        "looker",
+        "data analysis",
+        "statistics",
+        "regression",
+        "dashboard",
+        "reporting",
+        "hris",
+        "workday",
+        "data model",
+        "data visualisation",
+        "data visualization"
+      ],
+      "must_have_target": 3,
+      "nice_to_have": [
+        "attrition",
+        "retention",
+        "engagement survey",
+        "pay equity",
+        "pay gap",
+        "enps",
+        "predictive",
+        "machine learning",
+        "survey design",
+        "gdpr",
+        "stakeholder management",
+        "pay transparency",
+        "headcount"
+      ],
+      "nice_to_have_target": 4,
+      "domain": [
+        "people analytics",
+        "hr",
+        "human resources",
+        "workforce",
+        "talent",
+        "employee",
+        "people team"
+      ],
+      "domain_target": 4,
+      "anti": [
+        "marketing analytics",
+        "financial analyst",
+        "supply chain",
+        "sales analyst",
+        "credit risk",
+        "web analytics",
+        "product analyst",
+        "product analytics",
+        "growth analyst",
+        "fincrime",
+        "payment operations",
+        "commercial analyst",
+        "risk analyst",
+        "procurement",
+        "data scientist",
+        "experimentation"
+      ]
+    },
+    {
+      "id": "big4_consulting",
+      "label": "HR / People Consulting",
+      "summary_key": "big4_consulting",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "projects",
+        "education",
+        "research",
+        "additional",
+        "languages"
+      ],
+      "skill_groups": [
+        "hr_core",
+        "analytics",
+        "technical",
+        "ways_of_working"
+      ],
+      "cover_angle": "Advisory work where HR policy meets real employee situations across jurisdictions, backed by quantitative workforce analysis and EU regulatory literacy.",
+      "titles": {
+        "strong": [
+          "hr consultant",
+          "people consultant",
+          "human capital consultant",
+          "workforce consultant",
+          "hr transformation",
+          "people and organisation",
+          "people and organization",
+          "hr advisory consultant",
+          "human capital analyst",
+          "people consulting",
+          "organisation consultant"
+        ],
+        "good": [
+          "hr business partner",
+          "hr advisor",
+          "organisational development",
+          "change management consultant",
+          "hr project manager",
+          "workforce transformation",
+          "management consultant",
+          "business consultant"
+        ],
+        "weak": [
+          "consultant",
+          "advisory"
+        ]
+      },
+      "must_have_any": [
+        "hr transformation",
+        "organisational design",
+        "organizational design",
+        "change management",
+        "hr operating model",
+        "workforce planning",
+        "employee experience",
+        "hr policy",
+        "labour law",
+        "employment law",
+        "advisory",
+        "hr strategy"
+      ],
+      "must_have_target": 3,
+      "nice_to_have": [
+        "people analytics",
+        "workday",
+        "successfactors",
+        "hr technology",
+        "shared services",
+        "gdpr",
+        "reward",
+        "compensation",
+        "pay transparency",
+        "project management",
+        "stakeholder management",
+        "eu directive",
+        "benchmarking"
+      ],
+      "nice_to_have_target": 4,
+      "domain": [
+        "human resources",
+        "human capital",
+        "people",
+        "workforce",
+        "talent",
+        "organisation",
+        "organization",
+        "hr"
+      ],
+      "domain_target": 3,
+      "anti": [
+        "software engineer",
+        "developer",
+        "nurse",
+        "driver",
+        "warehouse",
+        "cybersecurity",
+        "statutory audit",
+        "tax compliance",
+        "actuarial",
+        "courier",
+        "merchant onboarding",
+        "restaurant",
+        "customer support",
+        "procurement",
+        "rider",
+        "warehouse associate"
+      ]
+    }
+  ]
+}

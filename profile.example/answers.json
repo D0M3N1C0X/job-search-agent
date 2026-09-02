@@ -1,0 +1,19 @@
+{
+  "_comment": "Synthetic demo answers. Replace with your own after `jsa init`.",
+  "work_authorisation": "EU citizen. No sponsorship required.",
+  "current_location": "Amsterdam, Netherlands",
+  "relocation": "Open to relocation across the EU and internationally, at own initiative.",
+  "remote_preference": "Open to remote, hybrid or on-site.",
+  "notice_period": "TODO — your contractual notice period.",
+  "salary_expectation": "TODO — a figure per market.",
+  "earliest_start": "TODO",
+  "languages": "English (C1), Dutch (B1), Spanish (native).",
+  "driving_licence": "Category B.",
+  "criminal_record": "Clean.",
+  "why_this_company": "AUTO — written per application; see the cover letter.",
+  "linkedin": "linkedin.com/in/example",
+  "github": "github.com/example",
+  "portfolio_note": "One open-source people analytics project on synthetic data.",
+  "references": "Available on request.",
+  "diversity_questions": "Prefer not to say (unless the employer explains a concrete use)."
+}

@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Confirm there is nothing to install
+        run: |
+          test ! -f requirements.txt || (echo "unexpected dependency file" && exit 1)
+          python -c "import sys; print(sys.version)"
+      - name: Run the test suite (offline)
+        run: python -m unittest discover -s tests -t . -v
+      - name: Smoke-test the CLI on the demo profile
+        run: |
+          python -m jsa --version
+          python -m jsa score
+          python -m jsa top --min-score 0
+          python -m jsa dashboard --out /tmp/dashboard.html
+          test -s /tmp/dashboard.html
+      - name: Check no personal profile was committed
+        run: |
+          test ! -d profile || (echo "profile/ must stay untracked" && exit 1)

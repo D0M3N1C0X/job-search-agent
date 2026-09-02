@@ -1,0 +1,211 @@
+{
+  "_comment": "Synthetic demo profile. Fictional person, invented numbers — it exists so a fresh clone runs end to end before anyone enters personal data. Run `python3 -m jsa init` to copy this into ./profile and make it yours.",
+  "identity": {
+    "name": "Alex Rivera",
+    "headline": "HR Operations | People Analytics",
+    "location": "Amsterdam, Netherlands",
+    "citizenship": "EU Citizen",
+    "relocation": "Open to relocation (EU)",
+    "phone": "+31 6 0000 0000",
+    "email": "alex.rivera@example.com",
+    "linkedin": "linkedin.com/in/example",
+    "github": "github.com/example"
+  },
+  "years_experience": 3,
+  "summaries": {
+    "hr_advisory": "HR advisor in a multi-country shared services team, handling employee relations, policy and case work across three European jurisdictions, with a quantitative side in Python and SQL.",
+    "people_analytics": "People analytics practitioner building attrition, engagement and pay equity reporting in Python and SQL, with front-line HR operations experience behind the numbers.",
+    "big4_consulting": "HR professional combining advisory case work with workforce analytics and EU regulatory literacy, including pay transparency reporting."
+  },
+  "skill_groups": {
+    "hr_core": {
+      "label": "HR advisory",
+      "items": [
+        "Employee Relations",
+        "HR Operations",
+        "Case Management",
+        "HR Policy & Compliance (GDPR)",
+        "Multi-country policy application"
+      ]
+    },
+    "analytics": {
+      "label": "People analytics",
+      "items": [
+        "Attrition & retention modelling",
+        "Employee engagement & eNPS",
+        "Pay equity reporting",
+        "HR service desk metrics (SLA, FCR, CSAT)"
+      ]
+    },
+    "technical": {
+      "label": "Tools & methods",
+      "items": [
+        "Python",
+        "SQL",
+        "Excel",
+        "Git",
+        "Logistic regression",
+        "Data visualisation"
+      ]
+    },
+    "ways_of_working": {
+      "label": "Ways of working",
+      "items": [
+        "Remote and distributed teams",
+        "Process improvement",
+        "Stakeholder management"
+      ]
+    }
+  },
+  "experience": [
+    {
+      "title": "HR Operations Specialist",
+      "company": "Example Corp",
+      "location": "Amsterdam (Hybrid)",
+      "start": "Jan 2024",
+      "end": "Present",
+      "bullets": [
+        {
+          "text": "Resolve around 120 HR cases per week across three European entities, covering leave, payroll and policy questions.",
+          "tracks": [
+            "*"
+          ]
+        },
+        {
+          "text": "Analyse recurring case patterns and turn them into process changes adopted by the wider HR operations team.",
+          "tracks": [
+            "*"
+          ]
+        },
+        {
+          "text": "Maintain quarterly workforce reporting in SQL for headcount, attrition and service-desk performance.",
+          "tracks": [
+            "people_analytics"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "HR Assistant",
+      "company": "Sample Group",
+      "location": "Rotterdam",
+      "start": "Sep 2022",
+      "end": "Dec 2023",
+      "bullets": [
+        {
+          "text": "Supported onboarding and contract administration for around 300 employees.",
+          "tracks": [
+            "*"
+          ]
+        }
+      ]
+    }
+  ],
+  "projects": {
+    "note": "Portfolio projects on synthetic data, fully reproducible.",
+    "items": [
+      {
+        "name": "example-people-analytics",
+        "stack": "Python, SQL",
+        "url": "github.com/example/example-people-analytics",
+        "bullets": [
+          {
+            "text": "Built an attrition model on a synthetic 2,000-employee dataset and published the drivers with confidence intervals.",
+            "tracks": [
+              "*"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "education": [
+    {
+      "degree": "MSc Human Resource Management",
+      "grade": "",
+      "institution": "Example University",
+      "date": "2022",
+      "detail": "",
+      "thesis": ""
+    }
+  ],
+  "research": [],
+  "additional_experience": [],
+  "languages": [
+    {
+      "code": "en",
+      "name": "English",
+      "level": "C1"
+    },
+    {
+      "code": "nl",
+      "name": "Dutch",
+      "level": "B1"
+    },
+    {
+      "code": "es",
+      "name": "Spanish",
+      "level": "native"
+    }
+  ],
+  "certifications": [
+    "People Analytics (online course), 2024"
+  ],
+  "preferences": {
+    "locations_preferred": [
+      "Amsterdam",
+      "Rotterdam",
+      "Remote"
+    ],
+    "countries_allowed": [
+      "NL",
+      "BE",
+      "DE",
+      "IE",
+      "ES",
+      "PT"
+    ],
+    "countries_blocked": [],
+    "relocation": true,
+    "remote_ok": true,
+    "seniority_target": [
+      "junior",
+      "mid"
+    ],
+    "seniority_reject": [
+      "head"
+    ],
+    "language_gates": [
+      {
+        "code": "nl",
+        "min_level": "C1",
+        "pattern": "(fluent|native)\\s+dutch|dutch\\s+(is\\s+)?(a\\s+)?(must|required|mandatory)"
+      }
+    ],
+    "hard_reject_keywords": [
+      "unpaid internship",
+      "commission only"
+    ],
+    "soft_reject_keywords": [
+      "outbound sales",
+      "telemarketing"
+    ],
+    "follow_up_days": 10,
+    "ghost_after_days": 28
+  },
+  "search": {
+    "linkedin_queries": [
+      {
+        "keywords": "HR Operations Specialist",
+        "location": "Netherlands",
+        "period": "week"
+      },
+      {
+        "keywords": "People Analytics",
+        "location": "European Union",
+        "period": "week"
+      }
+    ],
+    "mailbox_path": ""
+  }
+}
