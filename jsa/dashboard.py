@@ -55,9 +55,12 @@ def funnel_stats(store: Store) -> dict[str, Any]:
         row["source"] for row in
         store.db.execute("SELECT source FROM jobs").fetchall()
     )
+    # Only postings that cleared the gates: including the rejects would put
+    # 97% of the mass in the 0–9 band and flatten everything worth seeing.
     score_bands = Counter()
     for row in store.db.execute(
-        "SELECT MAX(score) AS s FROM scores GROUP BY job_id"
+        """SELECT MAX(s.score) AS s FROM scores s
+           WHERE s.verdict != 'reject' GROUP BY s.job_id"""
     ).fetchall():
         band = min(90, max(0, (row["s"] // 10) * 10))
         score_bands[band] += 1
@@ -271,7 +274,7 @@ def build_dashboard(store: Store, cfg: Any, out_path: str | Path) -> Path:
   <div class="card"><h2>Replies by positioning track</h2>{_track_chart(stats['by_track'])}</div>
   <div class="card"><h2>Where postings come from</h2>
     {_bar_chart(dict(sorted(stats['by_source'].items(), key=lambda kv: -kv[1])), colour=PALETTE['series'][2])}</div>
-  <div class="card"><h2>Fit score distribution</h2>
+  <div class="card"><h2>Fit score, cleared postings</h2>
     {_bar_chart({f"{k}–{k+9}": v for k, v in stats['score_bands'].items()}, colour=PALETTE['series'][5])}</div>
 </div>
 <div class="card">
