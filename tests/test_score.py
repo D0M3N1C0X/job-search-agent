@@ -113,10 +113,15 @@ class TestScoring(unittest.TestCase):
             self.assertIn(dimension, score.breakdown)
             self.assertIn("points", score.breakdown[dimension])
 
-    def test_remote_role_outside_target_countries_is_not_gated(self):
+    def test_remote_role_with_unknown_country_is_not_gated(self):
         posting = job(title="HR Advisor", location="Remote", country="", remote="remote",
                       description="Fully remote employee relations role.")
         self.assertEqual([g.name for g in check_gates(posting, PROFILE)], [])
+
+    def test_remote_does_not_rescue_a_role_in_an_excluded_country(self):
+        posting = job(title="HR Advisor", location="Remote, United States", country="US",
+                      remote="remote", description="We are a remote-first company.")
+        self.assertTrue(any(g.name == "location" for g in check_gates(posting, PROFILE)))
 
 
 if __name__ == "__main__":

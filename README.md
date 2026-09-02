@@ -177,7 +177,7 @@ tested offline against captured payloads.
 python3 -m unittest discover -s tests -t .
 ```
 
-60 tests, no network, no fixtures on disk, runs in under a second. CI runs them
+63 tests, no network, no fixtures on disk, runs in under a second. CI runs them
 on Python 3.10 through 3.13.
 
 ---

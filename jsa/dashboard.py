@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from .models import STATUSES
+from .score import SCORER_VERSION
 from .store import Store
 from .util import days_between, today
 
@@ -212,7 +213,10 @@ apply();
 
 def build_dashboard(store: Store, cfg: Any, out_path: str | Path) -> Path:
     stats = funnel_stats(store)
-    rows = store.best_scores(min_score=0, limit=2000, include_closed=True)
+    # Gated jobs are excluded: a table of five thousand rejects is not a
+    # dashboard, it is a log. The rejection reasons stay available in `jsa top
+    # --include-rejected` and in each job's breakdown.
+    rows = store.best_scores(min_score=0, limit=4000, include_closed=True)
     counts = stats["counts"]
 
     kpis = [
@@ -259,8 +263,8 @@ def build_dashboard(store: Store, cfg: Any, out_path: str | Path) -> Path:
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Job search pipeline</title><style>{CSS}</style></head><body><div class="wrap">
 <h1>Job search pipeline</h1>
-<p class="sub">Generated {today()} · {counts['jobs']} postings from {len(stats['by_source'])} sources ·
-scoring v{__import__('jsa.score', fromlist=['SCORER_VERSION']).SCORER_VERSION}</p>
+<p class="sub">Generated {today()} · {counts['jobs']} postings seen from {len(stats['by_source'])} sources ·
+{len(body_rows)} cleared the hard gates · scoring v{SCORER_VERSION}</p>
 <div class="kpis">{kpi_html}</div>
 <div class="grid">
   <div class="card"><h2>Application funnel</h2>{_funnel_chart(stats['by_status'])}</div>
@@ -271,7 +275,7 @@ scoring v{__import__('jsa.score', fromlist=['SCORER_VERSION']).SCORER_VERSION}</
     {_bar_chart({f"{k}–{k+9}": v for k, v in stats['score_bands'].items()}, colour=PALETTE['series'][5])}</div>
 </div>
 <div class="card">
-  <h2>All postings</h2>
+  <h2>Postings that cleared the gates</h2>
   <div class="controls">
     <input id="q" placeholder="Filter by company, role, location…">
     <select id="track"><option value="">All tracks</option>{track_options}</select>

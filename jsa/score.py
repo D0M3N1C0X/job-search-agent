@@ -147,7 +147,11 @@ def check_gates(job: Job, profile: dict[str, Any], text: str | None = None) -> l
         failures.append(Gate("location", f"country {job.country} is excluded"))
 
     allowed = prefs.get("countries_allowed") or []
-    if allowed and job.country and job.country not in allowed and job.remote != "remote":
+    if allowed and job.country and job.country not in allowed:
+        # "Remote" almost never means "remote from anywhere": a role listed as
+        # remote in Bangalore or New York is still hiring in that country. Only
+        # a posting whose country cannot be determined gets the benefit of the
+        # doubt.
         failures.append(Gate("location", f"{job.country} outside target countries"))
 
     for term in prefs.get("hard_reject_keywords", []):

@@ -53,7 +53,7 @@ _COUNTRY_HINTS = {
     "finland": "FI", "helsinki": "FI", "norway": "NO", "oslo": "NO",
     "switzerland": "CH", "zurich": "CH", "zürich": "CH", "geneva": "CH",
     "united kingdom": "GB", "london": "GB", "manchester": "GB", "england": "GB",
-    "united states": "US", "usa": "US", "new york": "US", "remote": "",
+    "united states": "US", "usa": "US", "new york": "US",
     # Countries outside the usual EU targets still need a code: an unrecognised
     # location silently scores as "unknown" and slips past the location gate.
     "azerbaijan": "AZ", "georgia": "GE", "armenia": "AM", "turkey": "TR", "türkiye": "TR",
@@ -67,16 +67,35 @@ _COUNTRY_HINTS = {
     "tallinn": "EE", "latvia": "LV", "riga": "LV", "lithuania": "LT", "vilnius": "LT",
     "cyprus": "CY", "malta": "MT", "iceland": "IS", "albania": "AL", "kosovo": "XK",
     "bosnia": "BA", "north macedonia": "MK", "montenegro": "ME", "moldova": "MD",
-    "philippines": "PH", "indonesia": "ID", "vietnam": "VN", "thailand": "TH",
-    "malaysia": "MY", "south korea": "KR", "taiwan": "TW", "pakistan": "PK",
+    "philippines": "PH", "manila": "PH", "makati": "PH", "indonesia": "ID", "jakarta": "ID",
+    "vietnam": "VN", "thailand": "TH", "bangkok": "TH", "malaysia": "MY", "kuala lumpur": "MY",
+    "south korea": "KR", "seoul": "KR", "taiwan": "TW", "taipei": "TW", "pakistan": "PK",
+    "hyderabad": "IN", "mumbai": "IN", "pune": "IN", "gurgaon": "IN", "chennai": "IN",
+    "chicago": "US", "san francisco": "US", "seattle": "US", "boston": "US", "austin": "US",
+    "denver": "US", "atlanta": "US", "los angeles": "US", "miami": "US", "washington": "US",
+    "framingham": "US", "santiago": "CL", "lima": "PE", "bogota": "CO", "buenos aires": "AR",
+    "montevideo": "UY", "cairo": "EG", "nairobi": "KE", "lagos": "NG", "johannesburg": "ZA",
+    "riyadh": "SA", "doha": "QA", "tel aviv": "IL", "istanbul": "TR", "kyiv": "UA",
+    "almaty": "KZ", "kazakhstan": "KZ", "tashkent": "UZ", "baku": "AZ", "tbilisi": "GE",
+    "melbourne": "AU", "brisbane": "AU", "auckland": "NZ", "dhaka": "BD", "bangladesh": "BD",
+    "colombo": "LK", "toronto": "CA", "vancouver": "CA", "montreal": "CA",
 }
+
+# ATS location strings often end in an ISO country code ("Remote, US",
+# "London, gb"). Only codes the table already knows are accepted, so an
+# Italian province abbreviation is not mistaken for a country.
+_ISO_CODES = {code for code in _COUNTRY_HINTS.values() if code}
+_ISO_SUFFIX = re.compile(r",\s*([A-Za-z]{2})\s*$")
 
 
 def guess_country(location: str) -> str:
     low = (location or "").lower()
     for hint, code in _COUNTRY_HINTS.items():
-        if hint and hint in low:
+        if hint in low:
             return code
+    suffix = _ISO_SUFFIX.search(location or "")
+    if suffix and suffix.group(1).upper() in _ISO_CODES:
+        return suffix.group(1).upper()
     return ""
 
 
