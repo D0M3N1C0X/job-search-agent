@@ -218,7 +218,7 @@ class Store:
         """Top score per job, joined with the job and any application state."""
         sql = """
             SELECT j.*, s.track, s.score, s.verdict, s.breakdown,
-                   a.status AS app_status, a.id AS app_id
+                   a.status AS app_status, a.id AS app_id, a.notes AS app_notes
             FROM jobs j
             JOIN scores s ON s.job_id = j.id
             LEFT JOIN applications a ON a.job_id = j.id
@@ -294,6 +294,19 @@ class Store:
             )
         self.log_event(job_id, f"status:{status}", notes)
         self.db.commit()
+        return self.application(job_id) or {}
+
+    def set_notes(self, job_id: str, notes: str) -> dict[str, Any]:
+        """Attach a note to a job, creating a tracker row if there is not one yet."""
+        if self.application(job_id) is None:
+            self.set_status(job_id, "shortlisted", notes=notes)
+        else:
+            self.db.execute(
+                "UPDATE applications SET notes = ?, last_update = ? WHERE job_id = ?",
+                (notes, now(), job_id),
+            )
+            self.log_event(job_id, "note", notes[:200] or "(cleared)")
+            self.db.commit()
         return self.application(job_id) or {}
 
     def applications(self, *, status: str | None = None, open_only: bool = False) -> list[dict[str, Any]]:

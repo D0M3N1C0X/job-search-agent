@@ -502,6 +502,56 @@ def cmd_dashboard(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_run(args: argparse.Namespace) -> int:
+    """The whole loop in one command.
+
+    Fetch, fill in the descriptions worth fetching, score, refresh the
+    dashboard. This is what you run on a Monday morning; every other command
+    exists for when you want a piece of it on its own.
+    """
+    ns = lambda **kw: argparse.Namespace(home=args.home, **kw)  # noqa: E731
+
+    print(colour("1/4  Fetching", BOLD))
+    cmd_fetch(ns(source=args.source, company=None, pages=args.pages,
+                 fast=args.fast, cache_ttl=args.cache_ttl))
+
+    print(colour("\n2/4  Filling in descriptions", BOLD))
+    cmd_enrich(ns(min_score=args.enrich_min_score, limit=args.enrich_limit))
+
+    print(colour("\n3/4  Scoring", BOLD))
+    cmd_score(ns(rescore=args.rescore))
+
+    print(colour("\n4/4  Shortlist", BOLD))
+    cmd_top(ns(min_score=args.min_score, track=None, limit=args.limit,
+               new_only=False, include_closed=False, include_rejected=False))
+
+    cfg = config.load(args.home)
+    out = cfg.output_dir / "dashboard.html"
+    store = Store(cfg.db_path)
+    from .dashboard import build_dashboard
+
+    build_dashboard(store, cfg, out)
+    store.close()
+    print(f"\nDashboard  {out}")
+    if args.serve:
+        from .serve import serve
+
+        serve(cfg, port=args.port)
+    else:
+        print("Open it, or run `python3 -m jsa serve` for the editable version.")
+    return 0
+
+
+def cmd_serve(args: argparse.Namespace) -> int:
+    from .serve import serve
+
+    cfg = config.load(args.home)
+    if cfg.demo:
+        print(colour("Running on the bundled demo profile — `jsa init` to use your own.", YELLOW))
+    serve(cfg, host=args.host, port=args.port, open_browser=not args.no_browser)
+    return 0
+
+
 def cmd_export(args: argparse.Namespace) -> int:
     cfg = config.load(args.home)
     store = Store(cfg.db_path)
@@ -528,6 +578,26 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--home", help="profile directory (default: ./profile or $JSA_HOME)")
     parser.add_argument("-v", "--verbose", action="store_true")
     sub = parser.add_subparsers(dest="command", required=True)
+
+    p = sub.add_parser("run", help="fetch, enrich, score and refresh the dashboard — the daily command")
+    p.add_argument("--source", choices=["all", "ats", "linkedin", "mailbox"], default="all")
+    p.add_argument("--min-score", type=int, default=65, help="threshold for the shortlist it prints")
+    p.add_argument("--limit", type=int, default=20)
+    p.add_argument("--pages", type=int, default=2)
+    p.add_argument("--fast", action="store_true", help="skip LinkedIn description fetches")
+    p.add_argument("--cache-ttl", type=int, default=900)
+    p.add_argument("--enrich-min-score", type=int, default=30)
+    p.add_argument("--enrich-limit", type=int, default=120)
+    p.add_argument("--rescore", action="store_true")
+    p.add_argument("--serve", action="store_true", help="open the editable dashboard when done")
+    p.add_argument("--port", type=int, default=8765)
+    p.set_defaults(func=cmd_run)
+
+    p = sub.add_parser("serve", help="editable dashboard on localhost (writes back to the database)")
+    p.add_argument("--port", type=int, default=8765)
+    p.add_argument("--host", default="127.0.0.1")
+    p.add_argument("--no-browser", action="store_true")
+    p.set_defaults(func=cmd_serve)
 
     p = sub.add_parser("init", help="create a profile workspace from the example")
     p.add_argument("path", nargs="?")
@@ -612,7 +682,7 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("stats", help="pipeline and funnel numbers")
     p.set_defaults(func=cmd_stats)
 
-    p = sub.add_parser("dashboard", help="self-contained HTML dashboard")
+    p = sub.add_parser("dashboard", help="export the dashboard as a static HTML file")
     p.add_argument("--out")
     p.set_defaults(func=cmd_dashboard)
 

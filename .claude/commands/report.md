@@ -2,7 +2,8 @@
 description: Rebuild the dashboard and read the funnel back
 ---
 
-Run `python3 -m jsa stats` and `python3 -m jsa dashboard`.
+Run `python3 -m jsa stats` and `python3 -m jsa dashboard`. Mention that
+`python3 -m jsa serve` opens the same view as an editable local app.
 
 Then interpret it, with the honesty the numbers deserve:
 

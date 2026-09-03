@@ -10,10 +10,12 @@ no LaTeX, no headless browser, no API keys.
 
 ```bash
 git clone https://github.com/D0M3N1C0X/job-search-agent && cd job-search-agent
-python3 -m jsa fetch      # works immediately on the bundled demo profile
-python3 -m jsa score
-python3 -m jsa top
+python3 -m jsa run        # fetch, enrich, score, shortlist, dashboard — the whole loop
+python3 -m jsa serve      # the dashboard, editable: statuses and notes save to the database
 ```
+
+`run` is the command you actually use. Everything below it exists for when you
+want one piece on its own.
 
 ---
 
@@ -57,6 +59,21 @@ reply, where good postings actually come from.
 | **Package** | (part of `jsa docs`) | One folder per application: documents, standard form answers, submission checklist |
 | **Track** | `jsa status` / `jsa due` | Application state machine with follow-up and ghosting horizons |
 | **Measure** | `jsa stats` / `jsa dashboard` | Funnel, response rate by track, source mix — as text or a self-contained HTML page |
+| **Work** | `jsa serve` | The dashboard as a local app: filter, read the full breakdown, change a status, keep a note — written straight to SQLite |
+
+All of it in one command: `jsa run` (add `--serve` to open the dashboard when it finishes).
+
+### The dashboard
+
+Two modes, one page. `jsa dashboard` exports a static file you can archive or
+send; `jsa serve` runs the same page on `127.0.0.1` so it can also write back.
+Filter by track, verdict, country, source or status; click any posting for the
+full score breakdown with the matched keywords, the gate that rejected it, the
+posting text and a notes field. Light and dark, no CDN, no build step, no
+dependency — `http.server` and 450 lines of hand-written CSS.
+
+Notes and statuses go into SQLite, not into browser storage: a second copy of
+the truth in `localStorage` is a copy nobody reconciles.
 
 ### Positioning tracks
 
@@ -162,7 +179,9 @@ jsa/
 ├── render.py      CV and cover letter from profile + track + overlay; ATS check
 ├── docx.py        .docx writer built on zipfile — no python-docx
 ├── packet.py      Per-application submission folder
-├── dashboard.py   Funnel analytics and a self-contained HTML page
+├── dashboard.py   Funnel analytics and the page payload
+├── webapp.py      The dashboard interface — CSS, JS and markup, no framework
+├── serve.py       Local writable dashboard (stdlib http.server, loopback only)
 ├── config.py      Profile resolution (./profile, $JSA_HOME, or the demo)
 └── sources/
     ├── ats.py       Seven ATS providers, fetch split from parse
@@ -177,7 +196,7 @@ tested offline against captured payloads.
 python3 -m unittest discover -s tests -t .
 ```
 
-63 tests, no network, no fixtures on disk, runs in under a second. CI runs them
+78 tests, no network, no fixtures on disk, runs in under a second. CI runs them
 on Python 3.10 through 3.13.
 
 ---

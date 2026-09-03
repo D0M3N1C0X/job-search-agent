@@ -30,6 +30,7 @@ jobs:
           python -m jsa score
           python -m jsa top --min-score 0
           python -m jsa dashboard --out /tmp/dashboard.html
+          python -c "import pathlib,sys; h=pathlib.Path('/tmp/dashboard.html').read_text(); sys.exit(0 if 'window.__JSA__' in h and '<script src=' not in h else 'dashboard is not self-contained')"
           test -s /tmp/dashboard.html
       - name: Check no personal profile was committed
         run: |

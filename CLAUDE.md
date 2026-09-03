@@ -24,7 +24,7 @@ clear: if a step can be a rule, it belongs in the code, not in a prompt.
 ## The workflow
 
 ```
-jsa fetch → jsa enrich → jsa score → jsa top      ← the engine decides *what* and *why*
+jsa run  (= fetch → enrich → score → top → dashboard)   ← the engine decides *what* and *why*
       ↓
 jsa brief <id>   → you read the posting and the breakdown, and judge
       ↓
@@ -32,6 +32,9 @@ write overlay.json (+ cover letter) → jsa docs <id> --overlay ...
       ↓
 packet in profile/output/<company>_<role>/ → human sends → jsa status <id> submitted
 ```
+
+`jsa serve` opens the dashboard as a local app; statuses and notes changed
+there are written to the same database the CLI reads, so the two never drift.
 
 ## Writing style
 

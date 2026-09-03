@@ -4,10 +4,10 @@ description: Fetch, enrich, score and present the current shortlist
 
 Run the pipeline and give a read on what came out.
 
-1. `python3 -m jsa fetch` — report per-source counts honestly, including any
-   source that failed or returned nothing.
-2. `python3 -m jsa enrich` then `python3 -m jsa score`.
-3. `python3 -m jsa top --new-only --min-score 60`.
+1. `python3 -m jsa run --min-score 60` — this fetches, enriches, scores,
+   prints the shortlist and refreshes the dashboard in one pass. Report the
+   per-source counts honestly, including any source that failed or returned
+   nothing.
 
 Then, for the top handful, open each posting's breakdown (`jsa show <id>`) and
 add what the score cannot see: whether the title matches the actual work,
