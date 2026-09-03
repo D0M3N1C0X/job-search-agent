@@ -63,6 +63,23 @@ button{font:inherit;cursor:pointer}
 .iconbtn:hover{border-color:var(--accent);color:var(--accent)}
 .livedot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--pass);margin-right:6px}
 .livedot.off{background:var(--ink-3)}
+.actions{display:flex;gap:8px}
+.runbtn{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:9px;
+  padding:7px 14px;font-size:12.5px;font-weight:550;display:inline-flex;align-items:center;gap:7px}
+.runbtn:hover:not(:disabled){filter:brightness(1.08)}
+.runbtn:disabled{opacity:.55;cursor:not-allowed}
+.runbtn.ghost{background:var(--panel-2);border-color:var(--line);color:var(--ink-2)}
+.runbtn.ghost:hover:not(:disabled){border-color:var(--accent);color:var(--accent);filter:none}
+.spin{width:12px;height:12px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;
+  border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.runlog{max-width:1400px;margin:0 auto;padding:0 24px}
+.runlog .inner{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 16px;margin-top:16px}
+.runlog pre{margin:0;max-height:230px;overflow:auto;font:11.5px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;
+  color:var(--ink-2);white-space:pre-wrap}
+.runlog h4{margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);
+  display:flex;justify-content:space-between;align-items:center}
 
 .wrap{max-width:1400px;margin:0 auto;padding:22px 24px 80px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px;margin-bottom:18px}
@@ -330,6 +347,61 @@ async function save(j) {
   } finally { $('#save').disabled = false; }
 }
 
+/* ------------------------------------------------------------------ run */
+$('#reload').onclick = () => location.reload();
+const runBtn = $('#run'), runLog = $('#runlog'), runOut = $('#runout'), runState = $('#runstate');
+
+function paintRun(s) {
+  runLog.hidden = false;
+  runOut.textContent = s.lines.join('\n');
+  runOut.scrollTop = runOut.scrollHeight;
+  if (s.running) {
+    runState.textContent = 'running…';
+    runBtn.disabled = true;
+    runBtn.innerHTML = '<span class="spin"></span>Running';
+  } else {
+    runBtn.disabled = false;
+    runBtn.textContent = 'Run pipeline';
+    if (s.returncode === 0) {
+      runState.innerHTML = 'finished — <a href="#" id="rl">reload to see the new postings</a>';
+      $('#rl').onclick = e => { e.preventDefault(); location.reload(); };
+    } else if (s.returncode !== null) {
+      runState.textContent = 'stopped with exit code ' + s.returncode;
+    }
+  }
+  return s.running;
+}
+
+let poll;
+async function watchRun() {
+  clearInterval(poll);
+  poll = setInterval(async () => {
+    try {
+      const s = await (await fetch('api/run')).json();
+      if (!paintRun(s)) clearInterval(poll);
+    } catch { clearInterval(poll); }
+  }, 1200);
+}
+
+if (DATA.interactive) {
+  runBtn.onclick = async () => {
+    runBtn.disabled = true;
+    runBtn.innerHTML = '<span class="spin"></span>Starting';
+    try {
+      const res = await fetch('api/run', {method: 'POST'});
+      if (res.status === 409) { toast('A run is already in progress'); }
+      else if (!res.ok) throw new Error(await res.text());
+      paintRun(await res.json());
+      watchRun();
+    } catch (err) {
+      toast('Could not start: ' + err.message);
+      runBtn.disabled = false; runBtn.textContent = 'Run pipeline';
+    }
+  };
+  // A run started before this page loaded (or in another tab) keeps streaming.
+  fetch('api/run').then(r => r.json()).then(s => { if (s.running) { paintRun(s); watchRun(); } }).catch(() => {});
+}
+
 let toastTimer;
 function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.classList.add('show');
@@ -367,6 +439,9 @@ def render_page(data: dict[str, Any], charts: dict[str, str]) -> str:
     sources = sorted({j["source"] for j in jobs})
     live = ('<span class="livedot"></span>live — edits save to the database' if data["interactive"]
             else '<span class="livedot off"></span>static export')
+    run_disabled = "" if data["interactive"] else " disabled"
+    run_title = ("" if data["interactive"]
+                 else ' title="Static export. Run `python3 -m jsa serve` to start a run from here."')
 
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
@@ -376,12 +451,21 @@ def render_page(data: dict[str, Any], charts: dict[str, str]) -> str:
 
 <div class="topbar"><div class="topbar-in">
   <div class="brand"><b>Job pipeline</b><span>{live}</span></div>
+  <div class="actions">
+    <button class="runbtn" id="run"{run_disabled}{run_title}>Run pipeline</button>
+    <button class="runbtn ghost" id="reload">Refresh</button>
+  </div>
   <div class="search">
     <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
     <input id="q" placeholder="Search role, company, location, notes…" autocomplete="off">
   </div>
   <div class="spacer"></div>
   <button class="iconbtn" id="theme">Theme</button>
+</div></div>
+
+<div class="runlog" id="runlog" hidden><div class="inner">
+  <h4><span>Pipeline run</span><span id="runstate">starting…</span></h4>
+  <pre id="runout"></pre>
 </div></div>
 
 <div class="wrap">

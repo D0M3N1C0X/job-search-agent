@@ -14,9 +14,14 @@ a service: do not expose it to a network.
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
+import threading
 import webbrowser
+from collections import deque
 from functools import partial
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 from typing import Any
 
 from .dashboard import charts_for, collect, funnel_stats
@@ -25,6 +30,59 @@ from .webapp import render_page
 
 MAX_BODY = 64 * 1024
 ALLOWED_HOSTS = {"127.0.0.1", "::1", "localhost"}
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+class Run:
+    """A pipeline run started from the dashboard.
+
+    It is a subprocess of the same CLI rather than an in-process call: the run
+    is long, it writes to the database the server is also reading, and a
+    separate process keeps a crash in the pipeline from taking the dashboard
+    down with it. Exactly one runs at a time.
+    """
+
+    def __init__(self) -> None:
+        self.lock = threading.Lock()
+        self.proc: subprocess.Popen[str] | None = None
+        self.lines: deque[str] = deque(maxlen=500)
+        self.returncode: int | None = None
+
+    @property
+    def running(self) -> bool:
+        return self.proc is not None and self.proc.poll() is None
+
+    def start(self, args: list[str]) -> bool:
+        with self.lock:
+            if self.running:
+                return False
+            self.lines.clear()
+            self.returncode = None
+            self.proc = subprocess.Popen(
+                [sys.executable, "-u", "-m", "jsa", "run", *args],
+                cwd=REPO_ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                text=True, bufsize=1,
+            )
+        threading.Thread(target=self._drain, daemon=True).start()
+        return True
+
+    def _drain(self) -> None:
+        proc = self.proc
+        if proc is None or proc.stdout is None:
+            return
+        for line in proc.stdout:
+            self.lines.append(line.rstrip("\n"))
+        self.returncode = proc.wait()
+
+    def state(self) -> dict[str, Any]:
+        return {
+            "running": self.running,
+            "returncode": self.returncode,
+            "lines": list(self.lines)[-40:],
+        }
+
+
+RUN = Run()
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -84,6 +142,8 @@ class Handler(BaseHTTPRequestHandler):
         elif path == "/api/data":
             with self._store() as store:
                 self._json(200, collect(store, interactive=True))
+        elif path == "/api/run":
+            self._json(200, RUN.state())
         else:
             self._json(404, {"error": "not found"})
 
@@ -94,6 +154,12 @@ class Handler(BaseHTTPRequestHandler):
             self._json(403, {"error": "local requests only"})
             return
         path = self.path.split("?")[0].rstrip("/")
+        if path == "/api/run":
+            if RUN.start(["--source", "ats"]):
+                self._json(202, RUN.state())
+            else:
+                self._json(409, {"error": "a run is already in progress"})
+            return
         if not path.startswith("/api/job/"):
             self._json(404, {"error": "not found"})
             return

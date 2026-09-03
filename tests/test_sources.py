@@ -2,6 +2,7 @@
 so every provider is exercised against a captured payload."""
 
 import unittest
+from unittest import mock
 
 from jsa.sources import ats, linkedin, mailbox
 
@@ -142,6 +143,51 @@ https://boards.greenhouse.io/globex/jobs/778899
 
 See all jobs
 """
+
+
+DETAIL_HTML = """<section><div class="show-more-less-html__markup relative">
+<p>Employee relations and HR policy for the Italian market.</p></div></section>"""
+
+
+class TestLinkedInSearch(unittest.TestCase):
+    """The search entry point, not just the parser.
+
+    `search` forwards the caller's options to the detail fetch. Passing an
+    option the caller had already set used to raise TypeError at runtime and
+    take the whole pipeline down with it.
+    """
+
+    def run_search(self, **kwargs):
+        seen = []
+
+        def fake_get(url, **opts):
+            seen.append(url)
+            return DETAIL_HTML if "jobPosting/" in url else LINKEDIN_HTML
+
+        with mock.patch.object(linkedin, "http_get", fake_get), \
+             mock.patch.object(linkedin.time, "sleep", lambda *_: None):
+            return linkedin.search(queries=[{"keywords": "HR Advisor", "location": "Poland"}],
+                                   pages=1, **kwargs), seen
+
+    def test_caller_supplied_retries_does_not_collide(self):
+        jobs, _ = self.run_search(retries=1)
+        self.assertEqual(len(jobs), 1)
+        self.assertIn("Employee relations", jobs[0].description)
+
+    def test_descriptions_can_be_skipped(self):
+        jobs, urls = self.run_search(with_descriptions=False)
+        self.assertEqual(len(jobs), 1)
+        self.assertFalse(any("jobPosting/" in u for u in urls))
+
+    def test_a_failing_query_does_not_lose_the_run(self):
+        from jsa.util import FetchError
+
+        def boom(url, **opts):
+            raise FetchError("429 Too Many Requests", status=429)
+
+        with mock.patch.object(linkedin, "http_get", boom), \
+             mock.patch.object(linkedin.time, "sleep", lambda *_: None):
+            self.assertEqual(linkedin.search(queries=[{"keywords": "HR"}], pages=1), [])
 
 
 class TestMailbox(unittest.TestCase):

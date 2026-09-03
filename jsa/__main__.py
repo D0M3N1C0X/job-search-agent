@@ -93,9 +93,10 @@ def cmd_fetch(args: argparse.Namespace) -> int:
         for entry in entries:
             try:
                 jobs = ats_sources.fetch_company(entry, cache_dir=cfg.cache_dir, cache_ttl=args.cache_ttl)
-            except FetchError as exc:
+            except Exception as exc:  # noqa: BLE001 - one bad board must not end the run
                 totals["failed"] += 1
-                log.warning("%s (%s): %s", entry["company"], entry["provider"], exc)
+                print(f"{entry['company']:<32} "
+                      f"{colour(f'{type(exc).__name__}: {exc}'[:70], RED)}")
                 continue
             counts = {"new": 0, "seen": 0}
             for job in jobs:
@@ -119,22 +120,30 @@ def cmd_fetch(args: argparse.Namespace) -> int:
                 totals["seen"] += counts["seen"]
                 print(f"{'LinkedIn (guest)':<32} {'linkedin':<16} {len(jobs):>3} listed  "
                       f"{colour('+' + str(counts['new']), GREEN)}")
-            except FetchError as exc:
+            except Exception as exc:  # noqa: BLE001 - secondary source, best effort
                 totals["failed"] += 1
-                print(f"{'LinkedIn (guest)':<32} {colour('unavailable: ' + str(exc), YELLOW)}")
+                print(f"{'LinkedIn (guest)':<32} "
+                      f"{colour(f'unavailable — {type(exc).__name__}: {exc}'[:80], YELLOW)}")
 
     if wanted in ("all", "mailbox"):
-        jobs = mailbox.scan(path=cfg.inbox_dir)
-        counts = {"new": 0, "seen": 0}
-        for job in jobs:
-            counts[store.upsert_job(job)] += 1
-        totals["new"] += counts["new"]
-        totals["seen"] += counts["seen"]
-        print(f"{'Alert emails':<32} {'mailbox':<16} {len(jobs):>3} listed  "
-              f"{colour('+' + str(counts['new']), GREEN)}")
+        try:
+            jobs = mailbox.scan(path=cfg.inbox_dir)
+            counts = {"new": 0, "seen": 0}
+            for job in jobs:
+                counts[store.upsert_job(job)] += 1
+            totals["new"] += counts["new"]
+            totals["seen"] += counts["seen"]
+            print(f"{'Alert emails':<32} {'mailbox':<16} {len(jobs):>3} listed  "
+                  f"{colour('+' + str(counts['new']), GREEN)}")
+        except Exception as exc:  # noqa: BLE001 - a malformed mailbox is not fatal
+            totals["failed"] += 1
+            print(f"{'Alert emails':<32} "
+                  f"{colour(f'unreadable — {type(exc).__name__}: {exc}'[:80], YELLOW)}")
 
     print()
-    print(f"{colour(str(totals['new']), BOLD)} new · {totals['seen']} already known · {totals['failed']} sources failed")
+    failed = (colour(f"{totals['failed']} sources failed", RED) if totals["failed"]
+              else "0 sources failed")
+    print(f"{colour(str(totals['new']), BOLD)} new · {totals['seen']} already known · {failed}")
     if totals["new"]:
         print("Next: `python3 -m jsa score` then `python3 -m jsa top`")
     store.close()
@@ -443,23 +452,30 @@ def cmd_due(args: argparse.Namespace) -> int:
         age = days_between(row.get("submitted_at") or row["last_update"])
         if age is None:
             continue
-        if row["status"] in ("shortlisted", "drafted", "ready") and age >= 3:
-            overdue.append((age, row, "not sent yet"))
+        if row["status"] in ("shortlisted", "drafted", "ready"):
+            if age >= 3:
+                overdue.append((age, row, f"not sent yet — {age}d in {row['status']}"))
+            else:
+                waiting.append((age, row, f"{row['status']} {age}d ago"))
         elif row["status"] in ("submitted", "screening", "interview"):
             if age >= ghost_days:
                 overdue.append((age, row, f"silent {age}d — mark ghosted?"))
             elif age >= follow_up_days:
                 overdue.append((age, row, f"follow up ({age}d since update)"))
             else:
-                waiting.append((age, row))
+                waiting.append((age, row, f"{row['status']}, {age}d — follow up at {follow_up_days}d"))
     if not overdue and not waiting:
-        print("Nothing pending. Run `jsa fetch` for new roles.")
+        print("Nothing in the tracker yet. `jsa top` to pick something, "
+              "then `jsa status <id> shortlisted`.")
+        store.close()
         return 0
-    for age, row, why in sorted(overdue, reverse=True):
-        print(f"{colour('!', YELLOW)} {row['company'][:24]:<26}{row['title'][:38]:<40}"
-              f"{row['status']:<12}{why}")
-    for age, row in sorted(waiting, reverse=True):
-        print(f"  {row['company'][:24]:<26}{row['title'][:38]:<40}{row['status']:<12}{age}d ago")
+    by_age = lambda item: item[0]  # noqa: E731
+    for age, row, why in sorted(overdue, key=by_age, reverse=True):
+        print(f"{colour('!', YELLOW)} {row['company'][:24]:<26}{row['title'][:38]:<40}{why}")
+    for age, row, why in sorted(waiting, key=by_age, reverse=True):
+        print(f"  {row['company'][:24]:<26}{row['title'][:38]:<40}{colour(why, DIM)}")
+    if not overdue:
+        print(f"\n{len(waiting)} open, nothing overdue.")
     store.close()
     return 0
 

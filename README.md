@@ -1,5 +1,9 @@
 # job-search-agent
 
+[![Run it](https://img.shields.io/badge/%E2%96%B6%20Run%20it-1f6feb?style=for-the-badge)](#two-buttons-no-terminal)
+[![Open the dashboard](https://img.shields.io/badge/%E2%97%B1%20The%20dashboard-30363d?style=for-the-badge)](#the-dashboard)
+[![CI](https://github.com/D0M3N1C0X/job-search-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/D0M3N1C0X/job-search-agent/actions/workflows/ci.yml)
+
 A job search that runs as a pipeline instead of a browser tab habit: pull
 postings from sources that do not break, score them against your profile with
 rules you can read, generate a tailored CV and cover letter, and measure which
@@ -16,6 +20,24 @@ python3 -m jsa serve      # the dashboard, editable: statuses and notes save to 
 
 `run` is the command you actually use. Everything below it exists for when you
 want one piece on its own.
+
+### Two buttons, no terminal
+
+If you would rather not type anything, the repository ships two launchers.
+Double-click them in Finder:
+
+| | |
+|---|---|
+| **`Run pipeline.command`** | Runs the whole loop, then opens the dashboard |
+| **`Open dashboard.command`** | Opens the dashboard on what is already in the database |
+
+They work from wherever the repository lives — nothing is hard-coded. On the
+first double-click macOS asks whether you trust the file; the equivalents on
+Linux and Windows are `python3 -m jsa run --serve` and `python3 -m jsa serve`.
+
+Once the dashboard is open there is a **Run pipeline** button beside the title,
+so a refresh never needs the terminal either: it streams the run's output into
+the page and offers to reload when it finishes.
 
 ---
 

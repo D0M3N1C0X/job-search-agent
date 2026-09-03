@@ -108,10 +108,14 @@ def search(
             time.sleep(pause)
 
     if with_descriptions:
+        # Detail pages are the most rate-limited call here, so they get a
+        # single attempt — merged into the caller's options rather than passed
+        # alongside them, which would collide when the caller sets `retries`.
+        detail_opts = {**opts, "retries": 1}
         for job in found.values():
             if job.source_id and not job.description:
                 try:
-                    job.description = fetch_description(job.source_id, retries=1, **opts)
+                    job.description = fetch_description(job.source_id, **detail_opts)
                 except FetchError as exc:
                     log.debug("linkedin detail %s: %s", job.source_id, exc)
                 time.sleep(pause)
