@@ -1,0 +1,39 @@
+name: New ATS board
+description: A job board that publishes an unauthenticated feed and is not supported yet.
+labels: [source, enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        These are the most valuable contributions to this project. Supported
+        today: Greenhouse, Lever, Ashby, SmartRecruiters, Recruitee, Workable,
+        Personio.
+  - type: input
+    id: provider
+    attributes:
+      label: Provider name
+      placeholder: Teamtailor
+    validations: { required: true }
+  - type: input
+    id: endpoint
+    attributes:
+      label: A working endpoint
+      description: A real URL that returns jobs with no key and no login.
+      placeholder: https://example.teamtailor.com/jobs.json
+    validations: { required: true }
+  - type: textarea
+    id: shape
+    attributes:
+      label: A trimmed sample of the response
+      description: Two or three postings is plenty. Enough to write a parser and a test fixture.
+      render: json
+    validations: { required: true }
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Please confirm
+      options:
+        - label: The endpoint needs no API key, no login and no cookie.
+          required: true
+        - label: It is the feed the company's own careers page uses, not a scrape of the HTML.
+          required: true

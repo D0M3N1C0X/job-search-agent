@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Question about how it works
+    url: https://github.com/D0M3N1C0X/job-search-agent/discussions
+    about: Ask here rather than opening an issue.
