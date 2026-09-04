@@ -590,20 +590,30 @@ def cmd_demo(args: argparse.Namespace) -> int:
 
 
 def cmd_install(args: argparse.Namespace) -> int:
-    """Put the dashboard in the Dock so it never needs a terminal again."""
-    from .install import APP_PATH, install
+    """Make the tool reachable: a `jsa` command anywhere, and an app in the Dock."""
+    from .install import install
 
-    made = install(port=args.port, at_login=args.login)
-    print(f"Installed {colour(str(APP_PATH), BOLD)}")
-    print("\nOpen it from Spotlight (⌘-Space, \"Job Pipeline\"), or drag it to your Dock.")
-    print("It starts the server if it is not already running, then opens the dashboard.")
-    if args.login:
-        print("\nThe server will also start automatically when you log in.")
+    result = install(port=args.port, at_login=args.login)
+
+    print(f"{colour('Command', BOLD)}")
+    print(f"  {result['shim']}")
+    if result["shim_on_path"]:
+        print(f"  {colour('jsa', GREEN)} now works from any directory — try `jsa where`.")
     else:
-        print("\nAdd `--login` if you want the server always running in the background.")
-    print(f"\nRemove everything with: python3 -m jsa uninstall")
-    for path in made:
-        log.debug("wrote %s", path)
+        print(colour(f"  {result['shim'].parent} is not on your PATH.", YELLOW))
+        print(f"  Add this line to ~/.zshrc, then open a new terminal:")
+        print(f"    export PATH=\"{result['shim'].parent}:$PATH\"")
+
+    if result["app"]:
+        print(f"\n{colour('App', BOLD)}")
+        print(f"  {result['app']}")
+        print("  Open it from Spotlight (⌘-Space, \"Job Pipeline\") or drag it to your Dock.")
+        print("  It starts the server if it is down, then opens the dashboard.")
+    if result["agent"]:
+        print("\n  The server will also start automatically when you log in.")
+    elif result["app"]:
+        print("\n  Add `--login` to keep the server running in the background.")
+    print("\nRemove all of it with: jsa uninstall")
     return 0
 
 
@@ -630,6 +640,11 @@ def cmd_where(args: argparse.Namespace) -> int:
     print(f"  address        {url}")
     print(f"  server         {colour('running', GREEN) if state['server_running'] else colour('not running', YELLOW)}")
     print(f"  app installed  {'yes — ' + str(APP_PATH) if state['app'] else 'no (run `jsa install`)'}")
+    if state["command"]:
+        note = "" if state["command_on_path"] else "  (its folder is not on your PATH)"
+        print(f"  jsa command    {state['command']}{note}")
+    else:
+        print("  jsa command    not installed (run `python3 -m jsa install`)")
     print(f"  starts at login{'  yes' if state['login_agent'] else '  no'}")
     print(f"\n{colour('Files', BOLD)}")
     print(f"  profile        {cfg.home}")

@@ -17,6 +17,11 @@ git clone https://github.com/D0M3N1C0X/job-search-agent && cd job-search-agent
 python3 -m jsa demo       # see it working on synthetic data — nothing is fetched
 ```
 
+> `python3 -m jsa` only works from inside the repository. Run
+> `python3 -m jsa install` once and `jsa` becomes a command you can use from
+> anywhere — that is the last time you need to think about which directory you
+> are in.
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/dashboard-dark.png">
   <img alt="The dashboard: a triage deck of scored postings, each with a plain-language reason and the catch" src="docs/img/dashboard-light.png">
@@ -25,9 +30,9 @@ python3 -m jsa demo       # see it working on synthetic data — nothing is fetc
 Then point it at your own search:
 
 ```bash
-python3 -m jsa run        # fetch, enrich, score, shortlist, dashboard — the whole loop
-python3 -m jsa serve      # the dashboard, editable: statuses and notes save to the database
-python3 -m jsa install    # macOS: put it in the Dock so it never needs a terminal again
+python3 -m jsa install    # `jsa` on your PATH, plus a Dock app on macOS
+jsa run                   # fetch, enrich, score, shortlist, dashboard — the whole loop
+jsa serve                 # the dashboard, editable: statuses and notes save to the database
 ```
 
 `run` is the command you actually use. Everything below it exists for when you
@@ -35,11 +40,19 @@ want one piece on its own.
 
 ### No terminal
 
-`python3 -m jsa install` builds a real macOS application in `~/Applications`:
+`python3 -m jsa install` does two things. It writes a `jsa` command into the
+first writable directory on your PATH (`/usr/local/bin`, else `~/.local/bin`),
+so the tool stops caring which directory you are in — and it tells you plainly
+if that directory is not on your PATH, with the line to fix it.
+
+On macOS it also builds a real application in `~/Applications`:
 click it and the dashboard opens, starting the local server first if it is not
 already up. Add `--login` to keep the server running from login, or
-`python3 -m jsa uninstall` to remove all of it. `python3 -m jsa where` says
-what is installed and whether the dashboard is reachable.
+`jsa uninstall` to remove all of it. `jsa where` says what is installed, where
+your data lives, and whether the dashboard is reachable.
+
+If you would rather use packaging, `pip install -e .` or `pipx install .` gives
+you the same `jsa` command. There are no runtime dependencies either way.
 
 ### Two launchers, if you prefer files
 
@@ -53,7 +66,7 @@ Double-click them in Finder:
 
 They work from wherever the repository lives — nothing is hard-coded. On the
 first double-click macOS asks whether you trust the file; the equivalents on
-Linux and Windows are `python3 -m jsa run --serve` and `python3 -m jsa serve`.
+Linux and Windows are `jsa run --serve` and `jsa serve`.
 
 Once the dashboard is open there is a **Run pipeline** button beside the title,
 so a refresh never needs the terminal either: it streams the run's output into
@@ -165,7 +178,7 @@ Building the company watchlist does not involve guessing which ATS a company
 uses:
 
 ```bash
-python3 -m jsa probe revolut monzo personio --add
+jsa probe revolut monzo personio --add
 # revolut   greenhouse   84 open roles   → added to watchlist
 ```
 
@@ -179,12 +192,12 @@ inside them is parsed for content and never executed or followed.
 ```bash
 git clone https://github.com/D0M3N1C0X/job-search-agent
 cd job-search-agent
-python3 -m jsa init                    # copies the demo profile into ./profile
+jsa init                    # copies the demo profile into ./profile
 $EDITOR profile/profile.json           # your experience, skills, preferences, gates
 $EDITOR profile/tracks.json            # how you want to be read
 $EDITOR profile/answers.json           # the answers every form asks for, written once
-python3 -m jsa probe <company-slugs> --add
-python3 -m jsa fetch && python3 -m jsa enrich && python3 -m jsa score && python3 -m jsa top
+jsa probe <company-slugs> --add
+jsa run                     # or the four steps: fetch, enrich, score, top
 ```
 
 `./profile/` is git-ignored. The engine is public; your CV, your applications

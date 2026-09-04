@@ -30,6 +30,17 @@ APP_PATH = APPS_DIR / f"{APP_NAME}.app"
 AGENT_PATH = Path.home() / "Library" / "LaunchAgents" / f"{LABEL}.plist"
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
+SHIM = """#!/bin/bash
+# jsa — run job-search-agent from any directory.
+# Written by `jsa install`; delete it or run `jsa uninstall` to remove.
+export PYTHONPATH="{repo}${{PYTHONPATH:+:$PYTHONPATH}}"
+exec "{python}" -m jsa "$@"
+"""
+
+# Where a command-line shim can go without administrator rights. First writable
+# directory wins; being on PATH is checked separately and reported.
+SHIM_DIRS = [Path("/usr/local/bin"), Path.home() / ".local" / "bin"]
+
 LAUNCHER = """#!/bin/bash
 # Opens the job-search dashboard, starting the local server if it is not up.
 REPO="{repo}"
@@ -105,6 +116,34 @@ def build_icon(target: Path) -> bool:
         shutil.rmtree(iconset, ignore_errors=True)
 
 
+# --------------------------------------------------------------- shim
+
+def shim_path() -> Path | None:
+    """Where the `jsa` command is, or would go."""
+    for directory in SHIM_DIRS:
+        candidate = directory / "jsa"
+        if candidate.exists():
+            return candidate
+    for directory in SHIM_DIRS:
+        if directory.is_dir() and os.access(directory, os.W_OK):
+            return directory / "jsa"
+    return SHIM_DIRS[-1] / "jsa"
+
+
+def on_path(directory: Path) -> bool:
+    entries = {Path(p).expanduser() for p in os.environ.get("PATH", "").split(os.pathsep) if p}
+    return directory in entries
+
+
+def build_shim() -> tuple[Path, bool]:
+    """Install the `jsa` command. Returns (path, whether its directory is on PATH)."""
+    target = shim_path()
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(SHIM.format(repo=REPO_ROOT, python=sys.executable), encoding="utf-8")
+    target.chmod(0o755)
+    return target, on_path(target.parent)
+
+
 # ---------------------------------------------------------------- app
 
 def build_app(port: int) -> Path:
@@ -161,21 +200,24 @@ def build_agent(port: int) -> Path:
     return AGENT_PATH
 
 
-def install(port: int = 8765, at_login: bool = False) -> list[str]:
+def install(port: int = 8765, at_login: bool = False) -> dict[str, Any]:
+    """Install the `jsa` command everywhere, and the app if this is macOS."""
+    shim, path_ok = build_shim()
+    result: dict[str, Any] = {"shim": shim, "shim_on_path": path_ok, "app": None, "agent": None}
     if sys.platform != "darwin":
-        raise SystemExit(
-            "`jsa install` builds a macOS application bundle.\n"
-            "On Linux or Windows, run `python3 -m jsa serve` and bookmark "
-            f"http://127.0.0.1:{port}/ instead."
-        )
-    made = [str(build_app(port))]
+        return result
+    result["app"] = build_app(port)
     if at_login:
-        made.append(str(build_agent(port)))
-    return made
+        result["agent"] = build_agent(port)
+    return result
 
 
 def uninstall() -> list[str]:
     removed = []
+    shim = shim_path()
+    if shim.exists() and "job-search-agent" in shim.read_text(errors="ignore"):
+        shim.unlink()
+        removed.append(str(shim))
     if AGENT_PATH.exists():
         subprocess.run(["launchctl", "unload", str(AGENT_PATH)], capture_output=True, check=False)
         AGENT_PATH.unlink()
@@ -195,7 +237,10 @@ def status(port: int = 8765) -> dict[str, Any]:
             running = True
     except Exception:  # noqa: BLE001 - "not running" is the only thing we need
         running = False
+    shim = shim_path()
     return {
+        "command": shim if shim.exists() else None,
+        "command_on_path": on_path(shim.parent) if shim.exists() else False,
         "app": APP_PATH.exists(),
         "login_agent": AGENT_PATH.exists(),
         "server_running": running,

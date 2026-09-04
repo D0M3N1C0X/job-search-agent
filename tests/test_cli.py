@@ -122,3 +122,45 @@ class TestScoringCommand(CliCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestShim(unittest.TestCase):
+    """`python3 -m jsa` only works inside the repository, which is the whole
+    reason `jsa install` writes a command onto PATH."""
+
+    def test_shim_runs_the_module_with_the_repo_importable(self):
+        from jsa.install import SHIM
+
+        script = SHIM.format(repo="/somewhere/job-search-agent", python="/usr/bin/python3")
+        self.assertIn('PYTHONPATH="/somewhere/job-search-agent', script)
+        self.assertIn('exec "/usr/bin/python3" -m jsa "$@"', script)
+        self.assertTrue(script.startswith("#!/bin/bash"))
+
+    def test_it_prefers_the_first_writable_directory(self):
+        from jsa import install as inst
+
+        with TemporaryDirectory() as tmp:
+            first, second = Path(tmp) / "a", Path(tmp) / "b"
+            second.mkdir(parents=True)
+            original = inst.SHIM_DIRS
+            try:
+                inst.SHIM_DIRS = [first, second]      # `first` does not exist
+                self.assertEqual(inst.shim_path(), second / "jsa")
+                first.mkdir()
+                self.assertEqual(inst.shim_path(), first / "jsa")
+            finally:
+                inst.SHIM_DIRS = original
+
+    def test_an_existing_command_is_reused_rather_than_duplicated(self):
+        from jsa import install as inst
+
+        with TemporaryDirectory() as tmp:
+            first, second = Path(tmp) / "a", Path(tmp) / "b"
+            first.mkdir(); second.mkdir()
+            (second / "jsa").write_text("#!/bin/bash\n")
+            original = inst.SHIM_DIRS
+            try:
+                inst.SHIM_DIRS = [first, second]
+                self.assertEqual(inst.shim_path(), second / "jsa")
+            finally:
+                inst.SHIM_DIRS = original
