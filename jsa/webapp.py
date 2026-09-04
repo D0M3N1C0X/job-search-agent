@@ -120,6 +120,35 @@ tbody tr.sel td{background:var(--accent-soft)}
 .nowrap{white-space:nowrap;color:var(--ink-3);font-size:12px;font-variant-numeric:tabular-nums}
 .notedot{color:var(--accent);font-size:11px}
 
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:18px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;position:relative}
+.step b{display:block;font-size:13px;margin-bottom:3px}
+.step span{color:var(--ink-2);font-size:12.5px;line-height:1.5}
+.step i{position:absolute;top:14px;right:15px;font-style:normal;font-size:11px;font-weight:700;
+  color:var(--ink-3);background:var(--panel-2);border:1px solid var(--line);border-radius:50%;
+  width:20px;height:20px;display:grid;place-items:center}
+.lead{display:flex;align-items:baseline;gap:10px;margin:0 0 14px;flex-wrap:wrap}
+.lead h2{margin:0;font-size:19px;letter-spacing:-.02em}
+.lead span{color:var(--ink-2);font-size:13px}
+.deck{display:grid;gap:12px;margin-bottom:20px}
+.pick{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:18px 20px;display:grid;grid-template-columns:auto 1fr;gap:16px;
+  transition:opacity .2s ease,transform .2s ease}
+.pick.gone{opacity:0;transform:translateX(24px)}
+.pick .big{font-size:26px;font-weight:700;letter-spacing:-.03em;width:58px;height:58px;border-radius:14px;
+  display:grid;place-items:center;font-variant-numeric:tabular-nums}
+.pick h3{margin:0;font-size:16px;letter-spacing:-.01em;line-height:1.3}
+.pick .where{color:var(--ink-2);font-size:13px;margin:3px 0 9px}
+.pick .why{font-size:13.5px;line-height:1.6;margin:0 0 4px}
+.pick .gap{font-size:12.5px;color:var(--ink-2);margin:0 0 12px}
+.pick .gap b{color:var(--review);font-weight:600}
+.pick .acts{display:flex;gap:8px;flex-wrap:wrap}
+.done{background:var(--panel);border:1px dashed var(--line);border-radius:var(--radius);
+  padding:34px 20px;text-align:center;color:var(--ink-2)}
+.done b{display:block;font-size:15px;color:var(--ink);margin-bottom:5px}
+.dismiss{position:absolute;top:8px;right:8px;background:none;border:0;color:var(--ink-3);font-size:16px;
+  line-height:1;padding:4px 7px;border-radius:6px}
+.dismiss:hover{background:var(--panel-2);color:var(--ink)}
 .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;align-items:start}
 .col{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px}
 .col h3{margin:0 0 10px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);
@@ -193,8 +222,12 @@ const DIMS = ['title','skills','domain','location','seniority'];
 let sortKey = 'score', sortAsc = false, selected = null;
 
 /* ---------------------------------------------------------------- theme */
+/* ?theme=light|dark forces the palette for this load — handy for a shared
+   link or a screenshot; otherwise the stored choice, otherwise the system. */
+const urlTheme = new URLSearchParams(location.search).get('theme');
 const savedTheme = (() => { try { return localStorage.getItem('jsa-theme'); } catch { return null; } })();
-if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+const startTheme = ['light', 'dark'].includes(urlTheme) ? urlTheme : savedTheme;
+if (startTheme) document.documentElement.dataset.theme = startTheme;
 $('#theme').onclick = () => {
   const dark = getComputedStyle(document.body).backgroundColor.match(/\d+/g)[0] < 60;
   const next = dark ? 'light' : 'dark';
@@ -207,7 +240,125 @@ document.querySelectorAll('.tab').forEach(tab => tab.onclick = () => {
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t === tab));
   document.querySelectorAll('[data-view]').forEach(v => v.hidden = v.dataset.view !== tab.dataset.target);
   if (tab.dataset.target === 'pipeline') renderBoard();
+  if (tab.dataset.target === 'today') renderToday();
 });
+
+/* ------------------------------------------------------------ start here */
+const TOP_N = 6;
+
+/* Turn a score breakdown into something a person can act on in three seconds.
+   The bars are fine once you know the model; this is for the moment you open
+   the page. Short sentences, concrete nouns, the honest catch last. */
+function plainReason(j) {
+  const b = j.breakdown || {}, t = b.title, sk = b.skills, dm = b.domain, lo = b.location, se = b.seniority;
+  const city = (j.location || '').split(',')[0].trim();
+  const parts = [], gaps = [];
+
+  /* Lead with title and place — the two things that decide whether you read on. */
+  const titleFit = !t ? '' : t.points >= t.max ? 'exact' : t.points >= t.max * 0.6 ? 'close' : '';
+  const place = lo && lo.why === 'remote' ? 'and it is remote'
+    : lo && lo.why === 'preferred city' && city ? `in ${city}` : city ? `in ${city}` : '';
+  if (titleFit === 'exact') parts.push(`Your job title, ${place || 'as written'}.`);
+  else if (titleFit === 'close') parts.push(`Near-neighbour of your title, ${place || 'by the description'}.`);
+  else parts.push(`Not your title, but the body of the posting matches${place ? ' — ' + place : ''}.`);
+
+  /* Then the concrete overlap, named. */
+  const skills = [...((sk && sk.must_have) || []), ...((sk && sk.nice_to_have) || [])];
+  if (skills.length >= 3) {
+    const shown = skills.slice(0, 4).join(', ');
+    parts.push(`Asks for ${shown}${skills.length > 4 ? ` and ${skills.length - 4} more` : ''} — work you do now.`);
+  } else if (skills.length) {
+    parts.push(`Overlaps on ${skills.join(' and ')}.`);
+  } else {
+    parts.push('Thin overlap with your skills — read it before committing an hour.');
+  }
+
+  if (dm && dm.points >= dm.max && sk && sk.points >= sk.max * 0.7)
+    parts.push('Squarely an HR role, not a data job with an HR word in it.');
+
+  /* The catch, if there is one. */
+  if (se && se.years_required > (se.years_profile || 0) + 1)
+    gaps.push(`wants around ${se.years_required} years against your ${se.years_profile}`);
+  if (se && ['senior', 'head'].includes(se.detected)) gaps.push(`written for a ${se.detected} hire`);
+  if (b.penalties) gaps.push(`mentions ${(b.penalties.matched || []).slice(0, 2).join(' and ')}`);
+  if (j.verdict === 'review') gaps.push('scored as borderline, not a clear match');
+
+  return {why: parts.join(' '), gaps};
+}
+
+function renderToday() {
+  const pool = DATA.jobs
+    .filter(j => j.verdict !== 'reject' && !j.status && !j.closed)
+    .sort((a, b) => b.score - a.score);
+  const picks = pool.slice(0, TOP_N);
+
+  $('#todayhead').textContent = picks.length
+    ? `${picks.length} role${picks.length > 1 ? 's' : ''} worth your next hour`
+    : 'Nothing waiting';
+  $('#todaysub').textContent = picks.length
+    ? `out of ${pool.length} untouched · strongest first`
+    : 'Everything scored has been triaged. Run the pipeline for new postings.';
+
+  if (!picks.length) {
+    $('#deck').innerHTML = `<div class="done"><b>Inbox zero.</b>
+      ${DATA.interactive ? 'Press <b>Run pipeline</b> above to look for new roles.'
+                         : 'Run <code>python3 -m jsa run</code> to look for new roles.'}</div>`;
+    return;
+  }
+
+  $('#deck').innerHTML = picks.map(j => {
+    const r = plainReason(j);
+    return `<article class="pick" data-id="${j.id}">
+      <div class="big c-${j.verdict}">${j.score}</div>
+      <div>
+        <h3>${esc(j.title)}</h3>
+        <div class="where">${esc(j.company)} · ${esc(j.location || 'location not stated')}${
+          j.remote !== 'unknown' ? ' · ' + esc(j.remote) : ''}</div>
+        <p class="why">${esc(r.why)}</p>
+        ${r.gaps.length ? `<p class="gap"><b>The catch:</b> ${esc(r.gaps.join('; '))}.</p>` : ''}
+        <div class="acts">
+          <a class="btn pri" href="${esc(j.url)}" target="_blank" rel="noopener">Read the posting</a>
+          ${DATA.interactive ? `<button class="btn" data-act="shortlisted">Keep it</button>
+                                <button class="btn" data-act="withdrawn">Not for me</button>` : ''}
+          <button class="btn" data-act="detail">Why this score</button>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+
+  $('#deck').querySelectorAll('.pick').forEach(card => {
+    card.querySelectorAll('[data-act]').forEach(btn => btn.onclick = async () => {
+      const id = card.dataset.id;
+      if (btn.dataset.act === 'detail') return openJob(id);
+      const job = DATA.jobs.find(x => x.id === id);
+      card.classList.add('gone');
+      try {
+        const res = await fetch('api/job/' + id, {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({status: btn.dataset.act}),
+        });
+        if (!res.ok) throw new Error(await res.text());
+        Object.assign(job, await res.json());
+        toast(btn.dataset.act === 'shortlisted'
+          ? 'Kept — it is in the Pipeline tab now'
+          : 'Dismissed');
+      } catch (err) {
+        card.classList.remove('gone');
+        toast('Not saved: ' + err.message);
+        return;
+      }
+      setTimeout(() => { renderToday(); renderTable(); }, 200);
+    });
+  });
+}
+
+try {
+  if (localStorage.getItem('jsa-steps') === 'hidden') $('#steps').hidden = true;
+} catch {}
+$('#hidesteps').onclick = () => {
+  $('#steps').hidden = true;
+  try { localStorage.setItem('jsa-steps', 'hidden'); } catch {}
+};
 
 /* -------------------------------------------------------------- filters */
 function visible() {
@@ -409,6 +560,7 @@ function toast(msg) {
 }
 
 renderTable();
+renderToday();
 """
 
 
@@ -472,12 +624,27 @@ def render_page(data: dict[str, Any], charts: dict[str, str]) -> str:
   <div class="kpis">{kpi_html}</div>
 
   <div class="tabs" role="tablist">
-    <button class="tab" role="tab" aria-selected="true" data-target="shortlist">Shortlist</button>
+    <button class="tab" role="tab" aria-selected="true" data-target="today">Start here</button>
+    <button class="tab" role="tab" aria-selected="false" data-target="shortlist">All postings</button>
     <button class="tab" role="tab" aria-selected="false" data-target="pipeline">Pipeline</button>
     <button class="tab" role="tab" aria-selected="false" data-target="insights">Insights</button>
   </div>
 
-  <section data-view="shortlist">
+  <section data-view="today">
+    <div class="steps" id="steps">
+      <button class="dismiss" id="hidesteps" title="Hide this">&times;</button>
+      <div class="step"><i>1</i><b>Triage</b><span>Read the cards below. Keep the ones worth an
+        hour, dismiss the rest. That is the whole job of this screen.</span></div>
+      <div class="step"><i>2</i><b>Prepare</b><span>For anything you keep, ask Claude Code:
+        <code>/apply &lt;id&gt;</code>. It writes the CV and letter and builds the packet.</span></div>
+      <div class="step"><i>3</i><b>Send, then log it</b><span>You press send. Then mark it
+        submitted here, so the Pipeline tab can tell you what actually works.</span></div>
+    </div>
+    <div class="lead"><h2 id="todayhead"></h2><span id="todaysub"></span></div>
+    <div class="deck" id="deck"></div>
+  </section>
+
+  <section data-view="shortlist" hidden>
     <div class="filters">
       <select id="fTrack">{_options(tracks, "All tracks")}</select>
       <select id="fVerdict"><option value="">All verdicts</option><option value="pass">pass</option>

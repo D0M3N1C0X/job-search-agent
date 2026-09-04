@@ -568,6 +568,78 @@ def cmd_serve(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_demo(args: argparse.Namespace) -> int:
+    """Build a synthetic workspace and open the dashboard on it."""
+    from .demo import DEMO_HOME, build
+    from .serve import serve
+
+    print("Building a demo workspace on invented data — nothing is fetched.")
+    cfg = build(count=args.count)
+    store = Store(cfg.db_path)
+    counts = store.counts()
+    cleared = len(store.best_scores(min_score=0, limit=999))
+    store.close()
+    print(f"{counts['jobs']} synthetic postings · {cleared} cleared the gates · "
+          f"{counts['applications']} walked into the tracker")
+    print(f"Workspace: {DEMO_HOME}  (delete it, or run `jsa demo` again to rebuild)\n")
+    if args.no_serve:
+        print(f"Open it with: JSA_HOME={DEMO_HOME} python3 -m jsa serve")
+        return 0
+    serve(cfg, port=args.port, open_browser=not args.no_browser)
+    return 0
+
+
+def cmd_install(args: argparse.Namespace) -> int:
+    """Put the dashboard in the Dock so it never needs a terminal again."""
+    from .install import APP_PATH, install
+
+    made = install(port=args.port, at_login=args.login)
+    print(f"Installed {colour(str(APP_PATH), BOLD)}")
+    print("\nOpen it from Spotlight (⌘-Space, \"Job Pipeline\"), or drag it to your Dock.")
+    print("It starts the server if it is not already running, then opens the dashboard.")
+    if args.login:
+        print("\nThe server will also start automatically when you log in.")
+    else:
+        print("\nAdd `--login` if you want the server always running in the background.")
+    print(f"\nRemove everything with: python3 -m jsa uninstall")
+    for path in made:
+        log.debug("wrote %s", path)
+    return 0
+
+
+def cmd_uninstall(args: argparse.Namespace) -> int:
+    from .install import uninstall
+
+    removed = uninstall()
+    if not removed:
+        print("Nothing was installed.")
+        return 0
+    for path in removed:
+        print(f"Removed {path}")
+    return 0
+
+
+def cmd_where(args: argparse.Namespace) -> int:
+    """Say plainly where things are and whether the dashboard is up."""
+    from .install import APP_PATH, status
+
+    cfg = config.load(args.home)
+    state = status(args.port)
+    url = f"http://127.0.0.1:{state['port']}/"
+    print(f"{colour('Dashboard', BOLD)}")
+    print(f"  address        {url}")
+    print(f"  server         {colour('running', GREEN) if state['server_running'] else colour('not running', YELLOW)}")
+    print(f"  app installed  {'yes — ' + str(APP_PATH) if state['app'] else 'no (run `jsa install`)'}")
+    print(f"  starts at login{'  yes' if state['login_agent'] else '  no'}")
+    print(f"\n{colour('Files', BOLD)}")
+    print(f"  profile        {cfg.home}")
+    print(f"  database       {cfg.db_path}")
+    print(f"  documents      {cfg.output_dir}")
+    if not state["server_running"]:
+        print(f"\nStart it with: python3 -m jsa serve")
+    return 0
+
+
 def cmd_export(args: argparse.Namespace) -> int:
     cfg = config.load(args.home)
     store = Store(cfg.db_path)
@@ -614,6 +686,25 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--host", default="127.0.0.1")
     p.add_argument("--no-browser", action="store_true")
     p.set_defaults(func=cmd_serve)
+
+    p = sub.add_parser("demo", help="see it working on synthetic data, without fetching anything")
+    p.add_argument("--count", type=int, default=90, help="how many synthetic postings to generate")
+    p.add_argument("--port", type=int, default=8766)
+    p.add_argument("--no-browser", action="store_true")
+    p.add_argument("--no-serve", action="store_true", help="build the workspace and stop")
+    p.set_defaults(func=cmd_demo)
+
+    p = sub.add_parser("install", help="put the dashboard in the Dock as a macOS app")
+    p.add_argument("--port", type=int, default=8765)
+    p.add_argument("--login", action="store_true", help="also keep the server running from login")
+    p.set_defaults(func=cmd_install)
+
+    p = sub.add_parser("uninstall", help="remove the app and the login agent")
+    p.set_defaults(func=cmd_uninstall)
+
+    p = sub.add_parser("where", help="where everything lives and whether the dashboard is up")
+    p.add_argument("--port", type=int, default=8765)
+    p.set_defaults(func=cmd_where)
 
     p = sub.add_parser("init", help="create a profile workspace from the example")
     p.add_argument("path", nargs="?")

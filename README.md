@@ -1,6 +1,6 @@
 # job-search-agent
 
-[![Run it](https://img.shields.io/badge/%E2%96%B6%20Run%20it-1f6feb?style=for-the-badge)](#two-buttons-no-terminal)
+[![Run it](https://img.shields.io/badge/%E2%96%B6%20Run%20it-1f6feb?style=for-the-badge)](#no-terminal)
 [![Open the dashboard](https://img.shields.io/badge/%E2%97%B1%20The%20dashboard-30363d?style=for-the-badge)](#the-dashboard)
 [![CI](https://github.com/D0M3N1C0X/job-search-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/D0M3N1C0X/job-search-agent/actions/workflows/ci.yml)
 
@@ -14,14 +14,34 @@ no LaTeX, no headless browser, no API keys.
 
 ```bash
 git clone https://github.com/D0M3N1C0X/job-search-agent && cd job-search-agent
+python3 -m jsa demo       # see it working on synthetic data — nothing is fetched
+```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/dashboard-dark.png">
+  <img alt="The dashboard: a triage deck of scored postings, each with a plain-language reason and the catch" src="docs/img/dashboard-light.png">
+</picture>
+
+Then point it at your own search:
+
+```bash
 python3 -m jsa run        # fetch, enrich, score, shortlist, dashboard — the whole loop
 python3 -m jsa serve      # the dashboard, editable: statuses and notes save to the database
+python3 -m jsa install    # macOS: put it in the Dock so it never needs a terminal again
 ```
 
 `run` is the command you actually use. Everything below it exists for when you
 want one piece on its own.
 
-### Two buttons, no terminal
+### No terminal
+
+`python3 -m jsa install` builds a real macOS application in `~/Applications`:
+click it and the dashboard opens, starting the local server first if it is not
+already up. Add `--login` to keep the server running from login, or
+`python3 -m jsa uninstall` to remove all of it. `python3 -m jsa where` says
+what is installed and whether the dashboard is reachable.
+
+### Two launchers, if you prefer files
 
 If you would rather not type anything, the repository ships two launchers.
 Double-click them in Finder:
@@ -86,6 +106,11 @@ reply, where good postings actually come from.
 All of it in one command: `jsa run` (add `--serve` to open the dashboard when it finishes).
 
 ### The dashboard
+
+It opens on **Start here**: the handful of postings worth your next hour, each
+with a plain-language reason it scored what it did, the catch stated honestly,
+and three buttons — read it, keep it, dismiss it. Triage first; the full table,
+the pipeline board and the funnel charts are one tab away.
 
 Two modes, one page. `jsa dashboard` exports a static file you can archive or
 send; `jsa serve` runs the same page on `127.0.0.1` so it can also write back.

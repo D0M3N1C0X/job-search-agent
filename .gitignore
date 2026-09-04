@@ -3,6 +3,7 @@
 !/profile.example/
 
 # Runtime artefacts
+/.demo/
 *.db
 *.db-journal
 .cache/
