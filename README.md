@@ -192,6 +192,7 @@ inside them is parsed for content and never executed or followed.
 ```bash
 git clone https://github.com/D0M3N1C0X/job-search-agent
 cd job-search-agent
+python3 -m jsa install      # from here on, `jsa` works from any directory
 jsa init                    # copies the demo profile into ./profile
 $EDITOR profile/profile.json           # your experience, skills, preferences, gates
 $EDITOR profile/tracks.json            # how you want to be read
