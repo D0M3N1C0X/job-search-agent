@@ -6,6 +6,8 @@
 /.demo/
 *.db
 *.db-journal
+*.db-wal
+*.db-shm
 .cache/
 output/
 inbox/

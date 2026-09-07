@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import functools
 import json
 import shutil
 import sys
@@ -21,6 +22,26 @@ from .store import Store
 from .util import FetchError, days_between, log, read_json, setup_logging, today, write_json
 
 GREEN, YELLOW, RED, DIM, BOLD, OFF = "\033[32m", "\033[33m", "\033[31m", "\033[2m", "\033[1m", "\033[0m"
+
+
+def with_workspace(fn):
+    """Open the workspace for a command, and close it however the command ends.
+
+    Commands return early all over the place — no such job, nothing above the
+    threshold, a bad status — and every one of those paths used to leak the
+    SQLite handle with whatever transaction was open on it. A decorator closes
+    it on the way out, including when an exception is on its way up.
+    """
+    @functools.wraps(fn)
+    def wrapper(args: argparse.Namespace) -> int:
+        cfg = config.load(args.home)
+        store = Store(cfg.db_path)
+        try:
+            return fn(args, cfg, store)
+        finally:
+            store.close()
+
+    return wrapper
 
 
 def colour(text: str, code: str) -> str:
@@ -103,12 +124,12 @@ def warn_about(cfg: config.Config) -> None:
         print(colour(f"note: {warning}", YELLOW))
 
 
-def cmd_fetch(args: argparse.Namespace) -> int:
-    cfg = config.load(args.home)
+@with_workspace
+def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
+              store: Store) -> int:
     warn_about(cfg)
     if cfg.demo:
         print(colour("Running on the bundled demo profile — `jsa init` to use your own.", YELLOW))
-    store = Store(cfg.db_path)
     wanted = args.source
     totals = {"new": 0, "seen": 0, "failed": 0}
 
@@ -173,13 +194,12 @@ def cmd_fetch(args: argparse.Namespace) -> int:
     print(f"{colour(str(totals['new']), BOLD)} new · {totals['seen']} already known · {failed}")
     if totals["new"]:
         print("Next: `python3 -m jsa score` then `python3 -m jsa top`")
-    store.close()
     return 0
 
 
-def cmd_score(args: argparse.Namespace) -> int:
-    cfg = config.load(args.home)
-    store = Store(cfg.db_path)
+@with_workspace
+def cmd_score(args: argparse.Namespace, cfg: config.Config,
+              store: Store) -> int:
     jobs = store.jobs() if args.rescore else [
         j for j in store.jobs() if not store.db.execute(
             "SELECT 1 FROM scores WHERE job_id = ?", (j.id,)).fetchone()
@@ -197,19 +217,18 @@ def cmd_score(args: argparse.Namespace) -> int:
           f"{colour(str(verdicts['pass']) + ' pass', GREEN)} · "
           f"{colour(str(verdicts['review']) + ' review', YELLOW)} · "
           f"{verdicts['reject']} reject")
-    store.close()
     return 0
 
 
-def cmd_reindex(args: argparse.Namespace) -> int:
+@with_workspace
+def cmd_reindex(args: argparse.Namespace, cfg: config.Config,
+                store: Store) -> int:
     """Recompute derived fields on stored jobs.
 
     Country and remote-ness are inferred from free-text locations. When that
     table improves, jobs already in the database should benefit too — otherwise
     a gate fixed today only applies to postings found tomorrow.
     """
-    cfg = config.load(args.home)
-    store = Store(cfg.db_path)
     changed = 0
     for job in store.jobs():
         country = ats_sources.guess_country(job.location)
@@ -222,11 +241,12 @@ def cmd_reindex(args: argparse.Namespace) -> int:
             changed += 1
     store.commit()
     print(f"Updated location fields on {changed} job(s). Run `jsa score --rescore` next.")
-    store.close()
     return 0
 
 
-def cmd_enrich(args: argparse.Namespace) -> int:
+@with_workspace
+def cmd_enrich(args: argparse.Namespace, cfg: config.Config,
+               store: Store) -> int:
     """Fetch full descriptions for postings worth reading.
 
     Some boards list roles without bodies. Rather than pulling hundreds of
@@ -234,8 +254,6 @@ def cmd_enrich(args: argparse.Namespace) -> int:
     alone; only the plausible ones get a second request, and are then rescored
     on the full text.
     """
-    cfg = config.load(args.home)
-    store = Store(cfg.db_path)
     candidates = [j for j in store.jobs() if not j.description and not j.closed_at]
     ranked = sorted(
         ((score_all(j, cfg.profile, cfg.tracks)[0].score, j) for j in candidates),
@@ -267,13 +285,12 @@ def cmd_enrich(args: argparse.Namespace) -> int:
             store.save_score(score)
         filled += 1
     print(f"Filled {filled} description(s) and rescored them.")
-    store.close()
     return 0
 
 
-def cmd_top(args: argparse.Namespace) -> int:
-    cfg = config.load(args.home)
-    store = Store(cfg.db_path)
+@with_workspace
+def cmd_top(args: argparse.Namespace, cfg: config.Config,
+            store: Store) -> int:
     rows = store.best_scores(
         min_score=args.min_score, track=args.track, limit=args.limit,
         include_closed=args.include_closed, include_applied=not args.new_only,
@@ -296,13 +313,12 @@ def cmd_top(args: argparse.Namespace) -> int:
         )
     hidden = "" if args.include_rejected else " Rejected jobs hidden (--include-rejected to see them)."
     print(f"\n{len(rows)} shown.{hidden} `jsa show <ID>` for the full breakdown.")
-    store.close()
     return 0
 
 
-def cmd_show(args: argparse.Namespace) -> int:
-    cfg = config.load(args.home)
-    store = Store(cfg.db_path)
+@with_workspace
+def cmd_show(args: argparse.Namespace, cfg: config.Config,
+             store: Store) -> int:
     job = store.get_job(args.job_id)
     if job is None:
         print(f"No job matching {args.job_id!r}")
@@ -323,14 +339,13 @@ def cmd_show(args: argparse.Namespace) -> int:
     if args.description:
         print("\n" + "-" * 70)
         print(job.description[:args.description])
-    store.close()
     return 0
 
 
-def cmd_add(args: argparse.Namespace) -> int:
+@with_workspace
+def cmd_add(args: argparse.Namespace, cfg: config.Config,
+            store: Store) -> int:
     """Manually add a posting — the always-works fallback."""
-    cfg = config.load(args.home)
-    store = Store(cfg.db_path)
     description = args.text or ""
     if args.file:
         description = Path(args.file).read_text(encoding="utf-8")
@@ -343,18 +358,17 @@ def cmd_add(args: argparse.Namespace) -> int:
         store.save_score(score)
     print(f"{state}: {job.id[:8]}  {job.title} @ {job.company}")
     print(explain(score_all(job, cfg.profile, cfg.tracks)[0]))
-    store.close()
     return 0
 
 
-def cmd_brief(args: argparse.Namespace) -> int:
+@with_workspace
+def cmd_brief(args: argparse.Namespace, cfg: config.Config,
+              store: Store) -> int:
     """Everything needed to tailor an application, as JSON on stdout.
 
     This is the hand-off point between the deterministic engine and the model:
     the engine decides *which* job and *why*, the model writes the words.
     """
-    cfg = config.load(args.home)
-    store = Store(cfg.db_path)
     job = store.get_job(args.job_id)
     if job is None:
         print(f"No job matching {args.job_id!r}", file=sys.stderr)
@@ -389,13 +403,12 @@ def cmd_brief(args: argparse.Namespace) -> int:
         print(f"Brief written to {args.out}")
     else:
         print(output)
-    store.close()
     return 0
 
 
-def cmd_docs(args: argparse.Namespace) -> int:
-    cfg = config.load(args.home)
-    store = Store(cfg.db_path)
+@with_workspace
+def cmd_docs(args: argparse.Namespace, cfg: config.Config,
+             store: Store) -> int:
     job = store.get_job(args.job_id)
     if job is None:
         print(f"No job matching {args.job_id!r}")
@@ -437,13 +450,12 @@ def cmd_docs(args: argparse.Namespace) -> int:
         job.id, "drafted", track=track_id,
         cv_path=str(cv_path), cover_path=str(cover_path) if cover_path else None,
     )
-    store.close()
     return 0
 
 
-def cmd_status(args: argparse.Namespace) -> int:
-    cfg = config.load(args.home)
-    store = Store(cfg.db_path)
+@with_workspace
+def cmd_status(args: argparse.Namespace, cfg: config.Config,
+               store: Store) -> int:
     job = store.get_job(args.job_id)
     if job is None:
         print(f"No job matching {args.job_id!r}")
@@ -462,17 +474,16 @@ def cmd_status(args: argparse.Namespace) -> int:
     print(f"{job.company} — {job.title}: {colour(args.status, BOLD)}")
     if follow_up:
         print(f"Follow up {follow_up} (`jsa due` will remind you).")
-    store.close()
     return 0
 
 
-def cmd_due(args: argparse.Namespace) -> int:
+@with_workspace
+def cmd_due(args: argparse.Namespace, cfg: config.Config,
+            store: Store) -> int:
     """What needs a nudge today — the discipline layer."""
-    cfg = config.load(args.home)
     prefs = cfg.profile.get("preferences", {})
     follow_up_days = prefs.get("follow_up_days", 10)
     ghost_days = prefs.get("ghost_after_days", 28)
-    store = Store(cfg.db_path)
     rows = store.applications(open_only=True)
     overdue, waiting = [], []
     for row in rows:
@@ -494,7 +505,6 @@ def cmd_due(args: argparse.Namespace) -> int:
     if not overdue and not waiting:
         print("Nothing in the tracker yet. `jsa top` to pick something, "
               "then `jsa status <id> shortlisted`.")
-        store.close()
         return 0
     by_age = lambda item: item[0]  # noqa: E731
     for age, row, why in sorted(overdue, key=by_age, reverse=True):
@@ -503,15 +513,14 @@ def cmd_due(args: argparse.Namespace) -> int:
         print(f"  {row['company'][:24]:<26}{row['title'][:38]:<40}{colour(why, DIM)}")
     if not overdue:
         print(f"\n{len(waiting)} open, nothing overdue.")
-    store.close()
     return 0
 
 
-def cmd_stats(args: argparse.Namespace) -> int:
+@with_workspace
+def cmd_stats(args: argparse.Namespace, cfg: config.Config,
+              store: Store) -> int:
     from .dashboard import funnel_stats
 
-    cfg = config.load(args.home)
-    store = Store(cfg.db_path)
     counts = store.counts()
     stats = funnel_stats(store)
     print(f"{colour('Pipeline', BOLD)}")
@@ -529,19 +538,17 @@ def cmd_stats(args: argparse.Namespace) -> int:
         print(f"  median reply    {stats['median_response_days']} days")
     for track, data in sorted(stats["by_track"].items()):
         print(f"  {track:<16}{data['submitted']} sent · {data['responded']} replies")
-    store.close()
     return 0
 
 
-def cmd_dashboard(args: argparse.Namespace) -> int:
+@with_workspace
+def cmd_dashboard(args: argparse.Namespace, cfg: config.Config,
+                  store: Store) -> int:
     from .dashboard import build_dashboard
 
-    cfg = config.load(args.home)
-    store = Store(cfg.db_path)
     out = Path(args.out or (cfg.output_dir / "dashboard.html"))
     build_dashboard(store, cfg, out)
     print(f"Dashboard written to {out}")
-    store.close()
     return 0
 
 
@@ -570,11 +577,10 @@ def cmd_run(args: argparse.Namespace) -> int:
 
     cfg = config.load(args.home)
     out = cfg.output_dir / "dashboard.html"
-    store = Store(cfg.db_path)
     from .dashboard import build_dashboard
 
-    build_dashboard(store, cfg, out)
-    store.close()
+    with Store(cfg.db_path) as store:
+        build_dashboard(store, cfg, out)
     print(f"\nDashboard  {out}")
     if args.serve:
         from .serve import serve
@@ -602,10 +608,9 @@ def cmd_demo(args: argparse.Namespace) -> int:
 
     print("Building a demo workspace on invented data — nothing is fetched.")
     cfg = build(count=args.count)
-    store = Store(cfg.db_path)
-    counts = store.counts()
-    cleared = len(store.best_scores(min_score=0, limit=999))
-    store.close()
+    with Store(cfg.db_path) as store:
+        counts = store.counts()
+        cleared = len(store.best_scores(min_score=0, limit=999))
     print(f"{counts['jobs']} synthetic postings · {cleared} cleared the gates · "
           f"{counts['applications']} walked into the tracker")
     print(f"Workspace: {DEMO_HOME}  (delete it, or run `jsa demo` again to rebuild)\n")
@@ -696,9 +701,9 @@ def cmd_where(args: argparse.Namespace) -> int:
     return 0
 
 
-def cmd_export(args: argparse.Namespace) -> int:
-    cfg = config.load(args.home)
-    store = Store(cfg.db_path)
+@with_workspace
+def cmd_export(args: argparse.Namespace, cfg: config.Config,
+               store: Store) -> int:
     rows = store.applications()
     out = Path(args.out or (cfg.output_dir / "applications.csv"))
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -709,7 +714,6 @@ def cmd_export(args: argparse.Namespace) -> int:
         writer.writeheader()
         writer.writerows(rows)
     print(f"{len(rows)} applications → {out}")
-    store.close()
     return 0
 
 

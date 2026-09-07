@@ -186,3 +186,48 @@ class TestWindowsShim(unittest.TestCase):
         self.assertIn("if errorlevel 1", script)         # only then start it
         self.assertIn("-m jsa serve --port 8765", script)
         self.assertIn('start "" "%URL%"', script)        # and always open the browser
+
+
+class TestEveryCommandRuns(CliCase):
+    """Run every read-only command for real.
+
+    A refactor once removed the two setup lines from `cmd_export` without
+    giving it the decorator that replaced them, and nothing noticed until the
+    command was typed by hand. Reading the code cannot catch that; running it
+    can.
+    """
+
+    READ_ONLY = [
+        ("stats", {}),
+        ("due", {}),
+        ("top", dict(min_score=0, track=None, limit=5, new_only=False,
+                     include_closed=False, include_rejected=False)),
+        ("export", dict(out=None)),
+        ("dashboard", dict(out=None)),
+        ("score", dict(rescore=False)),
+        ("reindex", {}),
+        ("enrich", dict(min_score=99, limit=0)),
+        ("where", dict(port=8765)),
+    ]
+
+    def test_each_one_completes_without_raising(self):
+        self.seed(2)
+        for name, extra in self.READ_ONLY:
+            with self.subTest(command=name):
+                self.run_cmd(getattr(cli, f"cmd_{name}"), **extra)
+
+    def test_they_work_on_an_empty_workspace_too(self):
+        for name, extra in self.READ_ONLY:
+            with self.subTest(command=name):
+                self.run_cmd(getattr(cli, f"cmd_{name}"), **extra)
+
+    def test_every_subcommand_is_wired_to_a_callable(self):
+        parser = cli.build_parser()
+        actions = [a for a in parser._actions if hasattr(a, "choices") and a.choices]
+        names = [n for a in actions for n in a.choices]
+        self.assertIn("run", names)
+        self.assertGreaterEqual(len(names), 20)
+        for name in names:
+            with self.subTest(command=name):
+                self.assertTrue(callable(actions[0].choices[name].get_default("func")),
+                                f"`jsa {name}` has no function behind it")

@@ -38,8 +38,8 @@ ANSWERS = [
     "Stakeholder management, Process improvement",
     # tracks: hr_advisory and people_analytics
     "1,2",
-    # preferences
-    "Amsterdam, Remote", "Netherlands, Germany", "2", "1",  # cities, countries, seniority=mid, gate=German
+    # preferences: cities, "specific countries", the names, seniority=mid, gate=German
+    "Amsterdam, Remote", "2", "Netherlands, Germany", "2", "1",
     "y", "y",                                                # relocate, remote
     # answers
     "EU Citizen", "Open to remote", "1 month", "60000 EUR", "October", "B",
@@ -49,8 +49,20 @@ ANSWERS = [
 
 
 def scripted():
+    """Feed the answers in order, and fail loudly when the flow asks for more.
+
+    Returning "" forever means a required question re-asks forever and the test
+    hangs instead of failing — which is exactly what happened when the wizard
+    grew a question.
+    """
     queue = list(ANSWERS)
-    return lambda prompt="": queue.pop(0) if queue else ""
+
+    def answer(prompt=""):
+        if not queue:
+            raise AssertionError(f"the wizard asked more than the script covers: {prompt!r}")
+        return queue.pop(0)
+
+    return answer
 
 
 class TestWizard(unittest.TestCase):

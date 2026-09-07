@@ -12,6 +12,7 @@ Each provider function takes the company's board handle and returns Jobs.
 from __future__ import annotations
 
 import re
+import unicodedata
 import xml.etree.ElementTree as ET
 from typing import Any, Callable
 
@@ -30,69 +31,170 @@ def provider(name: str) -> Callable[[Callable[..., list[Job]]], Callable[..., li
 
 # --------------------------------------------------------------- helpers
 
-_COUNTRY_HINTS = {
-    "poland": "PL", "polska": "PL", "krak": "PL", "warsaw": "PL", "warszawa": "PL",
-    "wroc": "PL", "gdansk": "PL", "poznan": "PL", "katowice": "PL", "lodz": "PL",
-    "italy": "IT", "italia": "IT", "milan": "IT", "milano": "IT", "rome": "IT",
-    "roma": "IT", "turin": "IT", "torino": "IT", "bologna": "IT", "naples": "IT",
-    "spain": "ES", "madrid": "ES", "barcelona": "ES",
-    "germany": "DE", "berlin": "DE", "munich": "DE", "münchen": "DE", "hamburg": "DE",
-    "frankfurt": "DE", "cologne": "DE",
-    "netherlands": "NL", "amsterdam": "NL", "utrecht": "NL", "rotterdam": "NL",
-    "belgium": "BE", "brussels": "BE", "bruxelles": "BE",
-    "ireland": "IE", "dublin": "IE",
-    "portugal": "PT", "lisbon": "PT", "lisboa": "PT", "porto": "PT",
-    "france": "FR", "paris": "FR", "lyon": "FR",
-    "luxembourg": "LU", "austria": "AT", "vienna": "AT", "wien": "AT",
-    "czech": "CZ", "prague": "CZ", "praha": "CZ",
-    "romania": "RO", "bucharest": "RO", "cluj": "RO",
-    "hungary": "HU", "budapest": "HU",
-    "bulgaria": "BG", "sofia": "BG",
-    "greece": "GR", "athens": "GR",
-    "sweden": "SE", "stockholm": "SE", "denmark": "DK", "copenhagen": "DK",
-    "finland": "FI", "helsinki": "FI", "norway": "NO", "oslo": "NO",
-    "switzerland": "CH", "zurich": "CH", "zürich": "CH", "geneva": "CH",
-    "united kingdom": "GB", "london": "GB", "manchester": "GB", "england": "GB",
-    "united states": "US", "usa": "US", "new york": "US",
-    # Countries outside the usual EU targets still need a code: an unrecognised
-    # location silently scores as "unknown" and slips past the location gate.
-    "azerbaijan": "AZ", "georgia": "GE", "armenia": "AM", "turkey": "TR", "türkiye": "TR",
-    "israel": "IL", "united arab emirates": "AE", "dubai": "AE", "saudi": "SA", "qatar": "QA",
-    "egypt": "EG", "morocco": "MA", "kenya": "KE", "nigeria": "NG", "south africa": "ZA",
-    "india": "IN", "bangalore": "IN", "singapore": "SG", "japan": "JP", "tokyo": "JP",
-    "china": "CN", "hong kong": "HK", "australia": "AU", "sydney": "AU", "new zealand": "NZ",
-    "brazil": "BR", "sao paulo": "BR", "mexico": "MX", "argentina": "AR", "chile": "CL",
-    "colombia": "CO", "canada": "CA", "toronto": "CA", "ukraine": "UA", "serbia": "RS",
-    "croatia": "HR", "slovenia": "SI", "slovakia": "SK", "bratislava": "SK", "estonia": "EE",
-    "tallinn": "EE", "latvia": "LV", "riga": "LV", "lithuania": "LT", "vilnius": "LT",
-    "cyprus": "CY", "malta": "MT", "iceland": "IS", "albania": "AL", "kosovo": "XK",
-    "bosnia": "BA", "north macedonia": "MK", "montenegro": "ME", "moldova": "MD",
-    "philippines": "PH", "manila": "PH", "makati": "PH", "indonesia": "ID", "jakarta": "ID",
-    "vietnam": "VN", "thailand": "TH", "bangkok": "TH", "malaysia": "MY", "kuala lumpur": "MY",
-    "south korea": "KR", "seoul": "KR", "taiwan": "TW", "taipei": "TW", "pakistan": "PK",
-    "hyderabad": "IN", "mumbai": "IN", "pune": "IN", "gurgaon": "IN", "chennai": "IN",
-    "chicago": "US", "san francisco": "US", "seattle": "US", "boston": "US", "austin": "US",
-    "denver": "US", "atlanta": "US", "los angeles": "US", "miami": "US", "washington": "US",
-    "framingham": "US", "santiago": "CL", "lima": "PE", "bogota": "CO", "buenos aires": "AR",
-    "montevideo": "UY", "cairo": "EG", "nairobi": "KE", "lagos": "NG", "johannesburg": "ZA",
-    "riyadh": "SA", "doha": "QA", "tel aviv": "IL", "istanbul": "TR", "kyiv": "UA",
-    "almaty": "KZ", "kazakhstan": "KZ", "tashkent": "UZ", "baku": "AZ", "tbilisi": "GE",
-    "melbourne": "AU", "brisbane": "AU", "auckland": "NZ", "dhaka": "BD", "bangladesh": "BD",
-    "colombo": "LK", "toronto": "CA", "vancouver": "CA", "montreal": "CA",
-}
+_COUNTRY_HINTS: dict[str, str] = {}
+
+
+def _add(code: str, *names: str) -> None:
+    for name in names:
+        _COUNTRY_HINTS[name] = code
+
+
+# Europe, country by country: the country's own names plus the cities that
+# actually appear in job postings. A posting that says only "Ljubljana" has to
+# resolve, because the location gate cannot judge what it cannot place.
+_add("AT", "austria", "österreich", "osterreich", "vienna", "wien", "graz", "linz", "salzburg", "innsbruck")
+_add("BE", "belgium", "belgique", "belgië", "belgie", "brussels", "bruxelles", "brussel",
+     "antwerp", "antwerpen", "anvers", "ghent", "gent", "leuven", "liege", "liège", "charleroi", "bruges")
+_add("BG", "bulgaria", "sofia", "plovdiv", "varna", "burgas", "ruse")
+_add("HR", "croatia", "hrvatska", "zagreb", "split", "rijeka", "osijek", "zadar")
+_add("CY", "cyprus", "nicosia", "limassol", "larnaca", "paphos")
+_add("CZ", "czech", "czechia", "cesko", "prague", "praha", "brno", "ostrava", "plzen", "olomouc")
+_add("DK", "denmark", "danmark", "copenhagen", "kobenhavn", "københavn", "aarhus", "arhus",
+     "odense", "aalborg", "billund")
+_add("EE", "estonia", "eesti", "tallinn", "tartu", "parnu")
+_add("FI", "finland", "suomi", "helsinki", "espoo", "tampere", "turku", "oulu", "vantaa")
+_add("FR", "france", "paris", "lyon", "marseille", "toulouse", "bordeaux", "nantes", "lille",
+     "nice", "strasbourg", "montpellier", "rennes", "grenoble", "sophia antipolis", "cergy",
+     "boulogne billancourt", "neuilly", "massy", "montreuil", "creteil", "la defense")
+_add("DE", "germany", "deutschland", "berlin", "munich", "münchen", "munchen", "hamburg",
+     "frankfurt", "cologne", "köln", "koln", "stuttgart", "dusseldorf", "düsseldorf", "leipzig",
+     "dresden", "hannover", "nuremberg", "nürnberg", "nurnberg", "essen", "dortmund", "bremen",
+     "karlsruhe", "mannheim", "bonn", "münster", "munster", "heidelberg", "wolfsburg")
+_add("GR", "greece", "hellas", "athens", "athina", "thessaloniki", "patras", "heraklion")
+_add("HU", "hungary", "magyarorszag", "magyarország", "budapest", "debrecen", "szeged", "gyor")
+_add("IE", "ireland", "eire", "éire", "dublin", "cork", "galway", "limerick", "shannon")
+_add("IT", "italy", "italia", "rome", "roma", "milan", "milano", "turin", "torino", "naples",
+     "napoli", "bologna", "florence", "firenze", "venice", "venezia", "verona", "genoa", "genova",
+     "palermo", "bari", "catania", "padova", "padua", "trieste", "brescia", "modena", "parma",
+     "perugia", "gorizia", "bergamo", "vicenza")
+_add("LV", "latvia", "latvija", "riga", "rīga", "daugavpils")
+_add("LT", "lithuania", "lietuva", "vilnius", "kaunas", "klaipeda")
+_add("LU", "luxembourg", "luxemburg", "letzebuerg")
+_add("MT", "malta", "valletta", "sliema", "birkirkara")
+_add("NL", "netherlands", "nederland", "holland", "amsterdam", "rotterdam", "utrecht",
+     "eindhoven", "the hague", "den haag", "hague", "groningen", "tilburg", "almere",
+     "breda", "nijmegen", "haarlem", "arnhem", "amstelveen", "hoofddorp", "delft")
+_add("PL", "poland", "polska", "warsaw", "warszawa", "krakow", "kraków", "cracow", "wroclaw",
+     "wrocław", "gdansk", "gdańsk", "poznan", "poznań", "katowice", "lodz", "łódź", "lublin",
+     "szczecin", "bydgoszcz", "gdynia", "rzeszow", "bialystok", "torun", "gliwice", "sopot")
+_add("PT", "portugal", "lisbon", "lisboa", "porto", "oporto", "braga", "coimbra", "faro", "aveiro")
+_add("RO", "romania", "bucharest", "bucuresti", "bucurești", "cluj", "timisoara", "timișoara",
+     "iasi", "iași", "brasov", "brașov", "constanta", "sibiu")
+_add("SK", "slovakia", "slovensko", "bratislava", "kosice", "košice", "zilina")
+_add("SI", "slovenia", "slovenija", "ljubljana", "maribor", "celje")
+_add("ES", "spain", "españa", "espana", "madrid", "barcelona", "valencia", "seville", "sevilla",
+     "bilbao", "malaga", "málaga", "zaragoza", "murcia", "palma", "alicante", "granada",
+     "valladolid", "vigo", "san sebastian", "pozuelo", "las rozas", "a coruna", "la coruna")
+_add("SE", "sweden", "sverige", "stockholm", "gothenburg", "goteborg", "göteborg", "malmo",
+     "malmö", "uppsala", "lund", "linkoping", "vasteras", "solna", "sundbyberg")
+
+# EFTA and the rest of the continent.
+_add("CH", "switzerland", "schweiz", "suisse", "svizzera", "zurich", "zürich", "geneva", "geneve",
+     "genève", "basel", "bern", "berne", "lausanne", "lugano", "zug", "winterthur", "st gallen")
+_add("NO", "norway", "norge", "oslo", "bergen", "trondheim", "stavanger", "tromso")
+_add("IS", "iceland", "island", "reykjavik", "reykjavík")
+_add("LI", "liechtenstein", "vaduz", "schaan")
+_add("GB", "united kingdom", "great britain", "england", "scotland", "wales",
+     "northern ireland", "london", "manchester", "birmingham", "edinburgh", "glasgow", "bristol",
+     "leeds", "liverpool", "sheffield", "cambridge", "oxford", "reading", "belfast", "cardiff",
+     "newcastle", "nottingham", "brighton", "milton keynes", "derby", "colchester", "st albans")
+_add("RS", "serbia", "srbija", "belgrade", "beograd", "novi sad", "nis")
+_add("AL", "albania", "shqiperia", "tirana", "tirane", "durres")
+_add("BA", "bosnia", "herzegovina", "sarajevo", "banja luka", "mostar")
+_add("ME", "montenegro", "crna gora", "podgorica", "budva")
+_add("MK", "north macedonia", "macedonia", "skopje", "bitola")
+_add("XK", "kosovo", "pristina", "prishtina")
+_add("MD", "moldova", "chisinau", "chișinău")
+_add("UA", "ukraine", "kyiv", "kiev", "lviv", "odesa", "odessa", "kharkiv")
+_add("AD", "andorra")
+_add("MC", "monaco")
+_add("SM", "san marino")
+
+# Outside Europe: enough to place a posting so the location gate can reject it.
+_add("US", "united states", "usa", "u.s.", "new york", "chicago", "san francisco", "seattle",
+     "boston", "austin", "denver", "atlanta", "los angeles", "miami", "washington", "dallas",
+     "houston", "philadelphia", "phoenix", "san diego", "framingham", "mountain view")
+_add("CA", "canada", "toronto", "vancouver", "montreal", "ottawa", "calgary")
+_add("MX", "mexico", "mexico city", "guadalajara")
+_add("BR", "brazil", "brasil", "sao paulo", "são paulo", "rio de janeiro", "belo horizonte")
+_add("AR", "argentina", "buenos aires", "cordoba")
+_add("CL", "chile", "santiago")
+_add("CO", "colombia", "bogota", "bogotá", "medellin")
+_add("PE", "peru", "lima")
+_add("UY", "uruguay", "montevideo")
+_add("IN", "india", "bangalore", "bengaluru", "hyderabad", "mumbai", "pune", "gurgaon",
+     "gurugram", "chennai", "delhi", "noida")
+_add("SG", "singapore")
+_add("JP", "japan", "tokyo", "osaka", "kyoto")
+_add("CN", "china", "shanghai", "beijing", "shenzhen", "guangzhou")
+_add("HK", "hong kong")
+_add("TW", "taiwan", "taipei")
+_add("KR", "south korea", "seoul")
+_add("AU", "australia", "sydney", "melbourne", "brisbane", "perth", "adelaide")
+_add("NZ", "new zealand", "auckland", "wellington")
+_add("ZA", "south africa", "johannesburg", "cape town", "durban")
+_add("NG", "nigeria", "lagos", "abuja")
+_add("KE", "kenya", "nairobi")
+_add("EG", "egypt", "cairo", "maadi", "giza")
+_add("MA", "morocco", "casablanca", "rabat")
+_add("AE", "united arab emirates", "dubai", "abu dhabi")
+_add("SA", "saudi", "riyadh", "jeddah")
+_add("QA", "qatar", "doha")
+_add("IL", "israel", "tel aviv", "jerusalem")
+_add("TR", "turkey", "türkiye", "turkiye", "istanbul", "ankara", "izmir")
+_add("GE", "georgia", "tbilisi")
+_add("AM", "armenia", "yerevan")
+_add("AZ", "azerbaijan", "baku")
+_add("KZ", "kazakhstan", "almaty", "astana", "nur sultan")
+_add("UZ", "uzbekistan", "tashkent")
+_add("PK", "pakistan", "karachi", "lahore", "islamabad")
+_add("BD", "bangladesh", "dhaka")
+_add("LK", "sri lanka", "colombo")
+_add("PH", "philippines", "manila", "makati", "cebu")
+_add("ID", "indonesia", "jakarta")
+_add("VN", "vietnam", "hanoi", "ho chi minh")
+_add("TH", "thailand", "bangkok")
+_add("MY", "malaysia", "kuala lumpur", "bangsar", "penang")
 
 # ATS location strings often end in an ISO country code ("Remote, US",
 # "London, gb"). Only codes the table already knows are accepted, so an
 # Italian province abbreviation is not mistaken for a country.
-_ISO_CODES = {code for code in _COUNTRY_HINTS.values() if code}
+_ISO_CODES = set(_COUNTRY_HINTS.values())
 _ISO_SUFFIX = re.compile(r",\s*([A-Za-z]{2})\s*$")
 
 
+# Letters NFKD will not take apart, because they are letters in their own right
+# rather than a base plus a mark. Without these, "Łódź" folds to "odz".
+_LETTERS = str.maketrans({
+    "ł": "l", "Ł": "l", "ø": "o", "Ø": "o", "đ": "d", "Đ": "d", "ð": "d", "Ð": "d",
+    "þ": "th", "Þ": "th", "ß": "ss", "æ": "ae", "Æ": "ae", "œ": "oe", "Œ": "oe",
+    "ı": "i", "İ": "i",
+})
+
+
+def _fold(value: str) -> str:
+    """Lowercase, accents removed, punctuation reduced to single spaces."""
+    text = (value or "").translate(_LETTERS)
+    text = unicodedata.normalize("NFKD", text)
+    text = "".join(c for c in text if not unicodedata.combining(c)).lower()
+    return re.sub(r"[^a-z0-9]+", " ", text).strip()
+
+
+# Hints are folded once and matched on word boundaries, longest first.
+# Substring matching put "Limassol" in Peru, because "lima" is inside it.
+_FOLDED_HINTS = {_fold(name): code for name, code in _COUNTRY_HINTS.items()}
+_HINT_RE = re.compile(
+    r"(?<![a-z0-9])(" + "|".join(
+        re.escape(h) for h in sorted(_FOLDED_HINTS, key=len, reverse=True) if h
+    ) + r")(?![a-z0-9])"
+)
+
+
 def guess_country(location: str) -> str:
-    low = (location or "").lower()
-    for hint, code in _COUNTRY_HINTS.items():
-        if hint in low:
-            return code
+    """Best-effort ISO country code for a free-text location."""
+    match = _HINT_RE.search(_fold(location))
+    if match:
+        return _FOLDED_HINTS[match.group(1)]
     suffix = _ISO_SUFFIX.search(location or "")
     if suffix and suffix.group(1).upper() in _ISO_CODES:
         return suffix.group(1).upper()
@@ -212,7 +314,9 @@ def smartrecruiters(handle: str, company: str = "", *, details: bool = False, **
     base = f"https://api.smartrecruiters.com/v1/companies/{handle}/postings"
     jobs: list[Job] = []
     offset = 0
-    while True:
+    # A hard stop, in case a board reports a total it never reaches: paging
+    # forever against someone else's API is the rudest possible bug.
+    for _ in range(60):
         data = http_json(f"{base}?limit=100&offset={offset}", **opts)
         page = data.get("content", [])
         for j in page:

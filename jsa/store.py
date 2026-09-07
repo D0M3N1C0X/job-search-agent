@@ -91,6 +91,13 @@ class Store:
         self.db = sqlite3.connect(self.path)
         self.db.row_factory = sqlite3.Row
         self.db.execute("PRAGMA foreign_keys = ON")
+        # The dashboard server is often running while `jsa run` writes. In the
+        # default journal mode those block each other; write-ahead logging lets
+        # readers carry on through a write, which is exactly this workload. The
+        # busy timeout covers the brief moments that still contend.
+        self.db.execute("PRAGMA journal_mode = WAL")
+        self.db.execute("PRAGMA busy_timeout = 15000")
+        self.db.execute("PRAGMA synchronous = NORMAL")
         self.db.executescript(SCHEMA)
         self.db.execute(
             "INSERT OR IGNORE INTO meta(key, value) VALUES ('schema_version', ?)",

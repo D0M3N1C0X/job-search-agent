@@ -152,3 +152,35 @@ class TestScoresAndStats(StoreCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestConcurrency(unittest.TestCase):
+    """The dashboard server reads while `jsa run` writes. That has to be fine."""
+
+    def test_write_ahead_logging_is_on(self):
+        with TemporaryDirectory() as tmp:
+            store = Store(Path(tmp) / "jobs.db")
+            try:
+                mode = store.db.execute("PRAGMA journal_mode").fetchone()[0]
+                timeout = store.db.execute("PRAGMA busy_timeout").fetchone()[0]
+            finally:
+                store.close()
+        self.assertEqual(mode.lower(), "wal")
+        self.assertGreaterEqual(timeout, 10_000)
+
+    def test_a_reader_is_not_blocked_by_an_open_write(self):
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "jobs.db"
+            Store(path).close()
+            writer, reader = Store(path), Store(path)
+            try:
+                writer.upsert_job(job(title="Being written"))
+                # Leave a transaction open on the writer, then read anyway.
+                writer.db.execute("BEGIN IMMEDIATE")
+                writer.db.execute(
+                    "UPDATE jobs SET title = 'changed' WHERE id = ?", (job(title="Being written").id,))
+                self.assertEqual(reader.counts()["jobs"], 1)
+                writer.db.rollback()
+            finally:
+                writer.close()
+                reader.close()

@@ -227,13 +227,30 @@ def collect_tracks(library: list[dict[str, Any]]) -> tuple[list[dict[str, Any]],
     return [t for t in library if t["id"] in chosen], chosen
 
 
+EUROPE = """AD AL AT BA BE BG CH CY CZ DE DK EE ES FI FR GB GR HR HU IE IS IT LI LT LU LV
+MC MD ME MK MT NL NO PL PT RO RS SE SI SK SM XK""".split()
+
+
 def collect_preferences(languages: list[dict[str, str]]) -> dict[str, Any]:
     heading("Where and what level")
     cities = ask_list("Cities you would take a job in", default=["Remote"])
-    countries_named = ask_list("Countries to include (names are fine)")
-    codes = sorted({guess_country(name) for name in countries_named} - {""})
-    if countries_named and not codes:
-        print(_style("    None of those matched a country I know — leaving it open.", YELLOW))
+
+    scope = ask_choice("Which countries should be in scope?",
+                       [("europe", "Anywhere in Europe"),
+                        ("pick", "Specific countries I will name")],
+                       default=["europe"])[0]
+    if scope == "europe":
+        codes = list(EUROPE)
+        print(_style(f"    {len(codes)} countries. Narrow it later in profile.json if you want.",
+                     DIM))
+    else:
+        countries_named = ask_list("Countries (names are fine)")
+        codes = sorted({guess_country(name) for name in countries_named} - {""})
+        unknown = [n for n in countries_named if not guess_country(n)]
+        if unknown:
+            print(_style(f"    Did not recognise: {', '.join(unknown)}", YELLOW))
+        if not codes:
+            print(_style("    Nothing matched — leaving location open.", YELLOW))
 
     seniority = ask_choice("What level are you targeting?",
                            [("junior", "Junior / entry"), ("mid", "Mid / specialist"),
