@@ -1,0 +1,778 @@
+{
+  "_comment": "Ready-made positioning tracks. `jsa setup` copies the ones you pick into profile/tracks.json, where you can then edit them. Writing keyword lists from scratch is the part nobody should have to do.",
+  "tracks": [
+    {
+      "id": "hr_advisory",
+      "label": "HR Advisory & Employee Relations",
+      "summary_key": "hr_advisory",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "projects",
+        "education",
+        "additional",
+        "languages"
+      ],
+      "skill_groups": [
+        "hr_core",
+        "analytics",
+        "ways_of_working"
+      ],
+      "cover_angle": "Policy applied to real cases, at volume, across jurisdictions.",
+      "titles": {
+        "strong": [
+          "hr advisor",
+          "hr adviser",
+          "employee relations",
+          "employee relations specialist",
+          "hr specialist",
+          "people advisor",
+          "hr operations",
+          "people operations",
+          "hr generalist",
+          "hr services",
+          "people partner"
+        ],
+        "good": [
+          "hr coordinator",
+          "people specialist",
+          "hr administrator",
+          "hr shared services",
+          "people experience",
+          "employee experience",
+          "hr case management",
+          "hr officer"
+        ],
+        "weak": [
+          "hr",
+          "human resources",
+          "people",
+          "talent"
+        ]
+      },
+      "must_have_any": [
+        "employee relations",
+        "hr policy",
+        "case management",
+        "labour law",
+        "labor law",
+        "employment law",
+        "payroll",
+        "leave",
+        "onboarding",
+        "grievance",
+        "disciplinary",
+        "hr operations",
+        "hris",
+        "employee lifecycle",
+        "ticketing"
+      ],
+      "must_have_target": 3,
+      "nice_to_have": [
+        "multi country",
+        "emea",
+        "gdpr",
+        "workday",
+        "servicenow",
+        "sla",
+        "shared services",
+        "process improvement",
+        "people analytics",
+        "stakeholder management",
+        "knowledge base"
+      ],
+      "nice_to_have_target": 4,
+      "domain": [
+        "hr",
+        "human resources",
+        "people team",
+        "employee",
+        "workforce",
+        "talent",
+        "people operations"
+      ],
+      "domain_target": 3,
+      "anti": [
+        "warehouse",
+        "driver",
+        "nurse",
+        "cold calling",
+        "door to door",
+        "commission only",
+        "recruitment agency",
+        "360 recruiter"
+      ]
+    },
+    {
+      "id": "people_analytics",
+      "label": "People Analytics & Workforce Data",
+      "summary_key": "people_analytics",
+      "sections": [
+        "summary",
+        "skills",
+        "projects",
+        "experience",
+        "education",
+        "research",
+        "additional",
+        "languages"
+      ],
+      "skill_groups": [
+        "technical",
+        "analytics",
+        "hr_core"
+      ],
+      "cover_angle": "Builds the analytical layer, not only works inside it.",
+      "titles": {
+        "strong": [
+          "people analytics",
+          "hr analytics",
+          "workforce analytics",
+          "people data",
+          "hr data analyst",
+          "people insights",
+          "workforce intelligence",
+          "hr reporting analyst"
+        ],
+        "good": [
+          "hr data",
+          "reporting analyst",
+          "hris analyst",
+          "people operations analyst",
+          "compensation analyst",
+          "reward analyst",
+          "workforce planning",
+          "hr systems analyst"
+        ],
+        "weak": [
+          "data analyst",
+          "insights analyst",
+          "reporting specialist"
+        ]
+      },
+      "must_have_any": [
+        "python",
+        "sql",
+        "stata",
+        "tableau",
+        "power bi",
+        "looker",
+        "data analysis",
+        "statistics",
+        "regression",
+        "dashboard",
+        "reporting",
+        "hris",
+        "workday",
+        "data model",
+        "data visualisation",
+        "data visualization"
+      ],
+      "must_have_target": 3,
+      "nice_to_have": [
+        "attrition",
+        "retention",
+        "engagement survey",
+        "pay equity",
+        "pay gap",
+        "enps",
+        "predictive",
+        "machine learning",
+        "survey design",
+        "gdpr",
+        "pay transparency",
+        "headcount"
+      ],
+      "nice_to_have_target": 4,
+      "domain": [
+        "people analytics",
+        "hr",
+        "human resources",
+        "workforce",
+        "talent",
+        "employee",
+        "people team"
+      ],
+      "domain_target": 3,
+      "anti": [
+        "marketing analytics",
+        "financial analyst",
+        "supply chain",
+        "sales analyst",
+        "credit risk",
+        "web analytics",
+        "product analyst",
+        "product analytics",
+        "growth analyst",
+        "fincrime",
+        "payment operations",
+        "commercial analyst",
+        "risk analyst",
+        "procurement",
+        "data scientist",
+        "experimentation"
+      ]
+    },
+    {
+      "id": "hr_consulting",
+      "label": "HR / People Consulting",
+      "summary_key": "hr_consulting",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "projects",
+        "education",
+        "additional",
+        "languages"
+      ],
+      "skill_groups": [
+        "hr_core",
+        "analytics",
+        "technical",
+        "ways_of_working"
+      ],
+      "cover_angle": "Advisory work where HR policy meets real employee situations, backed by numbers.",
+      "titles": {
+        "strong": [
+          "hr consultant",
+          "people consultant",
+          "human capital consultant",
+          "workforce consultant",
+          "hr transformation",
+          "people and organisation",
+          "people and organization",
+          "hr advisory consultant",
+          "human capital analyst",
+          "people consulting"
+        ],
+        "good": [
+          "hr business partner",
+          "organisational development",
+          "change management consultant",
+          "hr project manager",
+          "workforce transformation",
+          "management consultant"
+        ],
+        "weak": [
+          "consultant",
+          "advisory"
+        ]
+      },
+      "must_have_any": [
+        "hr transformation",
+        "organisational design",
+        "organizational design",
+        "change management",
+        "hr operating model",
+        "workforce planning",
+        "employee experience",
+        "hr policy",
+        "labour law",
+        "employment law",
+        "advisory",
+        "hr strategy"
+      ],
+      "must_have_target": 3,
+      "nice_to_have": [
+        "people analytics",
+        "workday",
+        "successfactors",
+        "hr technology",
+        "shared services",
+        "gdpr",
+        "reward",
+        "compensation",
+        "pay transparency",
+        "project management",
+        "stakeholder management",
+        "benchmarking"
+      ],
+      "nice_to_have_target": 4,
+      "domain": [
+        "human resources",
+        "human capital",
+        "people",
+        "workforce",
+        "talent",
+        "organisation",
+        "organization",
+        "hr"
+      ],
+      "domain_target": 3,
+      "anti": [
+        "warehouse",
+        "driver",
+        "nurse",
+        "cold calling",
+        "door to door",
+        "commission only",
+        "software engineer",
+        "developer",
+        "cybersecurity",
+        "statutory audit",
+        "tax compliance",
+        "actuarial",
+        "courier",
+        "merchant onboarding"
+      ]
+    },
+    {
+      "id": "talent_acquisition",
+      "label": "Talent Acquisition & Recruiting",
+      "summary_key": "talent_acquisition",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "projects",
+        "education",
+        "additional",
+        "languages"
+      ],
+      "skill_groups": [
+        "hr_core",
+        "analytics",
+        "ways_of_working"
+      ],
+      "cover_angle": "Hiring as a process with numbers attached, not a pile of CVs.",
+      "titles": {
+        "strong": [
+          "talent acquisition",
+          "recruiter",
+          "recruitment partner",
+          "talent partner",
+          "talent acquisition specialist",
+          "sourcing specialist",
+          "technical recruiter",
+          "recruitment specialist",
+          "talent acquisition partner"
+        ],
+        "good": [
+          "hiring manager support",
+          "recruitment coordinator",
+          "talent coordinator",
+          "candidate experience",
+          "employer branding",
+          "recruitment operations"
+        ],
+        "weak": [
+          "recruitment",
+          "hiring",
+          "talent"
+        ]
+      },
+      "must_have_any": [
+        "sourcing",
+        "interviewing",
+        "candidate experience",
+        "applicant tracking",
+        "hiring managers",
+        "recruitment process",
+        "pipeline",
+        "screening",
+        "offer management",
+        "employer brand",
+        "job posting",
+        "boolean search"
+      ],
+      "must_have_target": 3,
+      "nice_to_have": [
+        "greenhouse",
+        "workable",
+        "smartrecruiters",
+        "lever",
+        "linkedin recruiter",
+        "diversity",
+        "time to hire",
+        "recruitment metrics",
+        "structured interview",
+        "assessment"
+      ],
+      "nice_to_have_target": 4,
+      "domain": [
+        "talent",
+        "recruitment",
+        "hiring",
+        "hr",
+        "human resources",
+        "people team"
+      ],
+      "domain_target": 3,
+      "anti": [
+        "warehouse",
+        "driver",
+        "nurse",
+        "cold calling",
+        "door to door",
+        "commission only",
+        "commission per placement",
+        "cold calling quota"
+      ]
+    },
+    {
+      "id": "learning_development",
+      "label": "Learning & Development",
+      "summary_key": "learning_development",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "projects",
+        "education",
+        "additional",
+        "languages"
+      ],
+      "skill_groups": [
+        "hr_core",
+        "analytics",
+        "ways_of_working"
+      ],
+      "cover_angle": "Learning designed against a need, then measured.",
+      "titles": {
+        "strong": [
+          "learning and development",
+          "l&d specialist",
+          "learning specialist",
+          "training specialist",
+          "learning designer",
+          "instructional designer",
+          "learning partner",
+          "capability development",
+          "l&d manager"
+        ],
+        "good": [
+          "training coordinator",
+          "learning coordinator",
+          "talent development",
+          "leadership development",
+          "onboarding specialist",
+          "learning experience"
+        ],
+        "weak": [
+          "learning",
+          "training",
+          "development"
+        ]
+      },
+      "must_have_any": [
+        "training",
+        "learning",
+        "instructional design",
+        "curriculum",
+        "e-learning",
+        "learning management system",
+        "lms",
+        "onboarding",
+        "workshop",
+        "facilitation",
+        "capability",
+        "skills matrix",
+        "training needs"
+      ],
+      "must_have_target": 3,
+      "nice_to_have": [
+        "articulate",
+        "scorm",
+        "kirkpatrick",
+        "learning analytics",
+        "digital learning",
+        "leadership programmes",
+        "coaching",
+        "stakeholder management"
+      ],
+      "nice_to_have_target": 4,
+      "domain": [
+        "learning",
+        "training",
+        "development",
+        "hr",
+        "human resources",
+        "people team",
+        "talent"
+      ],
+      "domain_target": 3,
+      "anti": [
+        "warehouse",
+        "driver",
+        "nurse",
+        "cold calling",
+        "door to door",
+        "commission only",
+        "sales training quota"
+      ]
+    },
+    {
+      "id": "compensation_benefits",
+      "label": "Compensation & Benefits",
+      "summary_key": "compensation_benefits",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "projects",
+        "education",
+        "additional",
+        "languages"
+      ],
+      "skill_groups": [
+        "hr_core",
+        "analytics",
+        "ways_of_working"
+      ],
+      "cover_angle": "Pay structures that survive an audit and a pay-transparency filing.",
+      "titles": {
+        "strong": [
+          "compensation",
+          "benefits",
+          "reward",
+          "compensation and benefits",
+          "reward specialist",
+          "compensation analyst",
+          "benefits specialist",
+          "total rewards",
+          "reward partner"
+        ],
+        "good": [
+          "payroll specialist",
+          "hr operations",
+          "people operations",
+          "compensation partner",
+          "benefits administrator",
+          "mobility specialist"
+        ],
+        "weak": [
+          "compensation",
+          "reward",
+          "payroll"
+        ]
+      },
+      "must_have_any": [
+        "compensation",
+        "benefits",
+        "salary",
+        "bonus",
+        "job architecture",
+        "grading",
+        "benchmarking",
+        "pay equity",
+        "pay gap",
+        "pay transparency",
+        "payroll",
+        "equity",
+        "incentives",
+        "total reward"
+      ],
+      "must_have_target": 3,
+      "nice_to_have": [
+        "mercer",
+        "willis towers watson",
+        "korn ferry",
+        "hay",
+        "workday",
+        "excel modelling",
+        "gdpr",
+        "eu directive",
+        "market data",
+        "job evaluation"
+      ],
+      "nice_to_have_target": 4,
+      "domain": [
+        "compensation",
+        "reward",
+        "benefits",
+        "hr",
+        "human resources",
+        "people team",
+        "workforce"
+      ],
+      "domain_target": 3,
+      "anti": [
+        "warehouse",
+        "driver",
+        "nurse",
+        "cold calling",
+        "door to door",
+        "commission only"
+      ]
+    },
+    {
+      "id": "hrbp",
+      "label": "HR Business Partner",
+      "summary_key": "hrbp",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "projects",
+        "education",
+        "additional",
+        "languages"
+      ],
+      "skill_groups": [
+        "hr_core",
+        "analytics",
+        "ways_of_working"
+      ],
+      "cover_angle": "The HR voice in a business conversation, with the data to hold it.",
+      "titles": {
+        "strong": [
+          "hr business partner",
+          "hrbp",
+          "people partner",
+          "people business partner",
+          "senior hr business partner",
+          "hr manager"
+        ],
+        "good": [
+          "hr generalist",
+          "people manager",
+          "hr lead",
+          "employee relations manager",
+          "organisational development"
+        ],
+        "weak": [
+          "hr",
+          "people",
+          "human resources"
+        ]
+      },
+      "must_have_any": [
+        "business partnering",
+        "stakeholder management",
+        "employee relations",
+        "organisational design",
+        "performance management",
+        "workforce planning",
+        "talent management",
+        "change management",
+        "hr policy",
+        "employment law"
+      ],
+      "must_have_target": 3,
+      "nice_to_have": [
+        "people analytics",
+        "succession planning",
+        "engagement survey",
+        "restructuring",
+        "works council",
+        "coaching",
+        "compensation",
+        "hris"
+      ],
+      "nice_to_have_target": 4,
+      "domain": [
+        "hr",
+        "human resources",
+        "people team",
+        "employee",
+        "workforce",
+        "talent",
+        "people operations"
+      ],
+      "domain_target": 3,
+      "anti": [
+        "warehouse",
+        "driver",
+        "nurse",
+        "cold calling",
+        "door to door",
+        "commission only",
+        "recruitment agency"
+      ]
+    },
+    {
+      "id": "hr_systems",
+      "label": "HRIS & People Systems",
+      "summary_key": "hr_systems",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "projects",
+        "education",
+        "additional",
+        "languages"
+      ],
+      "skill_groups": [
+        "technical",
+        "hr_core",
+        "ways_of_working"
+      ],
+      "cover_angle": "The system of record, and whether the data in it can be trusted.",
+      "titles": {
+        "strong": [
+          "hris",
+          "hris analyst",
+          "people systems",
+          "hr systems",
+          "workday analyst",
+          "hr technology",
+          "people technology",
+          "hris specialist",
+          "hr systems specialist"
+        ],
+        "good": [
+          "hr operations analyst",
+          "people operations analyst",
+          "systems administrator",
+          "data management",
+          "hr digital"
+        ],
+        "weak": [
+          "systems",
+          "hris",
+          "hr technology"
+        ]
+      },
+      "must_have_any": [
+        "workday",
+        "successfactors",
+        "bamboohr",
+        "personio",
+        "hibob",
+        "oracle hcm",
+        "hris",
+        "system configuration",
+        "data integrity",
+        "integrations",
+        "reporting",
+        "sql",
+        "master data"
+      ],
+      "must_have_target": 3,
+      "nice_to_have": [
+        "change management",
+        "testing",
+        "uat",
+        "gdpr",
+        "process improvement",
+        "documentation",
+        "stakeholder management",
+        "automation"
+      ],
+      "nice_to_have_target": 4,
+      "domain": [
+        "hris",
+        "hr",
+        "human resources",
+        "people team",
+        "workforce",
+        "systems"
+      ],
+      "domain_target": 3,
+      "anti": [
+        "warehouse",
+        "driver",
+        "nurse",
+        "cold calling",
+        "door to door",
+        "commission only",
+        "software engineer",
+        "devops",
+        "full stack"
+      ]
+    }
+  ]
+}

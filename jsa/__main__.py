@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 from . import __version__, config
+from .config import ConfigError
 from .models import STATUSES, Job
 from .packet import build_packet
 from .render import Overlay, ats_check, build_cover, build_cv, output_name
@@ -38,14 +39,34 @@ def cmd_init(args: argparse.Namespace) -> int:
         print(f"{target} already exists. Use --force to overwrite.")
         return 1
     target.mkdir(parents=True, exist_ok=True)
-    for name in ("profile.json", "tracks.json", "watchlist.json"):
+    for name in ("profile.json", "tracks.json", "watchlist.json", "answers.json"):
         source = config.REPO_ROOT / "profile.example" / name
         if source.exists():
             shutil.copy(source, target / name)
     (target / "inbox").mkdir(exist_ok=True)
     (target / "output").mkdir(exist_ok=True)
     print(f"Workspace ready in {target}")
-    print("Next: edit profile.json with your details, then `python3 -m jsa fetch`.")
+    print("Next: run `jsa setup` to fill it in by answering questions,\n"
+          "      or edit profile/profile.json by hand if you prefer.")
+    return 0
+
+
+def cmd_setup(args: argparse.Namespace) -> int:
+    """Build a profile by answering questions instead of editing JSON."""
+    from .wizard import Cancelled, run
+
+    home = Path(args.path).expanduser() if args.path else (config.REPO_ROOT / "profile")
+    try:
+        written = run(home, force=args.force)
+    except Cancelled:
+        print("\n\nStopped. Nothing was written.")
+        return 130
+    print(f"\n{colour('Done.', BOLD)} Your profile is in {written}")
+    print("\nNext:")
+    print("  1. jsa probe <company-slug> --add     find employers to watch")
+    print("  2. jsa run                            fetch, score, and open the shortlist")
+    print("\nEverything it wrote is plain JSON you can edit later — especially")
+    print("profile/tracks.json, once you see what the scoring gets wrong.")
     return 0
 
 
@@ -77,8 +98,14 @@ def _watchlist_add(args: argparse.Namespace, handle: str, provider: str, count: 
     print(f"  added to watchlist: {company} ({provider}/{handle})")
 
 
+def warn_about(cfg: config.Config) -> None:
+    for warning in cfg.warnings:
+        print(colour(f"note: {warning}", YELLOW))
+
+
 def cmd_fetch(args: argparse.Namespace) -> int:
     cfg = config.load(args.home)
+    warn_about(cfg)
     if cfg.demo:
         print(colour("Running on the bundled demo profile — `jsa init` to use your own.", YELLOW))
     store = Store(cfg.db_path)
@@ -607,12 +634,17 @@ def cmd_install(args: argparse.Namespace) -> int:
     if result["app"]:
         print(f"\n{colour('App', BOLD)}")
         print(f"  {result['app']}")
-        print("  Open it from Spotlight (⌘-Space, \"Job Pipeline\") or drag it to your Dock.")
+        if result["platform"] == "darwin":
+            print("  Open it from Spotlight (⌘-Space, \"Job Pipeline\") or drag it to your Dock.")
+        else:
+            print("  Double-click it. It is on your Desktop and in the Start Menu.")
         print("  It starts the server if it is down, then opens the dashboard.")
-    if result["agent"]:
+    if result.get("agent"):
         print("\n  The server will also start automatically when you log in.")
-    elif result["app"]:
+    elif result["app"] and result["platform"] == "darwin":
         print("\n  Add `--login` to keep the server running in the background.")
+    if result.get("note"):
+        print(f"\n  {result['note']}")
     print("\nRemove all of it with: jsa uninstall")
     return 0
 
@@ -627,6 +659,15 @@ def cmd_uninstall(args: argparse.Namespace) -> int:
     for path in removed:
         print(f"Removed {path}")
     return 0
+
+
+def cmd_doctor(args: argparse.Namespace) -> int:
+    """Check the whole setup and say what to do about anything wrong."""
+    from .doctor import render, run_checks
+
+    report = run_checks(home=args.home, port=args.port, network=not args.offline)
+    print(render(report, colour=sys.stdout.isatty()))
+    return 1 if report.failures else 0
 
 
 def cmd_where(args: argparse.Namespace) -> int:
@@ -717,6 +758,11 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("uninstall", help="remove the app and the login agent")
     p.set_defaults(func=cmd_uninstall)
 
+    p = sub.add_parser("doctor", help="check the setup and explain anything wrong")
+    p.add_argument("--port", type=int, default=8765)
+    p.add_argument("--offline", action="store_true", help="skip the network check")
+    p.set_defaults(func=cmd_doctor)
+
     p = sub.add_parser("where", help="where everything lives and whether the dashboard is up")
     p.add_argument("--port", type=int, default=8765)
     p.set_defaults(func=cmd_where)
@@ -725,6 +771,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("path", nargs="?")
     p.add_argument("--force", action="store_true")
     p.set_defaults(func=cmd_init)
+
+    p = sub.add_parser("setup", help="build your profile by answering questions")
+    p.add_argument("path", nargs="?", help="where to write it (default: ./profile)")
+    p.add_argument("--force", action="store_true", help="overwrite an existing profile")
+    p.set_defaults(func=cmd_setup)
 
     p = sub.add_parser("probe", help="discover which ATS a company uses")
     p.add_argument("handles", nargs="+", help="candidate board slugs, e.g. revolut monzo")
@@ -815,13 +866,48 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+ISSUES = "https://github.com/D0M3N1C0X/job-search-agent/issues"
+
+
 def main(argv: list[str] | None = None) -> int:
+    """Run a command, and make sure a failure reads like a sentence.
+
+    A stack trace tells you where the code was standing; it almost never tells
+    you what to do. Everything expected is caught and explained here, and
+    anything unexpected still says which command failed and how to report it.
+    """
     args = build_parser().parse_args(argv)
     setup_logging(args.verbose)
     try:
         return int(args.func(args) or 0)
     except KeyboardInterrupt:
+        print("\nStopped.", file=sys.stderr)
         return 130
+    except BrokenPipeError:  # `jsa top | head` is a normal thing to do
+        return 0
+    except ConfigError as exc:
+        print(f"\n{colour('Cannot read your workspace', BOLD)}\n", file=sys.stderr)
+        print(exc.render(), file=sys.stderr)
+        return 2
+    except FetchError as exc:
+        print(f"\n{colour('A source could not be reached', BOLD)}\n", file=sys.stderr)
+        print(f"{exc}\n", file=sys.stderr)
+        print("If you are online and this persists, the board may have changed shape.\n"
+              f"Please report it: {ISSUES}", file=sys.stderr)
+        return 3
+    except OSError as exc:
+        print(f"\n{colour('A file could not be read or written', BOLD)}\n", file=sys.stderr)
+        print(f"{exc}", file=sys.stderr)
+        return 4
+    except Exception as exc:  # noqa: BLE001 - the point is that nothing escapes raw
+        if args.verbose:
+            raise
+        print(f"\n{colour(f'`jsa {args.command}` hit an unexpected problem', BOLD)}\n",
+              file=sys.stderr)
+        print(f"  {type(exc).__name__}: {exc}\n", file=sys.stderr)
+        print(f"Run the same command with -v for the full detail.\n"
+              f"If it looks like a bug, please report it: {ISSUES}", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":

@@ -164,3 +164,25 @@ class TestShim(unittest.TestCase):
                 self.assertEqual(inst.shim_path(), second / "jsa")
             finally:
                 inst.SHIM_DIRS = original
+
+
+class TestWindowsShim(unittest.TestCase):
+    """The Windows path cannot be exercised on macOS, but its shape can."""
+
+    def test_the_batch_shim_sets_pythonpath_and_forwards_arguments(self):
+        from jsa.install import SHIM_WINDOWS
+
+        script = SHIM_WINDOWS.format(repo=r"C:\Users\x\job-search-agent",
+                                     python=r"C:\Python\python.exe")
+        self.assertIn(r'set "PYTHONPATH=C:\Users\x\job-search-agent;%PYTHONPATH%"', script)
+        self.assertIn(r'"C:\Python\python.exe" -m jsa %*', script)
+        self.assertTrue(script.startswith("@echo off"))
+
+    def test_the_windows_launcher_starts_the_server_only_if_it_is_down(self):
+        from jsa.install import LAUNCHER_WINDOWS
+
+        script = LAUNCHER_WINDOWS.format(repo="C:\\repo", python="C:\\py.exe", port=8765)
+        self.assertIn("curl -s -o NUL", script)          # is it already up?
+        self.assertIn("if errorlevel 1", script)         # only then start it
+        self.assertIn("-m jsa serve --port 8765", script)
+        self.assertIn('start "" "%URL%"', script)        # and always open the browser

@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import os
 import plistlib
+import sysconfig
 import shutil
 import struct
 import subprocess
@@ -30,16 +31,46 @@ APP_PATH = APPS_DIR / f"{APP_NAME}.app"
 AGENT_PATH = Path.home() / "Library" / "LaunchAgents" / f"{LABEL}.plist"
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-SHIM = """#!/bin/bash
+WINDOWS = sys.platform == "win32"
+
+SHIM_POSIX = """#!/bin/bash
 # jsa — run job-search-agent from any directory.
 # Written by `jsa install`; delete it or run `jsa uninstall` to remove.
 export PYTHONPATH="{repo}${{PYTHONPATH:+:$PYTHONPATH}}"
 exec "{python}" -m jsa "$@"
 """
 
+SHIM_WINDOWS = """@echo off
+REM jsa - run job-search-agent from any directory.
+REM Written by `jsa install`; delete it or run `jsa uninstall` to remove.
+set "PYTHONPATH={repo};%PYTHONPATH%"
+"{python}" -m jsa %*
+"""
+
+SHIM = SHIM_WINDOWS if WINDOWS else SHIM_POSIX
+SHIM_NAME = "jsa.bat" if WINDOWS else "jsa"
+
 # Where a command-line shim can go without administrator rights. First writable
-# directory wins; being on PATH is checked separately and reported.
-SHIM_DIRS = [Path("/usr/local/bin"), Path.home() / ".local" / "bin"]
+# directory wins; being on PATH is checked separately and reported. On Windows
+# the interpreter's Scripts directory is the one already on PATH.
+if WINDOWS:
+    SHIM_DIRS = [Path(sysconfig.get_path("scripts")),
+                 Path.home() / "AppData" / "Local" / "Programs" / "jsa"]
+else:
+    SHIM_DIRS = [Path("/usr/local/bin"), Path.home() / ".local" / "bin"]
+
+# Double-clickable launcher for Windows, since there is no .app bundle there.
+LAUNCHER_WINDOWS = """@echo off
+title Job Pipeline
+set "PYTHONPATH={repo};%PYTHONPATH%"
+set "URL=http://127.0.0.1:{port}/"
+curl -s -o NUL --max-time 1 "%URL%"
+if errorlevel 1 (
+  start "" /B "{python}" -m jsa serve --port {port} --no-browser
+  timeout /t 4 /nobreak >NUL
+)
+start "" "%URL%"
+"""
 
 LAUNCHER = """#!/bin/bash
 # Opens the job-search dashboard, starting the local server if it is not up.
@@ -121,13 +152,13 @@ def build_icon(target: Path) -> bool:
 def shim_path() -> Path | None:
     """Where the `jsa` command is, or would go."""
     for directory in SHIM_DIRS:
-        candidate = directory / "jsa"
+        candidate = directory / SHIM_NAME
         if candidate.exists():
             return candidate
     for directory in SHIM_DIRS:
         if directory.is_dir() and os.access(directory, os.W_OK):
-            return directory / "jsa"
-    return SHIM_DIRS[-1] / "jsa"
+            return directory / SHIM_NAME
+    return SHIM_DIRS[-1] / SHIM_NAME
 
 
 def on_path(directory: Path) -> bool:
@@ -200,20 +231,58 @@ def build_agent(port: int) -> Path:
     return AGENT_PATH
 
 
+def build_windows_launcher(port: int) -> Path:
+    """A double-clickable .bat on the Desktop, and in the Start Menu if it exists."""
+    script = LAUNCHER_WINDOWS.format(repo=REPO_ROOT, python=sys.executable, port=port)
+    targets = [Path.home() / "Desktop" / f"{APP_NAME}.bat"]
+    start_menu = (Path.home() / "AppData" / "Roaming" / "Microsoft" / "Windows"
+                  / "Start Menu" / "Programs")
+    if start_menu.is_dir():
+        targets.append(start_menu / f"{APP_NAME}.bat")
+    written = None
+    for target in targets:
+        try:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(script, encoding="utf-8")
+            written = written or target
+        except OSError:
+            continue
+    return written or targets[0]
+
+
 def install(port: int = 8765, at_login: bool = False) -> dict[str, Any]:
-    """Install the `jsa` command everywhere, and the app if this is macOS."""
+    """Install the `jsa` command, and whatever passes for an app on this system."""
     shim, path_ok = build_shim()
-    result: dict[str, Any] = {"shim": shim, "shim_on_path": path_ok, "app": None, "agent": None}
-    if sys.platform != "darwin":
-        return result
-    result["app"] = build_app(port)
-    if at_login:
-        result["agent"] = build_agent(port)
+    result: dict[str, Any] = {
+        "shim": shim, "shim_on_path": path_ok, "app": None, "agent": None,
+        "platform": sys.platform,
+    }
+    if sys.platform == "darwin":
+        result["app"] = build_app(port)
+        if at_login:
+            result["agent"] = build_agent(port)
+    elif WINDOWS:
+        result["app"] = build_windows_launcher(port)
+        if at_login:
+            result["note"] = ("Starting at login is not set up automatically on Windows. "
+                              "Put a shortcut to the launcher in your Startup folder "
+                              "(Win+R, then: shell:startup).")
+    else:
+        result["note"] = ("On Linux there is no app bundle. Run `jsa serve` and bookmark "
+                          f"http://127.0.0.1:{port}/ , or add a .desktop entry pointing at "
+                          f"{shim} serve.")
     return result
 
 
 def uninstall() -> list[str]:
     removed = []
+    if WINDOWS:
+        for candidate in (Path.home() / "Desktop" / f"{APP_NAME}.bat",
+                          Path.home() / "AppData" / "Roaming" / "Microsoft" / "Windows"
+                          / "Start Menu" / "Programs" / f"{APP_NAME}.bat"):
+            if candidate.exists():
+                candidate.unlink()
+                removed.append(str(candidate))
     shim = shim_path()
     if shim.exists() and "job-search-agent" in shim.read_text(errors="ignore"):
         shim.unlink()

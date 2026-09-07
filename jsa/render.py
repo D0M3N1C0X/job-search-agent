@@ -109,7 +109,7 @@ def build_cv(
             doc.section("Core skills")
             for key in groups:
                 group = profile.get("skill_groups", {}).get(key)
-                if not group:
+                if not group or not group.get("items"):
                     continue
                 items = list(group["items"])
                 if key == groups[0]:
