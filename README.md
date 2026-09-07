@@ -31,9 +31,14 @@ Then point it at your own search:
 
 ```bash
 python3 -m jsa install    # `jsa` on your PATH, plus a Dock app on macOS
+jsa setup                 # build your profile by answering questions — no JSON
 jsa run                   # fetch, enrich, score, shortlist, dashboard — the whole loop
 jsa serve                 # the dashboard, editable: statuses and notes save to the database
 ```
+
+`jsa doctor` checks the whole setup — interpreter, profile, database, network,
+PATH — and explains anything that is wrong. It keeps working when the workspace
+is the broken part, which is when you need it.
 
 `run` is the command you actually use. Everything below it exists for when you
 want one piece on its own.
@@ -106,6 +111,7 @@ reply, where good postings actually come from.
 
 | Stage | Command | What happens |
 |---|---|---|
+| **Set up** | `jsa setup` | Builds your profile from questions, picking positioning tracks from a library of eight |
 | **Discover** | `jsa fetch` | Pulls from ATS boards, job-alert emails and LinkedIn guest search; deduplicates across all of them |
 | **Enrich** | `jsa enrich` | Fetches full descriptions only for postings whose title already looks plausible |
 | **Score** | `jsa score` | Deterministic 0–100 fit per positioning track, with hard gates and an explainable breakdown |
@@ -193,13 +199,30 @@ inside them is parsed for content and never executed or followed.
 git clone https://github.com/D0M3N1C0X/job-search-agent
 cd job-search-agent
 python3 -m jsa install      # from here on, `jsa` works from any directory
-jsa init                    # copies the demo profile into ./profile
-$EDITOR profile/profile.json           # your experience, skills, preferences, gates
-$EDITOR profile/tracks.json            # how you want to be read
-$EDITOR profile/answers.json           # the answers every form asks for, written once
+jsa setup                   # answer questions; it writes the profile for you
 jsa probe <company-slugs> --add
-jsa run                     # or the four steps: fetch, enrich, score, top
+jsa run
 ```
+
+`jsa setup` asks about your experience, skills, languages, where you will work
+and what would rule a posting out, then writes `profile.json`, `tracks.json`
+and `answers.json`. The keyword lists a scorer needs are the part nobody should
+write by hand, so they come from a library of ready-made **positioning tracks**:
+
+| | |
+|---|---|
+| `hr_advisory` | Employee relations, HR operations, case work |
+| `people_analytics` | Attrition, engagement, pay equity, reporting |
+| `hr_consulting` | HR transformation and advisory |
+| `talent_acquisition` | Recruiting and sourcing |
+| `learning_development` | L&D and instructional design |
+| `compensation_benefits` | Reward, grading, pay transparency |
+| `hrbp` | HR business partnering |
+| `hr_systems` | HRIS and people technology |
+
+Pick two or three. Everything it writes is plain JSON you edit afterwards —
+especially the tracks, once you have seen what the scoring gets wrong. If you
+would rather start from a file, `jsa init` copies the example instead.
 
 `./profile/` is git-ignored. The engine is public; your CV, your applications
 and your database are not. `profile.example/` holds a synthetic persona so a

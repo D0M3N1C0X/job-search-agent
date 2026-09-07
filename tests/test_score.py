@@ -60,6 +60,33 @@ class TestGates(unittest.TestCase):
         self.assertTrue(any(g.name == "location" for g in check_gates(posting, PROFILE)))
 
 
+class TestTermsGate(unittest.TestCase):
+    """Employment terms, not vocabulary. These are real posting phrasings."""
+
+    def test_volunteering_days_as_a_benefit_are_not_a_red_flag(self):
+        posting = job(
+            title="HR Operations Specialist",
+            description=("Employee relations and HR policy. Benefits include 25 days holiday "
+                         "and up to 40 hours each year to use toward volunteer projects."),
+        )
+        self.assertEqual([g.name for g in check_gates(posting, PROFILE)], [])
+
+    def test_a_genuinely_unpaid_role_is_still_rejected(self):
+        for phrasing in ("This is an unpaid internship.",
+                         "A volunteer position with our foundation.",
+                         "The role is commission only, there is no basic salary.",
+                         "The work is done on a voluntary basis."):
+            with self.subTest(phrasing=phrasing):
+                posting = job(title="HR Assistant", description=phrasing)
+                self.assertTrue(any(g.name in ("terms", "keyword")
+                                    for g in check_gates(posting, PROFILE)), phrasing)
+
+    def test_paid_time_off_for_charity_work_is_fine(self):
+        posting = job(title="HR Advisor",
+                      description="We give every employee two paid days for volunteering.")
+        self.assertEqual([g.name for g in check_gates(posting, PROFILE)], [])
+
+
 class TestScoring(unittest.TestCase):
     def test_strong_match_passes(self):
         posting = job(

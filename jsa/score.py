@@ -162,7 +162,16 @@ def check_gates(job: Job, profile: dict[str, Any], text: str | None = None) -> l
     if seniority in prefs.get("seniority_reject", []):
         failures.append(Gate("seniority", f"role reads as '{seniority}'"))
 
-    if re.search(r"\b(commission[- ]only|unpaid|no salary|volunteer)\b", text):
+    # Match the terms of employment, not any mention of the words. "Volunteer"
+    # on its own appears in the benefits section of well-paid jobs — offering
+    # volunteering days is a perk, and treating it as a red flag rejected 671
+    # perfectly good postings before anyone noticed.
+    if re.search(
+        r"\b(commission[- ]only|100% commission|no basic salary|no salary"
+        r"|unpaid (internship|position|role|placement|work)"
+        r"|volunteer (position|role|opportunity|basis|placement)"
+        r"|on a voluntary basis|without remuneration)\b", text
+    ):
         failures.append(Gate("terms", "unpaid or commission-only"))
 
     return failures
