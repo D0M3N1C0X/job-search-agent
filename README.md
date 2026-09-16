@@ -303,6 +303,17 @@ contact with a non-Danish market:
 | Privacy | Personal data in the repo | Engine public, profile git-ignored |
 | Dependencies | LaTeX, Bun, Python packages | None |
 
+## About
+
+Built by **Domenico Perroni** — HR advisory, people analytics and media education, based in Kraków.
+[GitHub profile](https://github.com/D0M3N1C0X) · [LinkedIn](https://www.linkedin.com/in/domenico-perroni)
+
+**More from the same portfolio**
+
+- [hr-people-analytics](https://github.com/D0M3N1C0X/hr-people-analytics) — attrition drivers, EU pay-transparency exposure and HR service-desk performance on a synthetic 4,000-employee organisation, with the [report online](https://d0m3n1c0x.github.io/hr-people-analytics/)
+- [engagement-survey-analytics](https://github.com/D0M3N1C0X/engagement-survey-analytics) — an employee engagement survey analysed end to end, with a [live dashboard](https://d0m3n1c0x.github.io/engagement-survey-analytics/) you can filter in the browser
+- [pompei-stratificata](https://github.com/D0M3N1C0X/pompei-stratificata) — Pompeii and Herculaneum from AD 79 to today, a [walkable model](https://d0m3n1c0x.github.io/pompei-stratificata/) with a sourced documentary dossier, in six languages
+
 ## Licence
 
 MIT.
