@@ -13,6 +13,7 @@ import html
 import json
 from typing import Any
 
+from .i18n import LANGUAGES, bundle
 from .models import STATUSES
 
 CSS = """
@@ -61,6 +62,9 @@ button{font:inherit;cursor:pointer}
 .iconbtn{background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:7px 11px;
   color:var(--ink-2);font-size:12.5px}
 .iconbtn:hover{border-color:var(--accent);color:var(--accent)}
+.langsel{background:var(--panel-2);border:1px solid var(--line);border-radius:9px;
+  padding:7px 9px;color:var(--ink-2);font-size:12.5px;cursor:pointer}
+.langsel:hover{border-color:var(--accent);color:var(--accent)}
 .livedot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--pass);margin-right:6px}
 .livedot.off{background:var(--ink-3)}
 .actions{display:flex;gap:8px}
@@ -216,6 +220,51 @@ footer{color:var(--ink-3);font-size:11.5px;margin-top:26px;text-align:center}
 
 JS = r"""
 const DATA = window.__JSA__;
+const I18N = window.__I18N__ || {en: {}};
+
+/* Language: an explicit ?lang= wins, then the stored choice, then the browser,
+   then English. Both languages ship inside the page, so switching is instant
+   and works on a file opened from disk with no server behind it. */
+const urlLang = new URLSearchParams(location.search).get('lang');
+const storedLang = (() => { try { return localStorage.getItem('jsa-lang'); } catch { return null; } })();
+const browserLang = (navigator.language || 'en').slice(0, 2);
+let LANG = [urlLang, storedLang, browserLang, 'en'].find(l => l && I18N[l]) || 'en';
+let T = I18N[LANG];
+
+const fmt = (key, vars = {}) =>
+  String(T[key] ?? key).replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
+
+function applyLang(lang) {
+  LANG = I18N[lang] ? lang : 'en';
+  T = I18N[LANG];
+  try { localStorage.setItem('jsa-lang', LANG); } catch {}
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const v = T[el.dataset.i18n]; if (v !== undefined) el.textContent = v;
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const v = T[el.dataset.i18nHtml]; if (v !== undefined) el.innerHTML = v;
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const v = T[el.dataset.i18nPh]; if (v !== undefined) el.placeholder = v;
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const v = T[el.dataset.i18nTitle]; if (v !== undefined) el.title = v;
+  });
+  renderFooter();
+  renderTable();
+  renderToday();
+  if (!$('[data-view="pipeline"]').hidden) renderBoard();
+  if (selected) openJob(selected);
+}
+
+function renderFooter() {
+  const c = DATA.counts, s = DATA.stats;
+  $('#foot').textContent =
+    `${T.f_generated} ${DATA.generated.slice(0, 16).replace('T', ' ')} · ` +
+    `${c.jobs} ${T.f_from} ${Object.keys(s.by_source || {}).length} ${T.f_sources_w} · ` +
+    `${T.f_scoring}${DATA.scorer_version} · ${T.f_offline}`;
+}
 const $ = (s, r=document) => r.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const DIMS = ['title','skills','domain','location','seniority'];
@@ -228,6 +277,9 @@ const urlTheme = new URLSearchParams(location.search).get('theme');
 const savedTheme = (() => { try { return localStorage.getItem('jsa-theme'); } catch { return null; } })();
 const startTheme = ['light', 'dark'].includes(urlTheme) ? urlTheme : savedTheme;
 if (startTheme) document.documentElement.dataset.theme = startTheme;
+$('#lang').value = LANG;
+$('#lang').onchange = e => applyLang(e.target.value);
+
 $('#theme').onclick = () => {
   const dark = getComputedStyle(document.body).backgroundColor.match(/\d+/g)[0] < 60;
   const next = dark ? 'light' : 'dark';
@@ -256,32 +308,33 @@ function plainReason(j) {
 
   /* Lead with title and place — the two things that decide whether you read on. */
   const titleFit = !t ? '' : t.points >= t.max ? 'exact' : t.points >= t.max * 0.6 ? 'close' : '';
-  const place = lo && lo.why === 'remote' ? 'and it is remote'
-    : lo && lo.why === 'preferred city' && city ? `in ${city}` : city ? `in ${city}` : '';
-  if (titleFit === 'exact') parts.push(`Your job title, ${place || 'as written'}.`);
-  else if (titleFit === 'close') parts.push(`Near-neighbour of your title, ${place || 'by the description'}.`);
-  else parts.push(`Not your title, but the body of the posting matches${place ? ' — ' + place : ''}.`);
+  const place = lo && lo.why === 'remote' ? T.p_remote : city ? fmt('p_in', {city}) : '';
+  if (titleFit === 'exact') parts.push(fmt('r_title_exact', {place: place || T.p_written}));
+  else if (titleFit === 'close') parts.push(fmt('r_title_close', {place: place || T.p_desc}));
+  else parts.push(fmt('r_title_none', {place: place ? ' — ' + place : ''}));
 
   /* Then the concrete overlap, named. */
   const skills = [...((sk && sk.must_have) || []), ...((sk && sk.nice_to_have) || [])];
   if (skills.length >= 3) {
     const shown = skills.slice(0, 4).join(', ');
-    parts.push(`Asks for ${shown}${skills.length > 4 ? ` and ${skills.length - 4} more` : ''} — work you do now.`);
+    parts.push(skills.length > 4
+      ? fmt('r_asks_more', {list: shown, n: skills.length - 4})
+      : fmt('r_asks', {list: shown}));
   } else if (skills.length) {
-    parts.push(`Overlaps on ${skills.join(' and ')}.`);
+    parts.push(fmt('r_overlaps', {list: skills.join(', ')}));
   } else {
-    parts.push('Thin overlap with your skills — read it before committing an hour.');
+    parts.push(T.r_thin);
   }
 
   if (dm && dm.points >= dm.max && sk && sk.points >= sk.max * 0.7)
-    parts.push('Squarely an HR role, not a data job with an HR word in it.');
+    parts.push(T.r_squarely);
 
   /* The catch, if there is one. */
   if (se && se.years_required > (se.years_profile || 0) + 1)
-    gaps.push(`wants around ${se.years_required} years against your ${se.years_profile}`);
-  if (se && ['senior', 'head'].includes(se.detected)) gaps.push(`written for a ${se.detected} hire`);
-  if (b.penalties) gaps.push(`mentions ${(b.penalties.matched || []).slice(0, 2).join(' and ')}`);
-  if (j.verdict === 'review') gaps.push('scored as borderline, not a clear match');
+    gaps.push(fmt('g_years', {n: se.years_required, have: se.years_profile}));
+  if (se && ['senior', 'head'].includes(se.detected)) gaps.push(fmt('g_senior', {level: se.detected}));
+  if (b.penalties) gaps.push(fmt('g_mentions', {list: (b.penalties.matched || []).slice(0, 2).join(', ')}));
+  if (j.verdict === 'review') gaps.push(T.g_borderline);
 
   return {why: parts.join(' '), gaps};
 }
@@ -292,17 +345,13 @@ function renderToday() {
     .sort((a, b) => b.score - a.score);
   const picks = pool.slice(0, TOP_N);
 
-  $('#todayhead').textContent = picks.length
-    ? `${picks.length} role${picks.length > 1 ? 's' : ''} worth your next hour`
-    : 'Nothing waiting';
-  $('#todaysub').textContent = picks.length
-    ? `out of ${pool.length} untouched · strongest first`
-    : 'Everything scored has been triaged. Run the pipeline for new postings.';
+  $('#todayhead').textContent = !picks.length ? T.lead_none
+    : picks.length === 1 ? T.lead_one : fmt('lead_many', {n: picks.length});
+  $('#todaysub').textContent = picks.length ? fmt('lead_sub', {n: pool.length}) : T.lead_sub_none;
 
   if (!picks.length) {
-    $('#deck').innerHTML = `<div class="done"><b>Inbox zero.</b>
-      ${DATA.interactive ? 'Press <b>Run pipeline</b> above to look for new roles.'
-                         : 'Run <code>python3 -m jsa run</code> to look for new roles.'}</div>`;
+    $('#deck').innerHTML = `<div class="done"><b>${T.inbox_zero}</b>
+      ${DATA.interactive ? T.inbox_live : T.inbox_static}</div>`;
     return;
   }
 
@@ -315,12 +364,12 @@ function renderToday() {
         <div class="where">${esc(j.company)} · ${esc(j.location || 'location not stated')}${
           j.remote !== 'unknown' ? ' · ' + esc(j.remote) : ''}</div>
         <p class="why">${esc(r.why)}</p>
-        ${r.gaps.length ? `<p class="gap"><b>The catch:</b> ${esc(r.gaps.join('; '))}.</p>` : ''}
+        ${r.gaps.length ? `<p class="gap"><b>${T.catch}</b> ${esc(r.gaps.join('; '))}.</p>` : ''}
         <div class="acts">
-          <a class="btn pri" href="${esc(j.url)}" target="_blank" rel="noopener">Read the posting</a>
-          ${DATA.interactive ? `<button class="btn" data-act="shortlisted">Keep it</button>
-                                <button class="btn" data-act="withdrawn">Not for me</button>` : ''}
-          <button class="btn" data-act="detail">Why this score</button>
+          <a class="btn pri" href="${esc(j.url)}" target="_blank" rel="noopener">${T.btn_read}</a>
+          ${DATA.interactive ? `<button class="btn" data-act="shortlisted">${T.btn_keep}</button>
+                                <button class="btn" data-act="withdrawn">${T.btn_skip}</button>` : ''}
+          <button class="btn" data-act="detail">${T.btn_why}</button>
         </div>
       </div>
     </article>`;
@@ -340,11 +389,11 @@ function renderToday() {
         if (!res.ok) throw new Error(await res.text());
         Object.assign(job, await res.json());
         toast(btn.dataset.act === 'shortlisted'
-          ? 'Kept — it is in the Pipeline tab now'
-          : 'Dismissed');
+          ? T.t_kept
+          : T.t_dismissed);
       } catch (err) {
         card.classList.remove('gone');
-        toast('Not saved: ' + err.message);
+        toast(T.t_not_saved + err.message);
         return;
       }
       setTimeout(() => { renderToday(); renderTable(); }, 200);
@@ -381,7 +430,7 @@ function visible() {
 
 function renderTable() {
   const rows = visible();
-  $('#count').textContent = rows.length + ' of ' + DATA.jobs.length;
+  $('#count').textContent = `${rows.length} ${T.of} ${DATA.jobs.length}`;
   $('#tbody').innerHTML = rows.map(j => `
     <tr data-id="${j.id}" class="${selected === j.id ? 'sel' : ''}">
       <td><span class="chip c-${j.verdict}">${j.score}</span></td>
@@ -391,7 +440,7 @@ function renderTable() {
       <td class="hide"><span class="tag">${esc(j.source)}</span></td>
       <td>${j.status ? `<span class="tag st">${esc(j.status)}</span>` : ''}${j.notes ? ' <span class="notedot" title="has a note">&#9679;</span>' : ''}</td>
       <td class="nowrap hide">${esc((j.first_seen || '').slice(0, 10))}</td>
-    </tr>`).join('') || `<tr><td colspan="7" class="empty">Nothing matches these filters.</td></tr>`;
+    </tr>`).join('') || `<tr><td colspan="7" class="empty">${T.no_match}</td></tr>`;
   $('#tbody').querySelectorAll('tr[data-id]').forEach(tr => tr.onclick = () => openJob(tr.dataset.id));
 }
 
@@ -423,50 +472,52 @@ function openJob(id) {
   if (!j) return;
   selected = id;
   const b = j.breakdown || {};
+  // Named apart from the `dim` holding each breakdown object below.
+  const dimLabel = d => T['dim_' + d] || d;
   const bars = DIMS.filter(d => b[d]).map(d => {
     const dim = b[d], pct = Math.round(100 * dim.points / dim.max);
     const hits = d === 'title' ? [...(dim.strong||[]), ...(dim.good||[]), ...(dim.weak||[])]
       : d === 'skills' ? [...(dim.must_have||[]), ...(dim.nice_to_have||[])]
       : d === 'domain' ? (dim.matched || [])
       : d === 'location' ? [dim.why] : [`${dim.detected}, ${dim.years_required}y asked`];
-    return `<div class="bar"><span>${d}</span><span class="track"><span class="fill" style="width:${pct}%"></span></span>
+    return `<div class="bar"><span>${dimLabel(d)}</span><span class="track"><span class="fill" style="width:${pct}%"></span></span>
       <span class="num">${dim.points}/${dim.max}</span></div>
       ${hits.length ? `<div class="hits">${esc(hits.slice(0, 8).join(' · '))}</div>` : ''}`;
   }).join('');
   const gates = (b.gates || []).map(g => `<div class="gate"><b>${esc(g.gate)}</b> — ${esc(g.reason)}</div>`).join('');
-  const pen = b.penalties ? `<div class="gate">penalty ${b.penalties.points} — ${esc((b.penalties.matched||[]).join(', '))}</div>` : '';
+  const pen = b.penalties ? `<div class="gate">${T.d_penalty} ${b.penalties.points} — ${esc((b.penalties.matched||[]).join(', '))}</div>` : '';
 
   $('#dtitle').textContent = j.title;
-  $('#dco').innerHTML = `${esc(j.company)} · ${esc(j.location || '–')} · <a href="${esc(j.url)}" target="_blank" rel="noopener">open posting &#8599;</a>`;
+  $('#dco').innerHTML = `${esc(j.company)} · ${esc(j.location || '–')} · <a href="${esc(j.url)}" target="_blank" rel="noopener">${T.open_posting}</a>`;
   $('#dbody').innerHTML = `
-    <div class="dsec"><h3>Fit — ${j.score}/100, ${j.verdict}</h3>${bars}${gates}${pen}
+    <div class="dsec"><h3>${fmt('fit_head', {score: j.score, verdict: j.verdict})}</h3>${bars}${gates}${pen}
       <dl class="meta">
-        <dt>track</dt><dd>${esc(j.track)}</dd>
-        <dt>source</dt><dd>${esc(j.source)}</dd>
-        <dt>first seen</dt><dd>${esc((j.first_seen||'').slice(0,10))}</dd>
-        <dt>posting language</dt><dd>${esc(b.language || '–')}</dd>
+        <dt>${T.d_track}</dt><dd>${esc(j.track)}</dd>
+        <dt>${T.d_source}</dt><dd>${esc(j.source)}</dd>
+        <dt>${T.d_first_seen}</dt><dd>${esc((j.first_seen||'').slice(0,10))}</dd>
+        <dt>${T.d_language}</dt><dd>${esc(b.language || '–')}</dd>
       </dl></div>
-    <div class="dsec"><h3>Your notes</h3>
+    <div class="dsec"><h3>${T.your_notes}</h3>
       ${DATA.interactive
-        ? `<textarea id="note" placeholder="What matters about this one — who to mention, what to check, why you passed.">${esc(j.notes || '')}</textarea>
+        ? `<textarea id="note" placeholder="${T.notes_ph}">${esc(j.notes || '')}</textarea>
            <div class="row" style="margin-top:8px">
              <select id="dstatus">${['', ...DATA.statuses].map(s =>
-               `<option value="${s}"${s === (j.status||'') ? ' selected' : ''}>${s || 'no status'}</option>`).join('')}</select>
+               `<option value="${s}"${s === (j.status||'') ? ' selected' : ''}>${s || T.no_status}</option>`).join('')}</select>
              <button class="btn pri" id="save">Save</button>
              <span id="saved" style="color:var(--ink-3);font-size:12px"></span>
            </div>`
-        : `<div class="readonly">Read-only export. Run <code>python3 -m jsa serve</code> to edit statuses and notes here.</div>
+        : `<div class="readonly">${T.readonly}</div>
            ${j.notes ? `<div class="desc" style="margin-top:9px">${esc(j.notes)}</div>` : ''}`}
     </div>
-    <div class="dsec"><h3>Next step</h3>
+    <div class="dsec"><h3>${T.next_step}</h3>
       <code class="cmd">python3 -m jsa brief ${j.id.slice(0,8)}</code>
       <code class="cmd">python3 -m jsa docs ${j.id.slice(0,8)} --overlay &lt;overlay.json&gt;</code>
       <button class="btn" id="copy" style="margin-top:9px">Copy job id</button></div>
-    ${j.description ? `<div class="dsec"><h3>Posting</h3><div class="desc">${esc(j.description)}</div></div>` : ''}`;
+    ${j.description ? `<div class="dsec"><h3>${T.posting}</h3><div class="desc">${esc(j.description)}</div></div>` : ''}`;
 
   $('#copy').onclick = async () => {
-    try { await navigator.clipboard.writeText(j.id); toast('Job id copied'); }
-    catch { toast('Copy failed — select it by hand'); }
+    try { await navigator.clipboard.writeText(j.id); toast(T.t_copied); }
+    catch { toast(T.t_copy_failed); }
   };
   if (DATA.interactive) $('#save').onclick = () => save(j);
   $('#scrim').classList.add('open'); $('#drawer').classList.add('open');
@@ -491,10 +542,10 @@ async function save(j) {
     if (!res.ok) throw new Error(await res.text());
     const updated = await res.json();
     Object.assign(j, updated);
-    toast('Saved to the database');
+    toast(T.t_saved);
     renderTable();
   } catch (err) {
-    toast('Not saved: ' + err.message);
+    toast(T.t_not_saved + err.message);
   } finally { $('#save').disabled = false; }
 }
 
@@ -507,17 +558,17 @@ function paintRun(s) {
   runOut.textContent = s.lines.join('\n');
   runOut.scrollTop = runOut.scrollHeight;
   if (s.running) {
-    runState.textContent = 'running…';
+    runState.textContent = T.run_running;
     runBtn.disabled = true;
-    runBtn.innerHTML = '<span class="spin"></span>Running';
+    runBtn.innerHTML = '<span class="spin"></span>' + T.running;
   } else {
     runBtn.disabled = false;
-    runBtn.textContent = 'Run pipeline';
+    runBtn.textContent = T.run;
     if (s.returncode === 0) {
-      runState.innerHTML = 'finished — <a href="#" id="rl">reload to see the new postings</a>';
+      runState.innerHTML = T.run_done;
       $('#rl').onclick = e => { e.preventDefault(); location.reload(); };
     } else if (s.returncode !== null) {
-      runState.textContent = 'stopped with exit code ' + s.returncode;
+      runState.textContent = fmt('run_failed', {code: s.returncode});
     }
   }
   return s.running;
@@ -537,16 +588,16 @@ async function watchRun() {
 if (DATA.interactive) {
   runBtn.onclick = async () => {
     runBtn.disabled = true;
-    runBtn.innerHTML = '<span class="spin"></span>Starting';
+    runBtn.innerHTML = '<span class="spin"></span>' + T.starting;
     try {
       const res = await fetch('api/run', {method: 'POST'});
-      if (res.status === 409) { toast('A run is already in progress'); }
+      if (res.status === 409) { toast(T.t_in_progress); }
       else if (!res.ok) throw new Error(await res.text());
       paintRun(await res.json());
       watchRun();
     } catch (err) {
-      toast('Could not start: ' + err.message);
-      runBtn.disabled = false; runBtn.textContent = 'Run pipeline';
+      toast(T.t_cannot_start + err.message);
+      runBtn.disabled = false; runBtn.textContent = T.run;
     }
   };
   // A run started before this page loaded (or in another tab) keeps streaming.
@@ -559,14 +610,14 @@ function toast(msg) {
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
 }
 
-renderTable();
-renderToday();
+/* One entry point: translating also re-renders everything that carries text. */
+applyLang(LANG);
 """
 
 
-def _options(values: list[str], label: str) -> str:
+def _options(values: list[str], label: str, key: str) -> str:
     opts = "".join(f'<option value="{html.escape(v)}">{html.escape(v)}</option>' for v in values)
-    return f'<option value="">{html.escape(label)}</option>{opts}'
+    return f'<option value="" data-i18n="{key}">{html.escape(label)}</option>{opts}'
 
 
 def render_page(data: dict[str, Any], charts: dict[str, str]) -> str:
@@ -574,26 +625,32 @@ def render_page(data: dict[str, Any], charts: dict[str, str]) -> str:
     jobs = data["jobs"]
     counts, stats = data["counts"], data["stats"]
     kpis = [
-        ("postings seen", counts["jobs"]),
-        ("cleared gates", len([j for j in jobs if j["verdict"] != "reject"])),
-        ("in tracker", counts["applications"]),
-        ("submitted", stats["submitted"]),
-        ("replies", stats["responded"]),
-        ("response rate", f"{stats['response_rate']:.0%}" if stats["response_rate"] is not None else "–"),
-        ("median reply", f"{stats['median_response_days']}d" if stats["median_response_days"] is not None else "–"),
+        ("kpi_seen", "postings seen", counts["jobs"]),
+        ("kpi_cleared", "cleared gates", len([j for j in jobs if j["verdict"] != "reject"])),
+        ("kpi_tracked", "in tracker", counts["applications"]),
+        ("kpi_submitted", "submitted", stats["submitted"]),
+        ("kpi_replies", "replies", stats["responded"]),
+        ("kpi_rate", "response rate",
+         f"{stats['response_rate']:.0%}" if stats["response_rate"] is not None else "–"),
+        ("kpi_median", "median reply",
+         f"{stats['median_response_days']}d" if stats["median_response_days"] is not None else "–"),
     ]
     kpi_html = "".join(
         f'<div class="kpi"><div class="n">{html.escape(str(v))}</div>'
-        f'<div class="k">{html.escape(k)}</div></div>' for k, v in kpis
+        f'<div class="k" data-i18n="{key}">{html.escape(k)}</div></div>'
+        for key, k, v in kpis
     )
     tracks = sorted({j["track"] for j in jobs})
     countries = sorted({j["country"] or "–" for j in jobs})
     sources = sorted({j["source"] for j in jobs})
-    live = ('<span class="livedot"></span>live — edits save to the database' if data["interactive"]
-            else '<span class="livedot off"></span>static export')
+    live = ('<span class="livedot"></span><span data-i18n="live">live</span>'
+            if data["interactive"]
+            else '<span class="livedot off"></span><span data-i18n="static">static export</span>')
+    lang_options = "".join(
+        f'<option value="{code}">{name}</option>' for code, name in LANGUAGES.items()
+    )
     run_disabled = "" if data["interactive"] else " disabled"
-    run_title = ("" if data["interactive"]
-                 else ' title="Static export. Run `python3 -m jsa serve` to start a run from here."')
+    run_title = "" if data["interactive"] else ' data-i18n-title="run_title_static"'
 
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
@@ -602,21 +659,22 @@ def render_page(data: dict[str, Any], charts: dict[str, str]) -> str:
 <style>{CSS}</style></head><body>
 
 <div class="topbar"><div class="topbar-in">
-  <div class="brand"><b>Job pipeline</b><span>{live}</span></div>
+  <div class="brand"><b data-i18n="brand">Job pipeline</b><span>{live}</span></div>
   <div class="actions">
-    <button class="runbtn" id="run"{run_disabled}{run_title}>Run pipeline</button>
-    <button class="runbtn ghost" id="reload">Refresh</button>
+    <button class="runbtn" id="run"{run_disabled} data-i18n="run"{run_title}>Run pipeline</button>
+    <button class="runbtn ghost" id="reload" data-i18n="refresh">Refresh</button>
   </div>
   <div class="search">
     <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-    <input id="q" placeholder="Search role, company, location, notes…" autocomplete="off">
+    <input id="q" data-i18n-ph="search" autocomplete="off">
   </div>
   <div class="spacer"></div>
-  <button class="iconbtn" id="theme">Theme</button>
+  <select class="langsel" id="lang" aria-label="Language">{lang_options}</select>
+  <button class="iconbtn" id="theme" data-i18n="theme">Theme</button>
 </div></div>
 
 <div class="runlog" id="runlog" hidden><div class="inner">
-  <h4><span>Pipeline run</span><span id="runstate">starting…</span></h4>
+  <h4><span data-i18n="run_head">Pipeline run</span><span id="runstate"></span></h4>
   <pre id="runout"></pre>
 </div></div>
 
@@ -624,20 +682,20 @@ def render_page(data: dict[str, Any], charts: dict[str, str]) -> str:
   <div class="kpis">{kpi_html}</div>
 
   <div class="tabs" role="tablist">
-    <button class="tab" role="tab" aria-selected="true" data-target="today">Start here</button>
-    <button class="tab" role="tab" aria-selected="false" data-target="shortlist">All postings</button>
-    <button class="tab" role="tab" aria-selected="false" data-target="pipeline">Pipeline</button>
-    <button class="tab" role="tab" aria-selected="false" data-target="insights">Insights</button>
+    <button class="tab" role="tab" aria-selected="true" data-target="today" data-i18n="tab_today">Start here</button>
+    <button class="tab" role="tab" aria-selected="false" data-target="shortlist" data-i18n="tab_all">All postings</button>
+    <button class="tab" role="tab" aria-selected="false" data-target="pipeline" data-i18n="tab_pipeline">Pipeline</button>
+    <button class="tab" role="tab" aria-selected="false" data-target="insights" data-i18n="tab_insights">Insights</button>
   </div>
 
   <section data-view="today">
     <div class="steps" id="steps">
-      <button class="dismiss" id="hidesteps" title="Hide this">&times;</button>
-      <div class="step"><i>1</i><b>Triage</b><span>Read the cards below. Keep the ones worth an
+      <button class="dismiss" id="hidesteps" data-i18n-title="hide">&times;</button>
+      <div class="step"><i>1</i><b data-i18n="step1_t">Triage</b><span data-i18n-html="step1_b">Read the cards below. Keep the ones worth an
         hour, dismiss the rest. That is the whole job of this screen.</span></div>
-      <div class="step"><i>2</i><b>Prepare</b><span>For anything you keep, ask Claude Code:
+      <div class="step"><i>2</i><b data-i18n="step2_t">Prepare</b><span data-i18n-html="step2_b">For anything you keep, ask Claude Code:
         <code>/apply &lt;id&gt;</code>. It writes the CV and letter and builds the packet.</span></div>
-      <div class="step"><i>3</i><b>Send, then log it</b><span>You press send. Then mark it
+      <div class="step"><i>3</i><b data-i18n="step3_t">Send, then log it</b><span data-i18n-html="step3_b">You press send. Then mark it
         submitted here, so the Pipeline tab can tell you what actually works.</span></div>
     </div>
     <div class="lead"><h2 id="todayhead"></h2><span id="todaysub"></span></div>
@@ -646,20 +704,20 @@ def render_page(data: dict[str, Any], charts: dict[str, str]) -> str:
 
   <section data-view="shortlist" hidden>
     <div class="filters">
-      <select id="fTrack">{_options(tracks, "All tracks")}</select>
-      <select id="fVerdict"><option value="">All verdicts</option><option value="pass">pass</option>
+      <select id="fTrack">{_options(tracks, "All tracks", "f_tracks")}</select>
+      <select id="fVerdict"><option value="" data-i18n="f_verdicts">All verdicts</option><option value="pass">pass</option>
         <option value="review">review</option><option value="reject">reject</option></select>
-      <select id="fCountry">{_options(countries, "Anywhere")}</select>
-      <select id="fSource">{_options(sources, "All sources")}</select>
-      <select id="fStatus">{_options(STATUSES, "Any status")}<option value="__none">Not yet tracked</option></select>
+      <select id="fCountry">{_options(countries, "Anywhere", "f_countries")}</select>
+      <select id="fSource">{_options(sources, "All sources", "f_sources")}</select>
+      <select id="fStatus">{_options(STATUSES, "Any status", "f_statuses")}<option value="__none" data-i18n="f_untracked">Not yet tracked</option></select>
       <span class="count" id="count"></span>
     </div>
     <div class="card"><div class="tablewrap"><table>
       <thead><tr>
-        <th data-sort="score">Fit</th><th data-sort="title">Role</th>
-        <th data-sort="location" class="hide">Location</th><th data-sort="track" class="hide">Track</th>
-        <th data-sort="source" class="hide">Source</th><th data-sort="status">Status</th>
-        <th data-sort="first_seen" class="hide">Seen</th>
+        <th data-sort="score" data-i18n="th_fit">Fit</th><th data-sort="title" data-i18n="th_role">Role</th>
+        <th data-sort="location" class="hide" data-i18n="th_location">Location</th><th data-sort="track" class="hide" data-i18n="th_track">Track</th>
+        <th data-sort="source" class="hide" data-i18n="th_source">Source</th><th data-sort="status" data-i18n="th_status">Status</th>
+        <th data-sort="first_seen" class="hide" data-i18n="th_seen">Seen</th>
       </tr></thead><tbody id="tbody"></tbody>
     </table></div></div>
   </section>
@@ -668,20 +726,18 @@ def render_page(data: dict[str, Any], charts: dict[str, str]) -> str:
 
   <section data-view="insights" hidden>
     <div class="grid">
-      <div class="card"><div class="panelhead"><h2>Application funnel</h2></div>
+      <div class="card"><div class="panelhead"><h2 data-i18n="panel_funnel">Application funnel</h2></div>
         <div class="panelbody">{charts['funnel']}</div></div>
-      <div class="card"><div class="panelhead"><h2>Replies by positioning track</h2></div>
+      <div class="card"><div class="panelhead"><h2 data-i18n="panel_tracks">Replies by positioning track</h2></div>
         <div class="panelbody">{charts['tracks']}</div></div>
-      <div class="card"><div class="panelhead"><h2>Where postings come from</h2></div>
+      <div class="card"><div class="panelhead"><h2 data-i18n="panel_sources">Where postings come from</h2></div>
         <div class="panelbody">{charts['sources']}</div></div>
-      <div class="card"><div class="panelhead"><h2>Fit score, cleared postings</h2></div>
+      <div class="card"><div class="panelhead"><h2 data-i18n="panel_scores">Fit score, cleared postings</h2></div>
         <div class="panelbody">{charts['scores']}</div></div>
     </div>
   </section>
 
-  <footer>Generated {html.escape(data['generated'][:16].replace('T', ' '))} ·
-    {counts['jobs']} postings from {len(stats['by_source'])} sources · scoring v{html.escape(data['scorer_version'])} ·
-    self-contained, no network calls</footer>
+  <footer id="foot"></footer>
 </div>
 
 <div class="scrim" id="scrim"></div>
@@ -689,13 +745,14 @@ def render_page(data: dict[str, Any], charts: dict[str, str]) -> str:
   <div class="dhead">
     <div class="row" style="justify-content:space-between;align-items:flex-start">
       <div><h2 id="dtitle"></h2><div class="co" id="dco"></div></div>
-      <button class="iconbtn" id="dclose">Close</button>
+      <button class="iconbtn" id="dclose" data-i18n="close">Close</button>
     </div>
   </div>
   <div class="dbody" id="dbody"></div>
 </aside>
 <div class="toast" id="toast"></div>
 
-<script>window.__JSA__ = {json.dumps(data, ensure_ascii=False)};</script>
+<script>window.__JSA__ = {json.dumps(data, ensure_ascii=False)};
+window.__I18N__ = {json.dumps(bundle(), ensure_ascii=False)};</script>
 <script>{JS}</script>
 </body></html>"""
