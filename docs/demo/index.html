@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Job pipeline · job-search-agent</title>
+<style>
+:root{
+  --bg:#f4f5f7; --panel:#ffffff; --panel-2:#fafbfc; --ink:#16181d; --ink-2:#5b6270;
+  --ink-3:#878e9c; --line:#e4e6ea; --line-2:#eef0f3; --accent:#1f6feb; --accent-soft:#e8f0fe;
+  --pass:#1a7f4b; --pass-bg:#e6f4ec; --review:#8a5a12; --review-bg:#fdf3e0;
+  --reject:#6b7280; --reject-bg:#f0f1f3; --shadow:0 1px 2px rgba(16,20,30,.06),0 8px 24px rgba(16,20,30,.06);
+  --radius:12px; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1115; --panel:#171a21; --panel-2:#1c2029; --ink:#e8eaee; --ink-2:#a2a9b6;
+    --ink-3:#767d8b; --line:#262b35; --line-2:#20242c; --accent:#5b9cff; --accent-soft:#16233a;
+    --pass:#5fd39a; --pass-bg:#16301f; --review:#e0b060; --review-bg:#332612;
+    --reject:#8b93a1; --reject-bg:#20242c;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1115; --panel:#171a21; --panel-2:#1c2029; --ink:#e8eaee; --ink-2:#a2a9b6;
+  --ink-3:#767d8b; --line:#262b35; --line-2:#20242c; --accent:#5b9cff; --accent-soft:#16233a;
+  --pass:#5fd39a; --pass-bg:#16301f; --review:#e0b060; --review-bg:#332612;
+  --reject:#8b93a1; --reject-bg:#20242c;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3); color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+button{font:inherit;cursor:pointer}
+
+.topbar{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--panel) 88%,transparent);
+  backdrop-filter:saturate(160%) blur(12px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1400px;margin:0 auto;padding:12px 24px;display:flex;gap:16px;align-items:center}
+.brand{display:flex;flex-direction:column;line-height:1.25;margin-right:6px}
+.brand b{font-size:15px;letter-spacing:-.01em}
+.brand span{font-size:11.5px;color:var(--ink-3)}
+.search{flex:1;max-width:460px;position:relative}
+.search input{width:100%;padding:8px 12px 8px 32px;border:1px solid var(--line);border-radius:9px;
+  background:var(--panel-2);color:var(--ink);font-size:13px}
+.search input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.search svg{position:absolute;left:10px;top:9px;width:14px;height:14px;stroke:var(--ink-3);fill:none;stroke-width:2}
+.spacer{flex:1}
+.iconbtn{background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:7px 11px;
+  color:var(--ink-2);font-size:12.5px}
+.iconbtn:hover{border-color:var(--accent);color:var(--accent)}
+.langsel{background:var(--panel-2);border:1px solid var(--line);border-radius:9px;
+  padding:7px 9px;color:var(--ink-2);font-size:12.5px;cursor:pointer}
+.langsel:hover{border-color:var(--accent);color:var(--accent)}
+.livedot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--pass);margin-right:6px}
+.livedot.off{background:var(--ink-3)}
+.actions{display:flex;gap:8px}
+.runbtn{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:9px;
+  padding:7px 14px;font-size:12.5px;font-weight:550;display:inline-flex;align-items:center;gap:7px}
+.runbtn:hover:not(:disabled){filter:brightness(1.08)}
+.runbtn:disabled{opacity:.55;cursor:not-allowed}
+.runbtn.ghost{background:var(--panel-2);border-color:var(--line);color:var(--ink-2)}
+.runbtn.ghost:hover:not(:disabled){border-color:var(--accent);color:var(--accent);filter:none}
+.spin{width:12px;height:12px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;
+  border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.runlog{max-width:1400px;margin:0 auto;padding:0 24px}
+.runlog .inner{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 16px;margin-top:16px}
+.runlog pre{margin:0;max-height:230px;overflow:auto;font:11.5px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;
+  color:var(--ink-2);white-space:pre-wrap}
+.runlog h4{margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);
+  display:flex;justify-content:space-between;align-items:center}
+
+.wrap{max-width:1400px;margin:0 auto;padding:22px 24px 80px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px;margin-bottom:18px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:13px 15px}
+.kpi .n{font-size:23px;font-weight:600;letter-spacing:-.025em;line-height:1.15}
+.kpi .k{color:var(--ink-3);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
+
+.tabs{display:flex;gap:3px;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:3px;width:fit-content;margin-bottom:16px}
+.tab{border:0;background:transparent;color:var(--ink-2);padding:7px 15px;border-radius:7px;font-size:13px;font-weight:500}
+.tab[aria-selected="true"]{background:var(--accent-soft);color:var(--accent)}
+
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+select{font:inherit;font-size:12.5px;padding:6px 9px;border:1px solid var(--line);border-radius:8px;
+  background:var(--panel);color:var(--ink)}
+.count{color:var(--ink-3);font-size:12.5px;margin-left:auto}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.tablewrap{overflow:auto;max-height:calc(100vh - 330px);border-radius:var(--radius)}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+thead th{position:sticky;top:0;z-index:2;background:var(--panel);text-align:left;font-weight:600;
+  font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);
+  padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none}
+thead th:hover{color:var(--ink)}
+tbody td{padding:11px 14px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+tbody tr{cursor:pointer}
+tbody tr:hover td{background:var(--panel-2)}
+tbody tr.sel td{background:var(--accent-soft)}
+.role{font-weight:550;letter-spacing:-.005em}
+.sub{color:var(--ink-3);font-size:11.5px;margin-top:1px}
+.chip{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:3px 8px;
+  border-radius:7px;font-size:12px;font-weight:650;font-variant-numeric:tabular-nums}
+.c-pass{background:var(--pass-bg);color:var(--pass)} .c-review{background:var(--review-bg);color:var(--review)}
+.c-reject{background:var(--reject-bg);color:var(--reject)}
+.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;
+  background:var(--panel-2);border:1px solid var(--line);color:var(--ink-2);white-space:nowrap}
+.tag.st{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.nowrap{white-space:nowrap;color:var(--ink-3);font-size:12px;font-variant-numeric:tabular-nums}
+.notedot{color:var(--accent);font-size:11px}
+
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:18px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;position:relative}
+.step b{display:block;font-size:13px;margin-bottom:3px}
+.step span{color:var(--ink-2);font-size:12.5px;line-height:1.5}
+.step i{position:absolute;top:14px;right:15px;font-style:normal;font-size:11px;font-weight:700;
+  color:var(--ink-3);background:var(--panel-2);border:1px solid var(--line);border-radius:50%;
+  width:20px;height:20px;display:grid;place-items:center}
+.lead{display:flex;align-items:baseline;gap:10px;margin:0 0 14px;flex-wrap:wrap}
+.lead h2{margin:0;font-size:19px;letter-spacing:-.02em}
+.lead span{color:var(--ink-2);font-size:13px}
+.deck{display:grid;gap:12px;margin-bottom:20px}
+.pick{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:18px 20px;display:grid;grid-template-columns:auto 1fr;gap:16px;
+  transition:opacity .2s ease,transform .2s ease}
+.pick.gone{opacity:0;transform:translateX(24px)}
+.pick .big{font-size:26px;font-weight:700;letter-spacing:-.03em;width:58px;height:58px;border-radius:14px;
+  display:grid;place-items:center;font-variant-numeric:tabular-nums}
+.pick h3{margin:0;font-size:16px;letter-spacing:-.01em;line-height:1.3}
+.pick .where{color:var(--ink-2);font-size:13px;margin:3px 0 9px}
+.pick .why{font-size:13.5px;line-height:1.6;margin:0 0 4px}
+.pick .gap{font-size:12.5px;color:var(--ink-2);margin:0 0 12px}
+.pick .gap b{color:var(--review);font-weight:600}
+.pick .acts{display:flex;gap:8px;flex-wrap:wrap}
+.done{background:var(--panel);border:1px dashed var(--line);border-radius:var(--radius);
+  padding:34px 20px;text-align:center;color:var(--ink-2)}
+.done b{display:block;font-size:15px;color:var(--ink);margin-bottom:5px}
+.dismiss{position:absolute;top:8px;right:8px;background:none;border:0;color:var(--ink-3);font-size:16px;
+  line-height:1;padding:4px 7px;border-radius:6px}
+.dismiss:hover{background:var(--panel-2);color:var(--ink)}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;align-items:start}
+.col{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px}
+.col h3{margin:0 0 10px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);
+  display:flex;justify-content:space-between}
+.jc{border:1px solid var(--line);border-radius:9px;padding:10px;margin-bottom:8px;background:var(--panel-2);cursor:pointer}
+.jc:hover{border-color:var(--accent)}
+.jc b{display:block;font-size:12.5px;font-weight:600;line-height:1.35}
+.jc span{display:block;color:var(--ink-3);font-size:11px;margin-top:3px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.panelhead{padding:15px 18px 4px}
+.panelhead h2{margin:0;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3)}
+.panelbody{padding:10px 18px 18px}
+.chart{width:100%;height:auto;display:block}
+.chart .lbl{font-size:11px;fill:var(--ink-2)} .chart .val{font-size:11px;fill:var(--ink-3);font-weight:600}
+.empty{color:var(--ink-3);font-style:italic;font-size:13px;margin:6px 0}
+
+.scrim{position:fixed;inset:0;background:rgba(10,12,16,.38);opacity:0;pointer-events:none;
+  transition:opacity .18s ease;z-index:40}
+.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:min(560px,94vw);background:var(--panel);
+  border-left:1px solid var(--line);transform:translateX(100%);transition:transform .22s cubic-bezier(.4,0,.2,1);
+  z-index:50;display:flex;flex-direction:column;box-shadow:-16px 0 48px rgba(10,12,16,.14)}
+.drawer.open{transform:none}
+.dhead{padding:20px 22px 14px;border-bottom:1px solid var(--line)}
+.dhead h2{margin:0 0 4px;font-size:17px;line-height:1.3;letter-spacing:-.015em}
+.dhead .co{color:var(--ink-2);font-size:13px}
+.dbody{overflow-y:auto;padding:18px 22px 28px;flex:1}
+.dsec{margin-bottom:22px}
+.dsec h3{margin:0 0 10px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3)}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:12.5px}
+.meta dt{color:var(--ink-3)} .meta dd{margin:0}
+.bar{display:grid;grid-template-columns:74px 1fr 54px;gap:9px;align-items:center;margin-bottom:7px;font-size:12px}
+.bar .track{display:block;height:7px;border-radius:4px;background:var(--line-2);overflow:hidden}
+.bar .fill{display:block;height:100%;border-radius:4px;background:var(--accent);min-width:2px}
+.bar .num{text-align:right;color:var(--ink-3);font-variant-numeric:tabular-nums;font-size:11.5px}
+.hits{font-size:11.5px;color:var(--ink-3);margin:-3px 0 9px 83px;line-height:1.45}
+.gate{background:var(--reject-bg);border-left:2px solid var(--reject);padding:8px 11px;border-radius:0 7px 7px 0;
+  font-size:12.5px;color:var(--ink-2);margin-bottom:7px}
+.desc{font-size:12.5px;color:var(--ink-2);white-space:pre-wrap;max-height:230px;overflow-y:auto;
+  background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:12px;line-height:1.55}
+textarea{width:100%;min-height:82px;font:inherit;font-size:13px;padding:10px;border:1px solid var(--line);
+  border-radius:9px;background:var(--panel-2);color:var(--ink);resize:vertical}
+textarea:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--panel-2);color:var(--ink);border-radius:9px;padding:8px 13px;font-size:12.5px}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.pri:hover{filter:brightness(1.08);color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+code{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:2px 6px;
+  font:12px ui-monospace,SFMono-Regular,Menlo,monospace}
+.cmd{display:block;padding:9px 11px;margin-top:6px;overflow-x:auto;white-space:nowrap}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);
+  color:var(--bg);padding:10px 18px;border-radius:10px;font-size:13px;z-index:60;transition:transform .2s ease}
+.toast.show{transform:translateX(-50%)}
+.readonly{background:var(--review-bg);color:var(--review);border-radius:9px;padding:9px 12px;font-size:12.5px}
+footer{color:var(--ink-3);font-size:11.5px;margin-top:26px;text-align:center}
+@media (max-width:720px){
+  .topbar-in{flex-wrap:wrap;padding:10px 14px} .wrap{padding:16px 14px 60px}
+  .search{max-width:none;order:3;flex-basis:100%} .tablewrap{max-height:none}
+  th.hide,td.hide{display:none}
+}
+</style></head><body>
+
+<div class="topbar"><div class="topbar-in">
+  <div class="brand"><b data-i18n="brand">Job pipeline</b><span><span class="livedot off"></span><span data-i18n="static">static export</span></span></div>
+  <div class="actions">
+    <button class="runbtn" id="run" disabled data-i18n="run" data-i18n-title="run_title_static">Run pipeline</button>
+    <button class="runbtn ghost" id="reload" data-i18n="refresh">Refresh</button>
+  </div>
+  <div class="search">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <input id="q" data-i18n-ph="search" autocomplete="off">
+  </div>
+  <div class="spacer"></div>
+  <select class="langsel" id="lang" aria-label="Language"><option value="en">English</option><option value="it">Italiano</option></select>
+  <button class="iconbtn" id="theme" data-i18n="theme">Theme</button>
+</div></div>
+
+<div class="runlog" id="runlog" hidden><div class="inner">
+  <h4><span data-i18n="run_head">Pipeline run</span><span id="runstate"></span></h4>
+  <pre id="runout"></pre>
+</div></div>
+
+<div class="wrap">
+  <div class="kpis"><div class="kpi"><div class="n">89</div><div class="k" data-i18n="kpi_seen">postings seen</div></div><div class="kpi"><div class="n">44</div><div class="k" data-i18n="kpi_cleared">cleared gates</div></div><div class="kpi"><div class="n">6</div><div class="k" data-i18n="kpi_tracked">in tracker</div></div><div class="kpi"><div class="n">4</div><div class="k" data-i18n="kpi_submitted">submitted</div></div><div class="kpi"><div class="n">2</div><div class="k" data-i18n="kpi_replies">replies</div></div><div class="kpi"><div class="n">50%</div><div class="k" data-i18n="kpi_rate">response rate</div></div><div class="kpi"><div class="n">0d</div><div class="k" data-i18n="kpi_median">median reply</div></div></div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-target="today" data-i18n="tab_today">Start here</button>
+    <button class="tab" role="tab" aria-selected="false" data-target="shortlist" data-i18n="tab_all">All postings</button>
+    <button class="tab" role="tab" aria-selected="false" data-target="pipeline" data-i18n="tab_pipeline">Pipeline</button>
+    <button class="tab" role="tab" aria-selected="false" data-target="insights" data-i18n="tab_insights">Insights</button>
+  </div>
+
+  <section data-view="today">
+    <div class="steps" id="steps">
+      <button class="dismiss" id="hidesteps" data-i18n-title="hide">&times;</button>
+      <div class="step"><i>1</i><b data-i18n="step1_t">Triage</b><span data-i18n-html="step1_b">Read the cards below. Keep the ones worth an
+        hour, dismiss the rest. That is the whole job of this screen.</span></div>
+      <div class="step"><i>2</i><b data-i18n="step2_t">Prepare</b><span data-i18n-html="step2_b">For anything you keep, ask Claude Code:
+        <code>/apply &lt;id&gt;</code>. It writes the CV and letter and builds the packet.</span></div>
+      <div class="step"><i>3</i><b data-i18n="step3_t">Send, then log it</b><span data-i18n-html="step3_b">You press send. Then mark it
+        submitted here, so the Pipeline tab can tell you what actually works.</span></div>
+    </div>
+    <div class="lead"><h2 id="todayhead"></h2><span id="todaysub"></span></div>
+    <div class="deck" id="deck"></div>
+  </section>
+
+  <section data-view="shortlist" hidden>
+    <div class="filters">
+      <select id="fTrack"><option value="" data-i18n="f_tracks">All tracks</option><option value="hr_advisory">hr_advisory</option><option value="people_analytics">people_analytics</option></select>
+      <select id="fVerdict"><option value="" data-i18n="f_verdicts">All verdicts</option><option value="pass">pass</option>
+        <option value="review">review</option><option value="reject">reject</option></select>
+      <select id="fCountry"><option value="" data-i18n="f_countries">Anywhere</option><option value="DE">DE</option><option value="ES">ES</option><option value="IE">IE</option><option value="IT">IT</option><option value="NL">NL</option><option value="PT">PT</option><option value="–">–</option></select>
+      <select id="fSource"><option value="" data-i18n="f_sources">All sources</option><option value="ashby">ashby</option><option value="greenhouse">greenhouse</option><option value="lever">lever</option><option value="personio">personio</option><option value="recruitee">recruitee</option><option value="smartrecruiters">smartrecruiters</option><option value="workable">workable</option></select>
+      <select id="fStatus"><option value="" data-i18n="f_statuses">Any status</option><option value="shortlisted">shortlisted</option><option value="drafted">drafted</option><option value="ready">ready</option><option value="submitted">submitted</option><option value="screening">screening</option><option value="interview">interview</option><option value="offer">offer</option><option value="rejected">rejected</option><option value="withdrawn">withdrawn</option><option value="ghosted">ghosted</option><option value="__none" data-i18n="f_untracked">Not yet tracked</option></select>
+      <span class="count" id="count"></span>
+    </div>
+    <div class="card"><div class="tablewrap"><table>
+      <thead><tr>
+        <th data-sort="score" data-i18n="th_fit">Fit</th><th data-sort="title" data-i18n="th_role">Role</th>
+        <th data-sort="location" class="hide" data-i18n="th_location">Location</th><th data-sort="track" class="hide" data-i18n="th_track">Track</th>
+        <th data-sort="source" class="hide" data-i18n="th_source">Source</th><th data-sort="status" data-i18n="th_status">Status</th>
+        <th data-sort="first_seen" class="hide" data-i18n="th_seen">Seen</th>
+      </tr></thead><tbody id="tbody"></tbody>
+    </table></div></div>
+  </section>
+
+  <section data-view="pipeline" hidden><div class="board" id="board"></div></section>
+
+  <section data-view="insights" hidden>
+    <div class="grid">
+      <div class="card"><div class="panelhead"><h2 data-i18n="panel_funnel">Application funnel</h2></div>
+        <div class="panelbody"><svg viewBox="0 0 520 232" role="img" class="chart"><text x="130" y="24.799999999999997" text-anchor="end" class="lbl">shortlisted</text><rect x="140" y="8" width="332" height="24" rx="4" fill="var(--accent)"/><text x="480" y="24.799999999999997" class="val">6</text><text x="130" y="56.8" text-anchor="end" class="lbl">drafted</text><rect x="140" y="40" width="276" height="24" rx="4" fill="var(--accent)"/><text x="424" y="56.8" class="val">5</text><text x="130" y="88.8" text-anchor="end" class="lbl">ready</text><rect x="140" y="72" width="221" height="24" rx="4" fill="var(--accent)"/><text x="369" y="88.8" class="val">4</text><text x="130" y="120.8" text-anchor="end" class="lbl">submitted</text><rect x="140" y="104" width="221" height="24" rx="4" fill="var(--accent)"/><text x="369" y="120.8" class="val">4</text><text x="130" y="152.8" text-anchor="end" class="lbl">screening</text><rect x="140" y="136" width="110" height="24" rx="4" fill="var(--accent)"/><text x="258" y="152.8" class="val">2</text><text x="130" y="184.8" text-anchor="end" class="lbl">interview</text><rect x="140" y="168" width="110" height="24" rx="4" fill="var(--accent)"/><text x="258" y="184.8" class="val">2</text><text x="130" y="216.8" text-anchor="end" class="lbl">offer</text><rect x="140" y="200" width="55" height="24" rx="4" fill="var(--accent)"/><text x="203" y="216.8" class="val">1</text></svg></div></div>
+      <div class="card"><div class="panelhead"><h2 data-i18n="panel_tracks">Replies by positioning track</h2></div>
+        <div class="panelbody"><svg viewBox="0 0 520 78" role="img" class="chart"><text x="130" y="26.799999999999997" text-anchor="end" class="lbl">hr_advisory</text><rect x="140" y="10" width="104" height="24" rx="4" fill="var(--line-2)"/><rect x="140" y="10" width="104" height="24" rx="4" fill="var(--accent)"/><text x="252" y="26.799999999999997" class="val">1/1 · 100%</text><text x="130" y="60.8" text-anchor="end" class="lbl">people_analytics</text><rect x="140" y="44" width="314" height="24" rx="4" fill="var(--line-2)"/><rect x="140" y="44" width="104" height="24" rx="4" fill="var(--accent)"/><text x="462" y="60.8" class="val">1/3 · 33%</text></svg></div></div>
+      <div class="card"><div class="panelhead"><h2 data-i18n="panel_sources">Where postings come from</h2></div>
+        <div class="panelbody"><svg viewBox="0 0 520 232" role="img" class="chart"><text x="130" y="24.799999999999997" text-anchor="end" class="lbl">ashby</text><rect x="140" y="8" width="332" height="24" rx="4" fill="var(--accent)"/><text x="480" y="24.799999999999997" class="val">21</text><text x="130" y="56.8" text-anchor="end" class="lbl">greenhouse</text><rect x="140" y="40" width="316" height="24" rx="4" fill="var(--accent)"/><text x="464" y="56.8" class="val">20</text><text x="130" y="88.8" text-anchor="end" class="lbl">lever</text><rect x="140" y="72" width="252" height="24" rx="4" fill="var(--accent)"/><text x="400" y="88.8" class="val">16</text><text x="130" y="120.8" text-anchor="end" class="lbl">recruitee</text><rect x="140" y="104" width="189" height="24" rx="4" fill="var(--accent)"/><text x="337" y="120.8" class="val">12</text><text x="130" y="152.8" text-anchor="end" class="lbl">workable</text><rect x="140" y="136" width="110" height="24" rx="4" fill="var(--accent)"/><text x="258" y="152.8" class="val">7</text><text x="130" y="184.8" text-anchor="end" class="lbl">smartrecruiters</text><rect x="140" y="168" width="110" height="24" rx="4" fill="var(--accent)"/><text x="258" y="184.8" class="val">7</text><text x="130" y="216.8" text-anchor="end" class="lbl">personio</text><rect x="140" y="200" width="94" height="24" rx="4" fill="var(--accent)"/><text x="242" y="216.8" class="val">6</text></svg></div></div>
+      <div class="card"><div class="panelhead"><h2 data-i18n="panel_scores">Fit score, cleared postings</h2></div>
+        <div class="panelbody"><svg viewBox="0 0 520 168" role="img" class="chart"><text x="130" y="24.799999999999997" text-anchor="end" class="lbl">40–49</text><rect x="140" y="8" width="76" height="24" rx="4" fill="var(--accent)"/><text x="224" y="24.799999999999997" class="val">3</text><text x="130" y="56.8" text-anchor="end" class="lbl">50–59</text><rect x="140" y="40" width="153" height="24" rx="4" fill="var(--accent)"/><text x="301" y="56.8" class="val">6</text><text x="130" y="88.8" text-anchor="end" class="lbl">60–69</text><rect x="140" y="72" width="229" height="24" rx="4" fill="var(--accent)"/><text x="377" y="88.8" class="val">9</text><text x="130" y="120.8" text-anchor="end" class="lbl">80–89</text><rect x="140" y="104" width="332" height="24" rx="4" fill="var(--accent)"/><text x="480" y="120.8" class="val">13</text><text x="130" y="152.8" text-anchor="end" class="lbl">90–99</text><rect x="140" y="136" width="332" height="24" rx="4" fill="var(--accent)"/><text x="480" y="152.8" class="val">13</text></svg></div></div>
+    </div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Job detail">
+  <div class="dhead">
+    <div class="row" style="justify-content:space-between;align-items:flex-start">
+      <div><h2 id="dtitle"></h2><div class="co" id="dco"></div></div>
+      <button class="iconbtn" id="dclose" data-i18n="close">Close</button>
+    </div>
+  </div>
+  <div class="dbody" id="dbody"></div>
+</aside>
+<div class="toast" id="toast"></div>
+
+<script>window.__JSA__ = {"generated": "2026-09-21T10:28:40+00:00", "interactive": false, "scorer_version": "1.0.0", "statuses": ["shortlisted", "drafted", "ready", "submitted", "screening", "interview", "offer", "rejected", "withdrawn", "ghosted"], "counts": {"jobs": 89, "open_jobs": 89, "scored": 89, "applications": 6, "submitted": 4}, "stats": {"by_status": {"submitted": 2, "interview": 1, "rejected": 1, "shortlisted": 1, "drafted": 1}, "submitted": 4, "responded": 2, "response_rate": 0.5, "median_response_days": 0, "by_track": {"people_analytics": {"submitted": 3, "responded": 1}, "hr_advisory": {"submitted": 1, "responded": 1}}, "by_source": {"workable": 7, "greenhouse": 20, "lever": 16, "recruitee": 12, "personio": 6, "ashby": 21, "smartrecruiters": 7}, "score_bands": {"40": 3, "50": 6, "60": 9, "80": 13, "90": 13}}, "jobs": [{"id": "7cce9752dbbdb937", "company": "Calder Energy", "title": "People Analytics Analyst", "location": "Lisbon, Portugal", "country": "PT", "remote": "remote", "url": "https://example.invalid/jobs/62", "source": "ashby", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 100, "verdict": "pass", "track": "people_analytics", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people analytics analyst"], "good": [], "weak": []}, "skills": {"points": 30.0, "max": 30, "must_have": ["python", "sql", "reporting"], "nice_to_have": ["attrition", "retention", "engagement survey", "pay equity", "gdpr", "pay transparency", "headcount"]}, "domain": {"points": 15.0, "max": 15, "matched": ["people analytics", "hr", "employee", "people team"]}, "location": {"points": 15, "max": 15, "why": "remote", "value": "Lisbon, Portugal", "remote": "remote"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 100}, "status": "submitted", "notes": "", "description": "About Calder Energy\n\nYou will handle employee data under GDPR and design the confidentiality thresholds yourself.\nExperience with engagement survey analysis, pay equity or pay transparency reporting is a strong plus.\nYou will build the reporting layer for our people team: attrition, retention and headcount.\nExpect to work in SQL and Python, publish dashboards, and present findings to the HR leadership team."}, {"id": "ebf7cff6141425e3", "company": "Auralis", "title": "People Analytics Analyst", "location": "Milan, Italy", "country": "IT", "remote": "onsite", "url": "https://example.invalid/jobs/45", "source": "recruitee", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 97, "verdict": "pass", "track": "people_analytics", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people analytics analyst"], "good": [], "weak": []}, "skills": {"points": 30.0, "max": 30, "must_have": ["python", "sql", "reporting"], "nice_to_have": ["attrition", "retention", "engagement survey", "pay equity", "gdpr", "pay transparency", "headcount"]}, "domain": {"points": 15.0, "max": 15, "matched": ["people analytics", "hr", "employee", "people team"]}, "location": {"points": 12.0, "max": 15, "why": "target country (IT)", "value": "Milan, Italy", "remote": "onsite"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 97}, "status": "submitted", "notes": "", "description": "About Auralis\n\nExperience with engagement survey analysis, pay equity or pay transparency reporting is a strong plus.\nYou will build the reporting layer for our people team: attrition, retention and headcount.\nExpect to work in SQL and Python, publish dashboards, and present findings to the HR leadership team.\nYou will handle employee data under GDPR and design the confidentiality thresholds yourself."}, {"id": "ffedf3d824f31b4b", "company": "Vessel Bank", "title": "People Analytics Analyst", "location": "Dublin, Ireland", "country": "IE", "remote": "onsite", "url": "https://example.invalid/jobs/76", "source": "lever", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 97, "verdict": "pass", "track": "people_analytics", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people analytics analyst"], "good": [], "weak": []}, "skills": {"points": 30.0, "max": 30, "must_have": ["python", "sql", "reporting"], "nice_to_have": ["attrition", "retention", "engagement survey", "pay equity", "gdpr", "pay transparency", "headcount"]}, "domain": {"points": 15.0, "max": 15, "matched": ["people analytics", "hr", "employee", "people team"]}, "location": {"points": 12.0, "max": 15, "why": "target country (IE)", "value": "Dublin, Ireland", "remote": "onsite"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 97}, "status": "interview", "notes": "", "description": "About Vessel Bank\n\nYou will build the reporting layer for our people team: attrition, retention and headcount.\nExpect to work in SQL and Python, publish dashboards, and present findings to the HR leadership team.\nExperience with engagement survey analysis, pay equity or pay transparency reporting is a strong plus.\nWe work in English across all our markets.\nYou will handle employee data under GDPR and design the confidentiality thresholds yourself."}, {"id": "9223934ef43c25dd", "company": "Northwind Labs", "title": "People Operations Coordinator", "location": "Remote - EU", "country": "", "remote": "remote", "url": "https://example.invalid/jobs/4", "source": "greenhouse", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 93, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people operations"], "good": [], "weak": ["people"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "employee", "people operations"]}, "location": {"points": 15, "max": 15, "why": "remote", "value": "Remote - EU", "remote": "remote"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 93}, "status": "rejected", "notes": "", "description": "About Northwind Labs\n\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required.\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs."}, {"id": "99ffdb6598929061", "company": "Meridian Retail", "title": "People Operations Partner", "location": "Rotterdam, Netherlands", "country": "NL", "remote": "onsite", "url": "https://example.invalid/jobs/82", "source": "workable", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 93, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people operations"], "good": [], "weak": ["people"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "employee", "people operations"]}, "location": {"points": 15, "max": 15, "why": "preferred city", "value": "Rotterdam, Netherlands", "remote": "onsite"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 93}, "status": "shortlisted", "notes": "", "description": "About Meridian Retail\n\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required.\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nWe offer a hybrid arrangement of two days in the office.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs."}, {"id": "a0e7bcb2e110d5b4", "company": "Northwind Labs", "title": "People Operations Partner", "location": "Rotterdam, Netherlands", "country": "NL", "remote": "onsite", "url": "https://example.invalid/jobs/64", "source": "greenhouse", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 93, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people operations"], "good": [], "weak": ["people"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "employee", "people operations"]}, "location": {"points": 15, "max": 15, "why": "preferred city", "value": "Rotterdam, Netherlands", "remote": "onsite"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 93}, "status": "drafted", "notes": "", "description": "About Northwind Labs\n\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs.\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required."}, {"id": "199b0edb85b354a7", "company": "Vessel Bank", "title": "People Operations Partner", "location": "Barcelona, Spain", "country": "ES", "remote": "hybrid", "url": "https://example.invalid/jobs/40", "source": "lever", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 92, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people operations"], "good": [], "weak": ["people"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "employee", "people operations"]}, "location": {"points": 13.5, "max": 15, "why": "target country (ES)", "value": "Barcelona, Spain", "remote": "hybrid"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 92}, "status": "", "notes": "", "description": "About Vessel Bank\n\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs.\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required."}, {"id": "b7d5029070819811", "company": "Auralis", "title": "People Operations Partner", "location": "Barcelona, Spain", "country": "ES", "remote": "hybrid", "url": "https://example.invalid/jobs/52", "source": "recruitee", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 92, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people operations"], "good": [], "weak": ["people"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "employee", "people operations"]}, "location": {"points": 13.5, "max": 15, "why": "target country (ES)", "value": "Barcelona, Spain", "remote": "hybrid"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 92}, "status": "", "notes": "", "description": "About Auralis\n\nWe offer a hybrid arrangement of two days in the office.\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs.\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nYou will own employee relations cases end to end, applying HR policy across our European entities."}, {"id": "f10cc567b0dd9262", "company": "Kestrel Health", "title": "People Operations Partner", "location": "Barcelona, Spain", "country": "ES", "remote": "hybrid", "url": "https://example.invalid/jobs/42", "source": "ashby", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 92, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people operations"], "good": [], "weak": ["people"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "employee", "people operations"]}, "location": {"points": 13.5, "max": 15, "why": "target country (ES)", "value": "Barcelona, Spain", "remote": "hybrid"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 92}, "status": "", "notes": "", "description": "About Kestrel Health\n\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs.\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required.\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements."}, {"id": "8a3e6876d1981b71", "company": "Northwind Labs", "title": "Workforce Reporting Analyst", "location": "Remote - EU", "country": "", "remote": "remote", "url": "https://example.invalid/jobs/89", "source": "greenhouse", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 91, "verdict": "pass", "track": "people_analytics", "breakdown": {"title": {"points": 21.0, "max": 30, "strong": [], "good": ["reporting analyst"], "weak": []}, "skills": {"points": 30.0, "max": 30, "must_have": ["python", "sql", "reporting"], "nice_to_have": ["attrition", "retention", "engagement survey", "pay equity", "gdpr", "pay transparency", "headcount"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "workforce", "employee", "people team"]}, "location": {"points": 15, "max": 15, "why": "remote", "value": "Remote - EU", "remote": "remote"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 91}, "status": "", "notes": "", "description": "About Northwind Labs\n\nExpect to work in SQL and Python, publish dashboards, and present findings to the HR leadership team.\nYou will handle employee data under GDPR and design the confidentiality thresholds yourself.\nExperience with engagement survey analysis, pay equity or pay transparency reporting is a strong plus.\nYou will build the reporting layer for our people team: attrition, retention and headcount."}, {"id": "cbb96102752c2383", "company": "Auralis", "title": "Workforce Reporting Analyst", "location": "Rotterdam, Netherlands", "country": "NL", "remote": "onsite", "url": "https://example.invalid/jobs/72", "source": "recruitee", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 91, "verdict": "pass", "track": "people_analytics", "breakdown": {"title": {"points": 21.0, "max": 30, "strong": [], "good": ["reporting analyst"], "weak": []}, "skills": {"points": 30.0, "max": 30, "must_have": ["python", "sql", "reporting"], "nice_to_have": ["attrition", "retention", "engagement survey", "pay equity", "gdpr", "pay transparency", "headcount"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "workforce", "employee", "people team"]}, "location": {"points": 15, "max": 15, "why": "preferred city", "value": "Rotterdam, Netherlands", "remote": "onsite"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 91}, "status": "", "notes": "", "description": "About Auralis\n\nExperience with engagement survey analysis, pay equity or pay transparency reporting is a strong plus.\nYou will build the reporting layer for our people team: attrition, retention and headcount.\nYou will handle employee data under GDPR and design the confidentiality thresholds yourself.\nExpect to work in SQL and Python, publish dashboards, and present findings to the HR leadership team.\nWe offer a hybrid arrangement of two days in the office."}, {"id": "73b1ed6ebfea10f5", "company": "Sparrow Logistics", "title": "People Operations Coordinator", "location": "Dublin, Ireland", "country": "IE", "remote": "onsite", "url": "https://example.invalid/jobs/21", "source": "lever", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 90, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people operations"], "good": [], "weak": ["people"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "employee", "people operations"]}, "location": {"points": 12.0, "max": 15, "why": "target country (IE)", "value": "Dublin, Ireland", "remote": "onsite"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 90}, "status": "", "notes": "", "description": "About Sparrow Logistics\n\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nWe work in English across all our markets.\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs."}, {"id": "c85de6945123f09b", "company": "Blue Harbour", "title": "People Operations Coordinator", "location": "Dublin, Ireland", "country": "IE", "remote": "onsite", "url": "https://example.invalid/jobs/65", "source": "smartrecruiters", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 90, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people operations"], "good": [], "weak": ["people"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "employee", "people operations"]}, "location": {"points": 12.0, "max": 15, "why": "target country (IE)", "value": "Dublin, Ireland", "remote": "onsite"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 90}, "status": "", "notes": "", "description": "About Blue Harbour\n\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs.\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required."}, {"id": "00e70a86e1106295", "company": "Northwind Labs", "title": "Workforce Reporting Analyst", "location": "Milan, Italy", "country": "IT", "remote": "onsite", "url": "https://example.invalid/jobs/37", "source": "greenhouse", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 88, "verdict": "pass", "track": "people_analytics", "breakdown": {"title": {"points": 21.0, "max": 30, "strong": [], "good": ["reporting analyst"], "weak": []}, "skills": {"points": 30.0, "max": 30, "must_have": ["python", "sql", "reporting"], "nice_to_have": ["attrition", "retention", "engagement survey", "pay equity", "gdpr", "pay transparency", "headcount"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "workforce", "employee", "people team"]}, "location": {"points": 12.0, "max": 15, "why": "target country (IT)", "value": "Milan, Italy", "remote": "onsite"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 88}, "status": "", "notes": "", "description": "About Northwind Labs\n\nYou will build the reporting layer for our people team: attrition, retention and headcount.\nYou will handle employee data under GDPR and design the confidentiality thresholds yourself.\nExperience with engagement survey analysis, pay equity or pay transparency reporting is a strong plus.\nExpect to work in SQL and Python, publish dashboards, and present findings to the HR leadership team."}, {"id": "252c090fb8767d2f", "company": "Sparrow Logistics", "title": "Workforce Reporting Analyst", "location": "Milan, Italy", "country": "IT", "remote": "onsite", "url": "https://example.invalid/jobs/71", "source": "lever", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 88, "verdict": "pass", "track": "people_analytics", "breakdown": {"title": {"points": 21.0, "max": 30, "strong": [], "good": ["reporting analyst"], "weak": []}, "skills": {"points": 30.0, "max": 30, "must_have": ["python", "sql", "reporting"], "nice_to_have": ["attrition", "retention", "engagement survey", "pay equity", "gdpr", "pay transparency", "headcount"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "workforce", "employee", "people team"]}, "location": {"points": 12.0, "max": 15, "why": "target country (IT)", "value": "Milan, Italy", "remote": "onsite"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 88}, "status": "", "notes": "", "description": "About Sparrow Logistics\n\nExperience with engagement survey analysis, pay equity or pay transparency reporting is a strong plus.\nExpect to work in SQL and Python, publish dashboards, and present findings to the HR leadership team.\nYou will build the reporting layer for our people team: attrition, retention and headcount.\nYou will handle employee data under GDPR and design the confidentiality thresholds yourself."}, {"id": "40576b18cac86560", "company": "Blue Harbour", "title": "HR Operations Specialist", "location": "Amsterdam, Netherlands", "country": "NL", "remote": "hybrid", "url": "https://example.invalid/jobs/75", "source": "smartrecruiters", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 88, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["hr operations"], "good": [], "weak": ["hr"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hr operations", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 10.0, "max": 15, "matched": ["hr", "employee"]}, "location": {"points": 15, "max": 15, "why": "preferred city", "value": "Amsterdam, Netherlands", "remote": "hybrid"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 88}, "status": "", "notes": "", "description": "About Blue Harbour\n\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs.\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required."}, {"id": "c4c095037bc8cf42", "company": "Sparrow Logistics", "title": "HR Services Specialist", "location": "Amsterdam, Netherlands", "country": "NL", "remote": "hybrid", "url": "https://example.invalid/jobs/77", "source": "lever", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 88, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["hr services"], "good": [], "weak": ["hr"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 10.0, "max": 15, "matched": ["hr", "employee"]}, "location": {"points": 15, "max": 15, "why": "preferred city", "value": "Amsterdam, Netherlands", "remote": "hybrid"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 88}, "status": "", "notes": "", "description": "About Sparrow Logistics\n\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required.\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs."}, {"id": "d87b5bd77adfdf93", "company": "Sparrow Logistics", "title": "HR Operations Specialist", "location": "Rotterdam, Netherlands", "country": "NL", "remote": "onsite", "url": "https://example.invalid/jobs/27", "source": "lever", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 88, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["hr operations"], "good": [], "weak": ["hr"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hr operations", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 10.0, "max": 15, "matched": ["hr", "employee"]}, "location": {"points": 15, "max": 15, "why": "preferred city", "value": "Rotterdam, Netherlands", "remote": "onsite"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 88}, "status": "", "notes": "", "description": "About Sparrow Logistics\n\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs.\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nYou will own employee relations cases end to end, applying HR policy across our European entities."}, {"id": "f5e9cb011535ddc4", "company": "Tramonto Group", "title": "HR Advisor", "location": "Amsterdam, Netherlands", "country": "NL", "remote": "hybrid", "url": "https://example.invalid/jobs/36", "source": "personio", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 88, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["hr advisor"], "good": [], "weak": ["hr"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 10.0, "max": 15, "matched": ["hr", "employee"]}, "location": {"points": 15, "max": 15, "why": "preferred city", "value": "Amsterdam, Netherlands", "remote": "hybrid"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 88}, "status": "", "notes": "", "description": "About Tramonto Group\n\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs.\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required.\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements."}, {"id": "029115c146e81cc9", "company": "Sparrow Logistics", "title": "HR Services Specialist", "location": "Berlin, Germany", "country": "DE", "remote": "hybrid", "url": "https://example.invalid/jobs/80", "source": "lever", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 87, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["hr services"], "good": [], "weak": ["hr"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 10.0, "max": 15, "matched": ["hr", "employee"]}, "location": {"points": 13.5, "max": 15, "why": "target country (DE)", "value": "Berlin, Germany", "remote": "hybrid"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 87}, "status": "", "notes": "", "description": "About Sparrow Logistics\n\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required.\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nThis is a fixed-term contract for twelve months.\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs."}, {"id": "21619318c17284d6", "company": "Blue Harbour", "title": "HR Operations Specialist", "location": "Barcelona, Spain", "country": "ES", "remote": "hybrid", "url": "https://example.invalid/jobs/43", "source": "smartrecruiters", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 87, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["hr operations"], "good": [], "weak": ["hr"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hr operations", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 10.0, "max": 15, "matched": ["hr", "employee"]}, "location": {"points": 13.5, "max": 15, "why": "target country (ES)", "value": "Barcelona, Spain", "remote": "hybrid"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 87}, "status": "", "notes": "", "description": "About Blue Harbour\n\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required.\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs."}, {"id": "4d6aab74394a5003", "company": "Northwind Labs", "title": "HR Services Specialist", "location": "Barcelona, Spain", "country": "ES", "remote": "hybrid", "url": "https://example.invalid/jobs/31", "source": "greenhouse", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 87, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["hr services"], "good": [], "weak": ["hr"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 10.0, "max": 15, "matched": ["hr", "employee"]}, "location": {"points": 13.5, "max": 15, "why": "target country (ES)", "value": "Barcelona, Spain", "remote": "hybrid"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 87}, "status": "", "notes": "", "description": "About Northwind Labs\n\nWe work in English across all our markets.\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs."}, {"id": "8bff2689e5cc03ce", "company": "Kestrel Health", "title": "HR Services Specialist", "location": "Barcelona, Spain", "country": "ES", "remote": "hybrid", "url": "https://example.invalid/jobs/54", "source": "ashby", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 87, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["hr services"], "good": [], "weak": ["hr"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 10.0, "max": 15, "matched": ["hr", "employee"]}, "location": {"points": 13.5, "max": 15, "why": "target country (ES)", "value": "Barcelona, Spain", "remote": "hybrid"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 87}, "status": "", "notes": "", "description": "About Kestrel Health\n\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required.\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs."}, {"id": "e01d2367e331fe7c", "company": "Meridian Retail", "title": "People Operations Partner", "location": "Remote - EU", "country": "", "remote": "remote", "url": "https://example.invalid/jobs/17", "source": "workable", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 87, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people operations"], "good": [], "weak": ["people"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "employee", "people operations"]}, "location": {"points": 15, "max": 15, "why": "remote", "value": "Remote - EU", "remote": "remote"}, "seniority": {"points": 4.0, "max": 10, "detected": "mid", "years_required": 8, "years_profile": 3}, "language": "en", "total": 87}, "status": "", "notes": "", "description": "About Meridian Retail\n\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs.\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required.\nYou will need around 8 years of experience in a comparable role.\nYou will own employee relations cases end to end, applying HR policy across our European entities."}, {"id": "f6d531025f4f6922", "company": "Fenner & Vale", "title": "HR Advisor", "location": "Milan, Italy", "country": "IT", "remote": "onsite", "url": "https://example.invalid/jobs/87", "source": "greenhouse", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 85, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["hr advisor"], "good": [], "weak": ["hr"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 10.0, "max": 15, "matched": ["hr", "employee"]}, "location": {"points": 12.0, "max": 15, "why": "target country (IT)", "value": "Milan, Italy", "remote": "onsite"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 85}, "status": "", "notes": "", "description": "About Fenner & Vale\n\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements.\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required.\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs."}, {"id": "eaf1cf7308e3ef21", "company": "Fenner & Vale", "title": "HR Advisor", "location": "Amsterdam, Netherlands", "country": "NL", "remote": "hybrid", "url": "https://example.invalid/jobs/2", "source": "greenhouse", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 82, "verdict": "pass", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["hr advisor"], "good": [], "weak": ["hr"]}, "skills": {"points": 23.2, "max": 30, "must_have": ["employee relations", "hr policy", "payroll", "leave", "onboarding", "hris", "employee lifecycle", "ticketing"], "nice_to_have": ["gdpr"]}, "domain": {"points": 10.0, "max": 15, "matched": ["hr", "employee"]}, "location": {"points": 15, "max": 15, "why": "preferred city", "value": "Amsterdam, Netherlands", "remote": "hybrid"}, "seniority": {"points": 4.0, "max": 10, "detected": "mid", "years_required": 8, "years_profile": 3}, "language": "en", "total": 82}, "status": "", "notes": "", "description": "About Fenner & Vale\n\nYou will need around 8 years of experience in a comparable role.\nDay to day this means leave, payroll queries, onboarding and the employee lifecycle, worked through our ticketing system against documented SOPs.\nWe use an HRIS and expect comfort in Excel; SQL is welcome but not required.\nYou will own employee relations cases end to end, applying HR policy across our European entities.\nYou will work with employee data under GDPR, and turn recurring case patterns into process improvements."}, {"id": "414c74db7d8a6472", "company": "Vessel Bank", "title": "People Operations Manager", "location": "Remote - EU", "country": "", "remote": "remote", "url": "https://example.invalid/jobs/18", "source": "lever", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 68, "verdict": "review", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people operations"], "good": [], "weak": ["people"]}, "skills": {"points": 2.2, "max": 30, "must_have": [], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "people team", "people operations"]}, "location": {"points": 15, "max": 15, "why": "remote", "value": "Remote - EU", "remote": "remote"}, "seniority": {"points": 6.0, "max": 10, "detected": "senior", "years_required": 0, "years_profile": 3}, "language": "en", "total": 68}, "status": "", "notes": "", "description": "About Vessel Bank\n\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nYou will support the people team with systems administration and reporting.\nThe team is distributed across three countries and works in English."}, {"id": "636ccba2d1c23025", "company": "Auralis", "title": "People Operations Manager", "location": "Remote - EU", "country": "", "remote": "remote", "url": "https://example.invalid/jobs/81", "source": "recruitee", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 68, "verdict": "review", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people operations"], "good": [], "weak": ["people"]}, "skills": {"points": 2.2, "max": 30, "must_have": [], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "people team", "people operations"]}, "location": {"points": 15, "max": 15, "why": "remote", "value": "Remote - EU", "remote": "remote"}, "seniority": {"points": 6.0, "max": 10, "detected": "senior", "years_required": 0, "years_profile": 3}, "language": "en", "total": 68}, "status": "", "notes": "", "description": "About Auralis\n\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nWe work in English across all our markets.\nYou will support the people team with systems administration and reporting.\nThe team is distributed across three countries and works in English."}, {"id": "217afc6774837132", "company": "Kestrel Health", "title": "People Operations Manager", "location": "Barcelona, Spain", "country": "ES", "remote": "hybrid", "url": "https://example.invalid/jobs/83", "source": "ashby", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 67, "verdict": "review", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people operations"], "good": [], "weak": ["people"]}, "skills": {"points": 2.2, "max": 30, "must_have": [], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "people team", "people operations"]}, "location": {"points": 13.5, "max": 15, "why": "target country (ES)", "value": "Barcelona, Spain", "remote": "hybrid"}, "seniority": {"points": 6.0, "max": 10, "detected": "senior", "years_required": 0, "years_profile": 3}, "language": "en", "total": 67}, "status": "", "notes": "", "description": "About Kestrel Health\n\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nYou will support the people team with systems administration and reporting.\nThe team is distributed across three countries and works in English."}, {"id": "3912b16ce5f48020", "company": "Northwind Labs", "title": "People Operations Manager", "location": "Barcelona, Spain", "country": "ES", "remote": "hybrid", "url": "https://example.invalid/jobs/13", "source": "greenhouse", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 67, "verdict": "review", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["people operations"], "good": [], "weak": ["people"]}, "skills": {"points": 2.2, "max": 30, "must_have": [], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "people team", "people operations"]}, "location": {"points": 13.5, "max": 15, "why": "target country (ES)", "value": "Barcelona, Spain", "remote": "hybrid"}, "seniority": {"points": 6.0, "max": 10, "detected": "senior", "years_required": 0, "years_profile": 3}, "language": "en", "total": 67}, "status": "", "notes": "", "description": "About Northwind Labs\n\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nThe team is distributed across three countries and works in English.\nYou will support the people team with systems administration and reporting."}, {"id": "128ecfb3fe31dcc4", "company": "Meridian Retail", "title": "Reward Analyst", "location": "Remote - EU", "country": "", "remote": "remote", "url": "https://example.invalid/jobs/8", "source": "workable", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 63, "verdict": "review", "track": "people_analytics", "breakdown": {"title": {"points": 21.0, "max": 30, "strong": [], "good": ["reward analyst"], "weak": []}, "skills": {"points": 9.2, "max": 30, "must_have": ["reporting"], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 7.5, "max": 15, "matched": ["hr", "people team"]}, "location": {"points": 15, "max": 15, "why": "remote", "value": "Remote - EU", "remote": "remote"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 63}, "status": "", "notes": "", "description": "About Meridian Retail\n\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nThe team is distributed across three countries and works in English.\nYou will support the people team with systems administration and reporting."}, {"id": "7d507f01940fdb0d", "company": "Calder Energy", "title": "Senior HR Business Partner", "location": "Rotterdam, Netherlands", "country": "NL", "remote": "onsite", "url": "https://example.invalid/jobs/51", "source": "ashby", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 63, "verdict": "review", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["hr business partner"], "good": [], "weak": ["hr"]}, "skills": {"points": 2.2, "max": 30, "must_have": [], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 10.0, "max": 15, "matched": ["hr", "people team"]}, "location": {"points": 15, "max": 15, "why": "preferred city", "value": "Rotterdam, Netherlands", "remote": "onsite"}, "seniority": {"points": 6.0, "max": 10, "detected": "senior", "years_required": 0, "years_profile": 3}, "language": "en", "total": 63}, "status": "", "notes": "", "description": "About Calder Energy\n\nThe team is distributed across three countries and works in English.\nWe work in English across all our markets.\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nYou will support the people team with systems administration and reporting."}, {"id": "9e57ae9785584147", "company": "Kestrel Health", "title": "Reward Analyst", "location": "Lisbon, Portugal", "country": "PT", "remote": "remote", "url": "https://example.invalid/jobs/68", "source": "ashby", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 63, "verdict": "review", "track": "people_analytics", "breakdown": {"title": {"points": 21.0, "max": 30, "strong": [], "good": ["reward analyst"], "weak": []}, "skills": {"points": 9.2, "max": 30, "must_have": ["reporting"], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 7.5, "max": 15, "matched": ["hr", "people team"]}, "location": {"points": 15, "max": 15, "why": "remote", "value": "Lisbon, Portugal", "remote": "remote"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 63}, "status": "", "notes": "", "description": "About Kestrel Health\n\nWe offer a hybrid arrangement of two days in the office.\nYou will support the people team with systems administration and reporting.\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nThe team is distributed across three countries and works in English."}, {"id": "c53f6dc8f1fbf8c6", "company": "Meridian Retail", "title": "Senior HR Business Partner", "location": "Rotterdam, Netherlands", "country": "NL", "remote": "onsite", "url": "https://example.invalid/jobs/33", "source": "workable", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 63, "verdict": "review", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["hr business partner"], "good": [], "weak": ["hr"]}, "skills": {"points": 2.2, "max": 30, "must_have": [], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 10.0, "max": 15, "matched": ["hr", "people team"]}, "location": {"points": 15, "max": 15, "why": "preferred city", "value": "Rotterdam, Netherlands", "remote": "onsite"}, "seniority": {"points": 6.0, "max": 10, "detected": "senior", "years_required": 0, "years_profile": 3}, "language": "en", "total": 63}, "status": "", "notes": "", "description": "About Meridian Retail\n\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nYou will support the people team with systems administration and reporting.\nThis is a fixed-term contract for twelve months.\nThe team is distributed across three countries and works in English."}, {"id": "df19464b5355f482", "company": "Auralis", "title": "Senior HR Business Partner", "location": "Dublin, Ireland", "country": "IE", "remote": "onsite", "url": "https://example.invalid/jobs/6", "source": "recruitee", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 60, "verdict": "review", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["hr business partner"], "good": [], "weak": ["hr"]}, "skills": {"points": 2.2, "max": 30, "must_have": [], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 10.0, "max": 15, "matched": ["hr", "people team"]}, "location": {"points": 12.0, "max": 15, "why": "target country (IE)", "value": "Dublin, Ireland", "remote": "onsite"}, "seniority": {"points": 6.0, "max": 10, "detected": "senior", "years_required": 0, "years_profile": 3}, "language": "en", "total": 60}, "status": "", "notes": "", "description": "About Auralis\n\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nYou will support the people team with systems administration and reporting.\nThe team is distributed across three countries and works in English."}, {"id": "a32f9b60bbe16164", "company": "Tramonto Group", "title": "Senior HR Business Partner", "location": "Berlin, Germany", "country": "DE", "remote": "hybrid", "url": "https://example.invalid/jobs/19", "source": "personio", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 56, "verdict": "review", "track": "hr_advisory", "breakdown": {"title": {"points": 30, "max": 30, "strong": ["hr business partner"], "good": [], "weak": ["hr"]}, "skills": {"points": 2.2, "max": 30, "must_have": [], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 10.0, "max": 15, "matched": ["hr", "people team"]}, "location": {"points": 13.5, "max": 15, "why": "target country (DE)", "value": "Berlin, Germany", "remote": "hybrid"}, "seniority": {"points": 0.0, "max": 10, "detected": "senior", "years_required": 8, "years_profile": 3}, "language": "en", "total": 56}, "status": "", "notes": "", "description": "About Tramonto Group\n\nThe team is distributed across three countries and works in English.\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nYou will support the people team with systems administration and reporting.\nYou will need around 8 years of experience in a comparable role."}, {"id": "3dc2bc2806feba21", "company": "Tramonto Group", "title": "Talent Acquisition Partner", "location": "Amsterdam, Netherlands", "country": "NL", "remote": "hybrid", "url": "https://example.invalid/jobs/69", "source": "personio", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 54, "verdict": "review", "track": "hr_advisory", "breakdown": {"title": {"points": 12.0, "max": 30, "strong": [], "good": [], "weak": ["talent"]}, "skills": {"points": 2.2, "max": 30, "must_have": [], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "people team", "talent"]}, "location": {"points": 15, "max": 15, "why": "preferred city", "value": "Amsterdam, Netherlands", "remote": "hybrid"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 54}, "status": "", "notes": "", "description": "About Tramonto Group\n\nThe team is distributed across three countries and works in English.\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nYou will support the people team with systems administration and reporting."}, {"id": "6e5b5001b6da1c02", "company": "Vessel Bank", "title": "Talent Acquisition Partner", "location": "Rotterdam, Netherlands", "country": "NL", "remote": "onsite", "url": "https://example.invalid/jobs/3", "source": "lever", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 54, "verdict": "review", "track": "hr_advisory", "breakdown": {"title": {"points": 12.0, "max": 30, "strong": [], "good": [], "weak": ["talent"]}, "skills": {"points": 2.2, "max": 30, "must_have": [], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "people team", "talent"]}, "location": {"points": 15, "max": 15, "why": "preferred city", "value": "Rotterdam, Netherlands", "remote": "onsite"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 54}, "status": "", "notes": "", "description": "About Vessel Bank\n\nYou will support the people team with systems administration and reporting.\nThe team is distributed across three countries and works in English.\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management."}, {"id": "c49c442f372e2af2", "company": "Auralis", "title": "Talent Acquisition Partner", "location": "Rotterdam, Netherlands", "country": "NL", "remote": "onsite", "url": "https://example.invalid/jobs/55", "source": "recruitee", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 54, "verdict": "review", "track": "hr_advisory", "breakdown": {"title": {"points": 12.0, "max": 30, "strong": [], "good": [], "weak": ["talent"]}, "skills": {"points": 2.2, "max": 30, "must_have": [], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "people team", "talent"]}, "location": {"points": 15, "max": 15, "why": "preferred city", "value": "Rotterdam, Netherlands", "remote": "onsite"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 54}, "status": "", "notes": "", "description": "About Auralis\n\nYou will support the people team with systems administration and reporting.\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nThe team is distributed across three countries and works in English."}, {"id": "a16eeb56dd7d03ed", "company": "Northwind Labs", "title": "Talent Acquisition Partner", "location": "Barcelona, Spain", "country": "ES", "remote": "hybrid", "url": "https://example.invalid/jobs/5", "source": "greenhouse", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 53, "verdict": "review", "track": "hr_advisory", "breakdown": {"title": {"points": 12.0, "max": 30, "strong": [], "good": [], "weak": ["talent"]}, "skills": {"points": 2.2, "max": 30, "must_have": [], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "people team", "talent"]}, "location": {"points": 13.5, "max": 15, "why": "target country (ES)", "value": "Barcelona, Spain", "remote": "hybrid"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 53}, "status": "", "notes": "", "description": "About Northwind Labs\n\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nThe team is distributed across three countries and works in English.\nYou will support the people team with systems administration and reporting."}, {"id": "c4f5f8d27ed0b141", "company": "Auralis", "title": "Talent Acquisition Partner", "location": "Berlin, Germany", "country": "DE", "remote": "hybrid", "url": "https://example.invalid/jobs/58", "source": "recruitee", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 53, "verdict": "review", "track": "hr_advisory", "breakdown": {"title": {"points": 12.0, "max": 30, "strong": [], "good": [], "weak": ["talent"]}, "skills": {"points": 2.2, "max": 30, "must_have": [], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 15.0, "max": 15, "matched": ["hr", "people team", "talent"]}, "location": {"points": 13.5, "max": 15, "why": "target country (DE)", "value": "Berlin, Germany", "remote": "hybrid"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 53}, "status": "", "notes": "", "description": "About Auralis\n\nThe team is distributed across three countries and works in English.\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nYou will support the people team with systems administration and reporting."}, {"id": "6a25f966ef97be2f", "company": "Vessel Bank", "title": "HRIS Administrator", "location": "Amsterdam, Netherlands", "country": "NL", "remote": "hybrid", "url": "https://example.invalid/jobs/22", "source": "lever", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 49, "verdict": "review", "track": "people_analytics", "breakdown": {"title": {"points": 0.0, "max": 30, "strong": [], "good": [], "weak": []}, "skills": {"points": 16.2, "max": 30, "must_have": ["reporting", "hris"], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 7.5, "max": 15, "matched": ["hr", "people team"]}, "location": {"points": 15, "max": 15, "why": "preferred city", "value": "Amsterdam, Netherlands", "remote": "hybrid"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 49}, "status": "", "notes": "", "description": "About Vessel Bank\n\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nThe team is distributed across three countries and works in English.\nYou will support the people team with systems administration and reporting."}, {"id": "5cc28c9b271c95c8", "company": "Auralis", "title": "HRIS Administrator", "location": "Berlin, Germany", "country": "DE", "remote": "hybrid", "url": "https://example.invalid/jobs/53", "source": "recruitee", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 47, "verdict": "review", "track": "people_analytics", "breakdown": {"title": {"points": 0.0, "max": 30, "strong": [], "good": [], "weak": []}, "skills": {"points": 16.2, "max": 30, "must_have": ["reporting", "hris"], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 7.5, "max": 15, "matched": ["hr", "people team"]}, "location": {"points": 13.5, "max": 15, "why": "target country (DE)", "value": "Berlin, Germany", "remote": "hybrid"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 47}, "status": "", "notes": "", "description": "About Auralis\n\nThe team is distributed across three countries and works in English.\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nYou will support the people team with systems administration and reporting."}, {"id": "4a0b024dd4f0bddc", "company": "Tramonto Group", "title": "HRIS Administrator", "location": "Milan, Italy", "country": "IT", "remote": "onsite", "url": "https://example.invalid/jobs/79", "source": "personio", "first_seen": "2026-09-21T10:28:40+00:00", "posted_at": "2026-09-01", "closed": false, "score": 46, "verdict": "review", "track": "people_analytics", "breakdown": {"title": {"points": 0.0, "max": 30, "strong": [], "good": [], "weak": []}, "skills": {"points": 16.2, "max": 30, "must_have": ["reporting", "hris"], "nice_to_have": ["stakeholder management"]}, "domain": {"points": 7.5, "max": 15, "matched": ["hr", "people team"]}, "location": {"points": 12.0, "max": 15, "why": "target country (IT)", "value": "Milan, Italy", "remote": "onsite"}, "seniority": {"points": 10.0, "max": 10, "detected": "mid", "years_required": 0, "years_profile": 3}, "language": "en", "total": 46}, "status": "", "notes": "", "description": "About Tramonto Group\n\nThe team is distributed across three countries and works in English.\nSome exposure to HR processes is expected; most of the role is configuration and stakeholder management.\nYou will support the people team with systems administration and reporting."}]};
+window.__I18N__ = {"en": {"brand": "Job pipeline", "live": "live — edits save to the database", "static": "static export", "search": "Search role, company, location, notes…", "theme": "Theme", "run": "Run pipeline", "running": "Running", "starting": "Starting", "refresh": "Refresh", "run_title_static": "Static export. Run `jsa serve` to start a run from here.", "kpi_seen": "postings seen", "kpi_cleared": "cleared gates", "kpi_tracked": "in tracker", "kpi_submitted": "submitted", "kpi_replies": "replies", "kpi_rate": "response rate", "kpi_median": "median reply", "tab_today": "Start here", "tab_all": "All postings", "tab_pipeline": "Pipeline", "tab_insights": "Insights", "step1_t": "Triage", "step1_b": "Read the cards below. Keep the ones worth an hour, dismiss the rest. That is the whole job of this screen.", "step2_t": "Prepare", "step2_b": "For anything you keep, ask Claude Code: /apply &lt;id&gt;. It writes the CV and letter and builds the packet.", "step3_t": "Send, then log it", "step3_b": "You press send. Then mark it submitted here, so the Pipeline tab can tell you what actually works.", "hide": "Hide this", "lead_one": "1 role worth your next hour", "lead_many": "{n} roles worth your next hour", "lead_none": "Nothing waiting", "lead_sub": "out of {n} untouched · strongest first", "lead_sub_none": "Everything scored has been triaged. Run the pipeline for new postings.", "inbox_zero": "Inbox zero.", "inbox_live": "Press <b>Run pipeline</b> above to look for new roles.", "inbox_static": "Run <code>jsa run</code> to look for new roles.", "btn_read": "Read the posting", "btn_keep": "Keep it", "btn_skip": "Not for me", "btn_why": "Why this score", "catch": "The catch:", "f_tracks": "All tracks", "f_verdicts": "All verdicts", "f_countries": "Anywhere", "f_sources": "All sources", "f_statuses": "Any status", "f_untracked": "Not yet tracked", "of": "of", "th_fit": "Fit", "th_role": "Role", "th_location": "Location", "th_track": "Track", "th_source": "Source", "th_status": "Status", "th_seen": "Seen", "no_match": "Nothing matches these filters.", "panel_funnel": "Application funnel", "panel_tracks": "Replies by positioning track", "panel_sources": "Where postings come from", "panel_scores": "Fit score, cleared postings", "close": "Close", "open_posting": "open posting ↗", "fit_head": "Fit — {score}/100, {verdict}", "your_notes": "Your notes", "notes_ph": "What matters about this one — who to mention, what to check, why you passed.", "save": "Save", "no_status": "no status", "readonly": "Read-only export. Run <code>jsa serve</code> to edit statuses and notes here.", "next_step": "Next step", "copy_id": "Copy job id", "posting": "Posting", "d_track": "track", "d_source": "source", "d_first_seen": "first seen", "d_language": "posting language", "d_penalty": "penalty", "dim_title": "title", "dim_skills": "skills", "dim_domain": "domain", "dim_location": "location", "dim_seniority": "seniority", "t_kept": "Kept — it is in the Pipeline tab now", "t_dismissed": "Dismissed", "t_not_saved": "Not saved: ", "t_copied": "Job id copied", "t_copy_failed": "Copy failed — select it by hand", "t_in_progress": "A run is already in progress", "t_cannot_start": "Could not start: ", "t_saved": "Saved to the database", "run_head": "Pipeline run", "run_starting": "starting…", "run_running": "running…", "run_done": "finished — <a href=\"#\" id=\"rl\">reload to see the new postings</a>", "run_failed": "stopped with exit code {code}", "r_title_exact": "Your job title, {place}.", "r_title_close": "Near-neighbour of your title, {place}.", "r_title_none": "Not your title, but the body of the posting matches{place}.", "p_remote": "and it is remote", "p_in": "in {city}", "p_written": "as written", "p_desc": "by the description", "r_asks": "Asks for {list} — work you do now.", "r_asks_more": "Asks for {list} and {n} more — work you do now.", "r_overlaps": "Overlaps on {list}.", "r_thin": "Thin overlap with your skills — read it before committing an hour.", "r_squarely": "Squarely an HR role, not a data job with an HR word in it.", "g_years": "wants around {n} years against your {have}", "g_senior": "written for a {level} hire", "g_mentions": "mentions {list}", "g_borderline": "scored as borderline, not a clear match", "f_generated": "Generated", "f_from": "postings seen from", "f_sources_w": "sources", "f_cleared": "cleared the hard gates", "f_scoring": "scoring v", "f_offline": "self-contained, no network calls"}, "it": {"brand": "Pipeline candidature", "live": "in diretta — le modifiche vanno nel database", "static": "copia statica", "search": "Cerca ruolo, azienda, luogo, note…", "theme": "Tema", "run": "Avvia la pipeline", "running": "In corso", "starting": "Avvio", "refresh": "Aggiorna", "run_title_static": "Copia statica. Lancia `jsa serve` per avviare una run da qui.", "kpi_seen": "offerte viste", "kpi_cleared": "superano i filtri", "kpi_tracked": "in lavorazione", "kpi_submitted": "inviate", "kpi_replies": "risposte", "kpi_rate": "tasso di risposta", "kpi_median": "risposta mediana", "tab_today": "Da qui", "tab_all": "Tutte le offerte", "tab_pipeline": "Candidature", "tab_insights": "Andamento", "step1_t": "Scremare", "step1_b": "Leggi le schede qui sotto. Tieni quelle che valgono un'ora, scarta le altre. È tutto quello che serve fare in questa schermata.", "step2_t": "Preparare", "step2_b": "Per quelle che tieni, chiedi a Claude Code: /apply &lt;id&gt;. Scrive CV e lettera e prepara il pacchetto.", "step3_t": "Inviare, poi registrare", "step3_b": "L'invio lo fai tu. Poi segnala qui che è partita, così la scheda Candidature può dirti cosa funziona davvero.", "hide": "Nascondi", "lead_one": "1 ruolo che vale la tua prossima ora", "lead_many": "{n} ruoli che valgono la tua prossima ora", "lead_none": "Niente in attesa", "lead_sub": "su {n} ancora da valutare · dal più forte", "lead_sub_none": "Hai già scremato tutto. Avvia la pipeline per cercarne di nuove.", "inbox_zero": "Non è rimasto nulla.", "inbox_live": "Premi <b>Avvia la pipeline</b> qui sopra per cercare nuovi ruoli.", "inbox_static": "Lancia <code>jsa run</code> per cercare nuovi ruoli.", "btn_read": "Leggi l'annuncio", "btn_keep": "Tienila", "btn_skip": "Non fa per me", "btn_why": "Perché questo punteggio", "catch": "Il rovescio:", "f_tracks": "Tutti i binari", "f_verdicts": "Tutti i verdetti", "f_countries": "Ovunque", "f_sources": "Tutte le fonti", "f_statuses": "Qualsiasi stato", "f_untracked": "Non ancora valutate", "of": "su", "th_fit": "Fit", "th_role": "Ruolo", "th_location": "Luogo", "th_track": "Binario", "th_source": "Fonte", "th_status": "Stato", "th_seen": "Vista", "no_match": "Nessuna offerta con questi filtri.", "panel_funnel": "Imbuto delle candidature", "panel_tracks": "Risposte per binario di posizionamento", "panel_sources": "Da dove arrivano le offerte", "panel_scores": "Punteggio delle offerte che superano i filtri", "close": "Chiudi", "open_posting": "apri l'annuncio ↗", "fit_head": "Fit — {score}/100, {verdict}", "your_notes": "Le tue note", "notes_ph": "Cosa conta di questa — chi citare, cosa verificare, perché l'hai scartata.", "save": "Salva", "no_status": "nessuno stato", "readonly": "Copia statica in sola lettura. Lancia <code>jsa serve</code> per modificare stati e note da qui.", "next_step": "Passo successivo", "copy_id": "Copia l'id", "posting": "Annuncio", "d_track": "binario", "d_source": "fonte", "d_first_seen": "vista il", "d_language": "lingua dell'annuncio", "d_penalty": "penalità", "dim_title": "titolo", "dim_skills": "competenze", "dim_domain": "settore", "dim_location": "luogo", "dim_seniority": "livello", "t_kept": "Tenuta — ora è nella scheda Candidature", "t_dismissed": "Scartata", "t_not_saved": "Non salvata: ", "t_copied": "Id copiato", "t_copy_failed": "Copia non riuscita — selezionalo a mano", "t_in_progress": "Una run è già in corso", "t_cannot_start": "Avvio non riuscito: ", "t_saved": "Salvato nel database", "run_head": "Esecuzione della pipeline", "run_starting": "avvio…", "run_running": "in corso…", "run_done": "finita — <a href=\"#\" id=\"rl\">ricarica per vedere le nuove offerte</a>", "run_failed": "terminata con codice {code}", "r_title_exact": "Il tuo stesso titolo, {place}.", "r_title_close": "Titolo vicino al tuo, {place}.", "r_title_none": "Non è il tuo titolo, ma il corpo dell'annuncio corrisponde{place}.", "p_remote": "ed è da remoto", "p_in": "a {city}", "p_written": "così com'è scritto", "p_desc": "stando alla descrizione", "r_asks": "Chiede {list} — cose che fai già.", "r_asks_more": "Chiede {list} e altre {n} — cose che fai già.", "r_overlaps": "Si sovrappone su {list}.", "r_thin": "Sovrapposizione debole con le tue competenze — leggila prima di investirci un'ora.", "r_squarely": "È un ruolo HR in pieno, non un lavoro sui dati con dentro una parola HR.", "g_years": "ne chiede circa {n} contro i tuoi {have}", "g_senior": "è scritto per un profilo {level}", "g_mentions": "cita {list}", "g_borderline": "valutata al limite, non una corrispondenza netta", "f_generated": "Generata il", "f_from": "offerte viste da", "f_sources_w": "fonti", "f_cleared": "hanno superato i filtri", "f_scoring": "punteggio v", "f_offline": "autosufficiente, nessuna chiamata di rete"}};</script>
+<script>
+const DATA = window.__JSA__;
+const I18N = window.__I18N__ || {en: {}};
+
+/* Language: an explicit ?lang= wins, then the stored choice, then the browser,
+   then English. Both languages ship inside the page, so switching is instant
+   and works on a file opened from disk with no server behind it. */
+const urlLang = new URLSearchParams(location.search).get('lang');
+const storedLang = (() => { try { return localStorage.getItem('jsa-lang'); } catch { return null; } })();
+const browserLang = (navigator.language || 'en').slice(0, 2);
+let LANG = [urlLang, storedLang, browserLang, 'en'].find(l => l && I18N[l]) || 'en';
+let T = I18N[LANG];
+
+const fmt = (key, vars = {}) =>
+  String(T[key] ?? key).replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
+
+function applyLang(lang) {
+  LANG = I18N[lang] ? lang : 'en';
+  T = I18N[LANG];
+  try { localStorage.setItem('jsa-lang', LANG); } catch {}
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const v = T[el.dataset.i18n]; if (v !== undefined) el.textContent = v;
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const v = T[el.dataset.i18nHtml]; if (v !== undefined) el.innerHTML = v;
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const v = T[el.dataset.i18nPh]; if (v !== undefined) el.placeholder = v;
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const v = T[el.dataset.i18nTitle]; if (v !== undefined) el.title = v;
+  });
+  renderFooter();
+  renderTable();
+  renderToday();
+  if (!$('[data-view="pipeline"]').hidden) renderBoard();
+  if (selected) openJob(selected);
+}
+
+function renderFooter() {
+  const c = DATA.counts, s = DATA.stats;
+  $('#foot').textContent =
+    `${T.f_generated} ${DATA.generated.slice(0, 16).replace('T', ' ')} · ` +
+    `${c.jobs} ${T.f_from} ${Object.keys(s.by_source || {}).length} ${T.f_sources_w} · ` +
+    `${T.f_scoring}${DATA.scorer_version} · ${T.f_offline}`;
+}
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const DIMS = ['title','skills','domain','location','seniority'];
+let sortKey = 'score', sortAsc = false, selected = null;
+
+/* ---------------------------------------------------------------- theme */
+/* ?theme=light|dark forces the palette for this load — handy for a shared
+   link or a screenshot; otherwise the stored choice, otherwise the system. */
+const urlTheme = new URLSearchParams(location.search).get('theme');
+const savedTheme = (() => { try { return localStorage.getItem('jsa-theme'); } catch { return null; } })();
+const startTheme = ['light', 'dark'].includes(urlTheme) ? urlTheme : savedTheme;
+if (startTheme) document.documentElement.dataset.theme = startTheme;
+$('#lang').value = LANG;
+$('#lang').onchange = e => applyLang(e.target.value);
+
+$('#theme').onclick = () => {
+  const dark = getComputedStyle(document.body).backgroundColor.match(/\d+/g)[0] < 60;
+  const next = dark ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem('jsa-theme', next); } catch {}
+};
+
+/* ----------------------------------------------------------------- tabs */
+document.querySelectorAll('.tab').forEach(tab => tab.onclick = () => {
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t === tab));
+  document.querySelectorAll('[data-view]').forEach(v => v.hidden = v.dataset.view !== tab.dataset.target);
+  if (tab.dataset.target === 'pipeline') renderBoard();
+  if (tab.dataset.target === 'today') renderToday();
+});
+
+/* ------------------------------------------------------------ start here */
+const TOP_N = 6;
+
+/* Turn a score breakdown into something a person can act on in three seconds.
+   The bars are fine once you know the model; this is for the moment you open
+   the page. Short sentences, concrete nouns, the honest catch last. */
+function plainReason(j) {
+  const b = j.breakdown || {}, t = b.title, sk = b.skills, dm = b.domain, lo = b.location, se = b.seniority;
+  const city = (j.location || '').split(',')[0].trim();
+  const parts = [], gaps = [];
+
+  /* Lead with title and place — the two things that decide whether you read on. */
+  const titleFit = !t ? '' : t.points >= t.max ? 'exact' : t.points >= t.max * 0.6 ? 'close' : '';
+  const place = lo && lo.why === 'remote' ? T.p_remote : city ? fmt('p_in', {city}) : '';
+  if (titleFit === 'exact') parts.push(fmt('r_title_exact', {place: place || T.p_written}));
+  else if (titleFit === 'close') parts.push(fmt('r_title_close', {place: place || T.p_desc}));
+  else parts.push(fmt('r_title_none', {place: place ? ' — ' + place : ''}));
+
+  /* Then the concrete overlap, named. */
+  const skills = [...((sk && sk.must_have) || []), ...((sk && sk.nice_to_have) || [])];
+  if (skills.length >= 3) {
+    const shown = skills.slice(0, 4).join(', ');
+    parts.push(skills.length > 4
+      ? fmt('r_asks_more', {list: shown, n: skills.length - 4})
+      : fmt('r_asks', {list: shown}));
+  } else if (skills.length) {
+    parts.push(fmt('r_overlaps', {list: skills.join(', ')}));
+  } else {
+    parts.push(T.r_thin);
+  }
+
+  if (dm && dm.points >= dm.max && sk && sk.points >= sk.max * 0.7)
+    parts.push(T.r_squarely);
+
+  /* The catch, if there is one. */
+  if (se && se.years_required > (se.years_profile || 0) + 1)
+    gaps.push(fmt('g_years', {n: se.years_required, have: se.years_profile}));
+  if (se && ['senior', 'head'].includes(se.detected)) gaps.push(fmt('g_senior', {level: se.detected}));
+  if (b.penalties) gaps.push(fmt('g_mentions', {list: (b.penalties.matched || []).slice(0, 2).join(', ')}));
+  if (j.verdict === 'review') gaps.push(T.g_borderline);
+
+  return {why: parts.join(' '), gaps};
+}
+
+function renderToday() {
+  const pool = DATA.jobs
+    .filter(j => j.verdict !== 'reject' && !j.status && !j.closed)
+    .sort((a, b) => b.score - a.score);
+  const picks = pool.slice(0, TOP_N);
+
+  $('#todayhead').textContent = !picks.length ? T.lead_none
+    : picks.length === 1 ? T.lead_one : fmt('lead_many', {n: picks.length});
+  $('#todaysub').textContent = picks.length ? fmt('lead_sub', {n: pool.length}) : T.lead_sub_none;
+
+  if (!picks.length) {
+    $('#deck').innerHTML = `<div class="done"><b>${T.inbox_zero}</b>
+      ${DATA.interactive ? T.inbox_live : T.inbox_static}</div>`;
+    return;
+  }
+
+  $('#deck').innerHTML = picks.map(j => {
+    const r = plainReason(j);
+    return `<article class="pick" data-id="${j.id}">
+      <div class="big c-${j.verdict}">${j.score}</div>
+      <div>
+        <h3>${esc(j.title)}</h3>
+        <div class="where">${esc(j.company)} · ${esc(j.location || 'location not stated')}${
+          j.remote !== 'unknown' ? ' · ' + esc(j.remote) : ''}</div>
+        <p class="why">${esc(r.why)}</p>
+        ${r.gaps.length ? `<p class="gap"><b>${T.catch}</b> ${esc(r.gaps.join('; '))}.</p>` : ''}
+        <div class="acts">
+          <a class="btn pri" href="${esc(j.url)}" target="_blank" rel="noopener">${T.btn_read}</a>
+          ${DATA.interactive ? `<button class="btn" data-act="shortlisted">${T.btn_keep}</button>
+                                <button class="btn" data-act="withdrawn">${T.btn_skip}</button>` : ''}
+          <button class="btn" data-act="detail">${T.btn_why}</button>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+
+  $('#deck').querySelectorAll('.pick').forEach(card => {
+    card.querySelectorAll('[data-act]').forEach(btn => btn.onclick = async () => {
+      const id = card.dataset.id;
+      if (btn.dataset.act === 'detail') return openJob(id);
+      const job = DATA.jobs.find(x => x.id === id);
+      card.classList.add('gone');
+      try {
+        const res = await fetch('api/job/' + id, {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({status: btn.dataset.act}),
+        });
+        if (!res.ok) throw new Error(await res.text());
+        Object.assign(job, await res.json());
+        toast(btn.dataset.act === 'shortlisted'
+          ? T.t_kept
+          : T.t_dismissed);
+      } catch (err) {
+        card.classList.remove('gone');
+        toast(T.t_not_saved + err.message);
+        return;
+      }
+      setTimeout(() => { renderToday(); renderTable(); }, 200);
+    });
+  });
+}
+
+try {
+  if (localStorage.getItem('jsa-steps') === 'hidden') $('#steps').hidden = true;
+} catch {}
+$('#hidesteps').onclick = () => {
+  $('#steps').hidden = true;
+  try { localStorage.setItem('jsa-steps', 'hidden'); } catch {}
+};
+
+/* -------------------------------------------------------------- filters */
+function visible() {
+  const q = $('#q').value.trim().toLowerCase();
+  const f = id => $('#' + id).value;
+  return DATA.jobs.filter(j => {
+    if (q && !(j.company + ' ' + j.title + ' ' + (j.location||'') + ' ' + (j.notes||'')).toLowerCase().includes(q)) return false;
+    if (f('fTrack') && j.track !== f('fTrack')) return false;
+    if (f('fVerdict') && j.verdict !== f('fVerdict')) return false;
+    if (f('fCountry') && (j.country || '–') !== f('fCountry')) return false;
+    if (f('fSource') && j.source !== f('fSource')) return false;
+    if (f('fStatus') === '__none' ? j.status : (f('fStatus') && j.status !== f('fStatus'))) return false;
+    return true;
+  }).sort((a, b) => {
+    const x = a[sortKey] ?? '', y = b[sortKey] ?? '';
+    const n = (typeof x === 'number' && typeof y === 'number') ? x - y : String(x).localeCompare(String(y));
+    return sortAsc ? n : -n;
+  });
+}
+
+function renderTable() {
+  const rows = visible();
+  $('#count').textContent = `${rows.length} ${T.of} ${DATA.jobs.length}`;
+  $('#tbody').innerHTML = rows.map(j => `
+    <tr data-id="${j.id}" class="${selected === j.id ? 'sel' : ''}">
+      <td><span class="chip c-${j.verdict}">${j.score}</span></td>
+      <td><div class="role">${esc(j.title)}</div><div class="sub">${esc(j.company)}</div></td>
+      <td class="hide">${esc(j.location || '–')}${j.remote !== 'unknown' ? ` <span class="sub">${j.remote}</span>` : ''}</td>
+      <td class="hide"><span class="tag">${esc(j.track)}</span></td>
+      <td class="hide"><span class="tag">${esc(j.source)}</span></td>
+      <td>${j.status ? `<span class="tag st">${esc(j.status)}</span>` : ''}${j.notes ? ' <span class="notedot" title="has a note">&#9679;</span>' : ''}</td>
+      <td class="nowrap hide">${esc((j.first_seen || '').slice(0, 10))}</td>
+    </tr>`).join('') || `<tr><td colspan="7" class="empty">${T.no_match}</td></tr>`;
+  $('#tbody').querySelectorAll('tr[data-id]').forEach(tr => tr.onclick = () => openJob(tr.dataset.id));
+}
+
+document.querySelectorAll('th[data-sort]').forEach(th => th.onclick = () => {
+  const k = th.dataset.sort;
+  if (k === sortKey) sortAsc = !sortAsc; else { sortKey = k; sortAsc = k !== 'score'; }
+  renderTable();
+});
+['q','fTrack','fVerdict','fCountry','fSource','fStatus'].forEach(id => {
+  const el = $('#' + id); el.addEventListener(el.tagName === 'INPUT' ? 'input' : 'change', renderTable);
+});
+
+/* --------------------------------------------------------------- board */
+function renderBoard() {
+  const cols = DATA.statuses.filter(s => !['withdrawn','ghosted'].includes(s));
+  $('#board').innerHTML = cols.map(s => {
+    const items = DATA.jobs.filter(j => j.status === s);
+    return `<div class="col"><h3>${s}<span>${items.length}</span></h3>
+      ${items.map(j => `<div class="jc" data-id="${j.id}"><b>${esc(j.title)}</b>
+        <span>${esc(j.company)} · ${esc(j.location || '–')}</span></div>`).join('')
+      || '<div class="empty">—</div>'}</div>`;
+  }).join('');
+  $('#board').querySelectorAll('.jc').forEach(c => c.onclick = () => openJob(c.dataset.id));
+}
+
+/* -------------------------------------------------------------- drawer */
+function openJob(id) {
+  const j = DATA.jobs.find(x => x.id === id);
+  if (!j) return;
+  selected = id;
+  const b = j.breakdown || {};
+  // Named apart from the `dim` holding each breakdown object below.
+  const dimLabel = d => T['dim_' + d] || d;
+  const bars = DIMS.filter(d => b[d]).map(d => {
+    const dim = b[d], pct = Math.round(100 * dim.points / dim.max);
+    const hits = d === 'title' ? [...(dim.strong||[]), ...(dim.good||[]), ...(dim.weak||[])]
+      : d === 'skills' ? [...(dim.must_have||[]), ...(dim.nice_to_have||[])]
+      : d === 'domain' ? (dim.matched || [])
+      : d === 'location' ? [dim.why] : [`${dim.detected}, ${dim.years_required}y asked`];
+    return `<div class="bar"><span>${dimLabel(d)}</span><span class="track"><span class="fill" style="width:${pct}%"></span></span>
+      <span class="num">${dim.points}/${dim.max}</span></div>
+      ${hits.length ? `<div class="hits">${esc(hits.slice(0, 8).join(' · '))}</div>` : ''}`;
+  }).join('');
+  const gates = (b.gates || []).map(g => `<div class="gate"><b>${esc(g.gate)}</b> — ${esc(g.reason)}</div>`).join('');
+  const pen = b.penalties ? `<div class="gate">${T.d_penalty} ${b.penalties.points} — ${esc((b.penalties.matched||[]).join(', '))}</div>` : '';
+
+  $('#dtitle').textContent = j.title;
+  $('#dco').innerHTML = `${esc(j.company)} · ${esc(j.location || '–')} · <a href="${esc(j.url)}" target="_blank" rel="noopener">${T.open_posting}</a>`;
+  $('#dbody').innerHTML = `
+    <div class="dsec"><h3>${fmt('fit_head', {score: j.score, verdict: j.verdict})}</h3>${bars}${gates}${pen}
+      <dl class="meta">
+        <dt>${T.d_track}</dt><dd>${esc(j.track)}</dd>
+        <dt>${T.d_source}</dt><dd>${esc(j.source)}</dd>
+        <dt>${T.d_first_seen}</dt><dd>${esc((j.first_seen||'').slice(0,10))}</dd>
+        <dt>${T.d_language}</dt><dd>${esc(b.language || '–')}</dd>
+      </dl></div>
+    <div class="dsec"><h3>${T.your_notes}</h3>
+      ${DATA.interactive
+        ? `<textarea id="note" placeholder="${T.notes_ph}">${esc(j.notes || '')}</textarea>
+           <div class="row" style="margin-top:8px">
+             <select id="dstatus">${['', ...DATA.statuses].map(s =>
+               `<option value="${s}"${s === (j.status||'') ? ' selected' : ''}>${s || T.no_status}</option>`).join('')}</select>
+             <button class="btn pri" id="save">Save</button>
+             <span id="saved" style="color:var(--ink-3);font-size:12px"></span>
+           </div>`
+        : `<div class="readonly">${T.readonly}</div>
+           ${j.notes ? `<div class="desc" style="margin-top:9px">${esc(j.notes)}</div>` : ''}`}
+    </div>
+    <div class="dsec"><h3>${T.next_step}</h3>
+      <code class="cmd">python3 -m jsa brief ${j.id.slice(0,8)}</code>
+      <code class="cmd">python3 -m jsa docs ${j.id.slice(0,8)} --overlay &lt;overlay.json&gt;</code>
+      <button class="btn" id="copy" style="margin-top:9px">Copy job id</button></div>
+    ${j.description ? `<div class="dsec"><h3>${T.posting}</h3><div class="desc">${esc(j.description)}</div></div>` : ''}`;
+
+  $('#copy').onclick = async () => {
+    try { await navigator.clipboard.writeText(j.id); toast(T.t_copied); }
+    catch { toast(T.t_copy_failed); }
+  };
+  if (DATA.interactive) $('#save').onclick = () => save(j);
+  $('#scrim').classList.add('open'); $('#drawer').classList.add('open');
+  renderTable();
+}
+
+function closeDrawer() {
+  $('#scrim').classList.remove('open'); $('#drawer').classList.remove('open');
+  selected = null; renderTable();
+}
+$('#scrim').onclick = closeDrawer; $('#dclose').onclick = closeDrawer;
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+async function save(j) {
+  const status = $('#dstatus').value, notes = $('#note').value;
+  $('#save').disabled = true;
+  try {
+    const res = await fetch('api/job/' + j.id, {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({status: status || null, notes}),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const updated = await res.json();
+    Object.assign(j, updated);
+    toast(T.t_saved);
+    renderTable();
+  } catch (err) {
+    toast(T.t_not_saved + err.message);
+  } finally { $('#save').disabled = false; }
+}
+
+/* ------------------------------------------------------------------ run */
+$('#reload').onclick = () => location.reload();
+const runBtn = $('#run'), runLog = $('#runlog'), runOut = $('#runout'), runState = $('#runstate');
+
+function paintRun(s) {
+  runLog.hidden = false;
+  runOut.textContent = s.lines.join('\n');
+  runOut.scrollTop = runOut.scrollHeight;
+  if (s.running) {
+    runState.textContent = T.run_running;
+    runBtn.disabled = true;
+    runBtn.innerHTML = '<span class="spin"></span>' + T.running;
+  } else {
+    runBtn.disabled = false;
+    runBtn.textContent = T.run;
+    if (s.returncode === 0) {
+      runState.innerHTML = T.run_done;
+      $('#rl').onclick = e => { e.preventDefault(); location.reload(); };
+    } else if (s.returncode !== null) {
+      runState.textContent = fmt('run_failed', {code: s.returncode});
+    }
+  }
+  return s.running;
+}
+
+let poll;
+async function watchRun() {
+  clearInterval(poll);
+  poll = setInterval(async () => {
+    try {
+      const s = await (await fetch('api/run')).json();
+      if (!paintRun(s)) clearInterval(poll);
+    } catch { clearInterval(poll); }
+  }, 1200);
+}
+
+if (DATA.interactive) {
+  runBtn.onclick = async () => {
+    runBtn.disabled = true;
+    runBtn.innerHTML = '<span class="spin"></span>' + T.starting;
+    try {
+      const res = await fetch('api/run', {method: 'POST'});
+      if (res.status === 409) { toast(T.t_in_progress); }
+      else if (!res.ok) throw new Error(await res.text());
+      paintRun(await res.json());
+      watchRun();
+    } catch (err) {
+      toast(T.t_cannot_start + err.message);
+      runBtn.disabled = false; runBtn.textContent = T.run;
+    }
+  };
+  // A run started before this page loaded (or in another tab) keeps streaming.
+  fetch('api/run').then(r => r.json()).then(s => { if (s.running) { paintRun(s); watchRun(); } }).catch(() => {});
+}
+
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* One entry point: translating also re-renders everything that carries text. */
+applyLang(LANG);
+</script>
+</body></html>

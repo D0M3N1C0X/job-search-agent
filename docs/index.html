@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>job-search-agent — La ricerca di lavoro come una pipeline</title>
+<meta name="description" content="I portali bloccano chi li raschia. Questo legge invece le API che le aziende pubblicano da sole, assegna a ogni offerta un punteggio secondo regole leggibi">
+<meta property="og:title" content="job-search-agent — La ricerca di lavoro come una pipeline">
+<meta property="og:description" content="I portali bloccano chi li raschia. Questo legge invece le API che le aziende pubblicano da sole, assegna a ogni offerta un punteggio secondo regole leggibi">
+<meta property="og:image" content="https://raw.githubusercontent.com/D0M3N1C0X/job-search-agent/main/docs/img/social-preview.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root{color-scheme:light dark;--bg:#0f1115;--panel:#171a21;--panel2:#1c2029;--ink:#e8eaee;
+ --ink2:#a2a9b6;--ink3:#767d8b;--line:#262b35;--accent:#5b9cff;--accent2:#1f6feb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+ font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+ -webkit-font-smoothing:antialiased;
+ background-image:radial-gradient(900px 500px at 82% -12%,rgba(31,111,235,.22),transparent 62%),
+  radial-gradient(640px 420px at 2% 104%,rgba(26,127,75,.14),transparent 60%)}
+.wrap{max-width:900px;margin:0 auto;padding:0 22px 72px}
+header{display:flex;align-items:center;gap:14px;padding:26px 0 8px;flex-wrap:wrap}
+.mark{width:40px;height:40px;border-radius:11px;background:var(--accent2);display:flex;
+ flex-direction:column;justify-content:center;gap:4px;padding:0 9px;flex:none}
+.mark i{display:block;height:5px;border-radius:3px;background:#fff}
+.mark i:nth-child(1){width:22px}.mark i:nth-child(2){width:15px}.mark i:nth-child(3){width:9px}
+.name{font-weight:600;letter-spacing:-.01em}
+.spacer{flex:1}
+select,a.ghost{background:var(--panel2);border:1px solid var(--line);color:var(--ink2);
+ border-radius:9px;padding:7px 12px;font:inherit;font-size:13.5px;text-decoration:none}
+a.ghost:hover,select:hover{border-color:var(--accent);color:var(--accent)}
+h1{font-size:clamp(30px,5vw,46px);line-height:1.1;letter-spacing:-.03em;margin:26px 0 14px}
+.lede{font-size:clamp(16px,2.2vw,19px);color:var(--ink2);max-width:60ch;margin:0 0 26px}
+.cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent2);color:#fff;
+ text-decoration:none;font-weight:600;padding:14px 24px;border-radius:12px;font-size:16px}
+.cta:hover{filter:brightness(1.1)}
+.ctanote{color:var(--ink3);font-size:13.5px;margin:10px 0 0}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);
+ margin:46px 0 16px;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:18px 20px}
+.card b{display:block;font-size:15.5px;margin-bottom:6px;letter-spacing:-.01em}
+.card p{margin:0;color:var(--ink2);font-size:14.5px;line-height:1.6}
+ol{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:12px}
+ol li{counter-increment:s;background:var(--panel);border:1px solid var(--line);border-radius:13px;
+ padding:16px 20px 16px 58px;position:relative}
+ol li::before{content:counter(s);position:absolute;left:18px;top:17px;width:24px;height:24px;
+ border-radius:50%;background:var(--panel2);border:1px solid var(--line);color:var(--ink3);
+ display:grid;place-items:center;font-size:12px;font-weight:700}
+ol b{display:block;font-size:15px;margin-bottom:3px}
+ol code{display:inline-block;margin:2px 0 6px}
+ol p{margin:0;color:var(--ink2);font-size:14.5px}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+code{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;
+ font-size:13.5px;color:var(--accent)}
+pre{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:18px 20px;
+ overflow-x:auto;font-size:14px;color:var(--ink);margin:0}
+.note{color:var(--ink3);font-size:13.5px;margin:10px 0 0}
+.honest{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);
+ border-radius:0 13px 13px 0;padding:18px 22px;color:var(--ink2);font-size:14.5px}
+footer{color:var(--ink3);font-size:13px;margin-top:52px;padding-top:20px;border-top:1px solid var(--line)}
+a{color:var(--accent)}
+@media(max-width:640px){header{padding-top:18px}.wrap{padding-bottom:48px}}
+</style></head><body><div class="wrap">
+
+<header>
+  <div class="mark"><i></i><i></i><i></i></div>
+  <div class="name">job-search-agent</div>
+  <div class="spacer"></div>
+  <select id="lang" aria-label="Language" data-other="index.en.html"><option value='en'>English</option><option value='it' selected>Italiano</option></select>
+  <a class="ghost" href="https://github.com/D0M3N1C0X/job-search-agent">Il codice su GitHub</a>
+</header>
+
+<h1>La ricerca di lavoro come una pipeline</h1>
+<p class="lede">I portali bloccano chi li raschia. Questo legge invece le API che le aziende pubblicano da sole, assegna a ogni offerta un punteggio secondo regole leggibili, scrive CV e lettera di presentazione, e misura quale posizionamento ottiene davvero risposte.</p>
+<a class="cta" href="demo/">Apri la demo →</a>
+<p class="ctanote">Dashboard vera, dati inventati. Niente da installare.</p>
+
+<h2>Cos'è</h2>
+<div class="grid"><div class='card'><b>Sette portali ATS, senza chiavi</b><p>Greenhouse, Lever, Ashby, SmartRecruiters, Recruitee, Workable e Personio servono lo stesso JSON che usano le loro pagine lavora-con-noi. Nessun login, nessuno scraping, niente che si rompa in silenzio la settimana dopo.</p></div><div class='card'><b>Un punteggio con cui puoi discutere</b><p>Il fit è una funzione pura di offerta, profilo e binario di posizionamento: la stessa offerta dà sempre lo stesso numero, e la scomposizione dice quali parole hanno fatto punti. Nessun modello che decide in privato.</p></div><div class='card'><b>Documenti che non possono inventare</b><p>CV e lettere in .docx. L'adattamento può riordinare e selezionare, ma ogni riga viene confrontata carattere per carattere con il tuo profilo: non può comparire nulla che tu non abbia scritto.</p></div><div class='card'><b>Zero dipendenze</b><p>Python 3.10 e la libreria standard. Nessun pip install, niente LaTeX, nessun browser headless. Funzionerà ancora fra tre anni su un portatile aziendale bloccato.</p></div></div>
+
+<h2>Come si usa</h2>
+<ol><li><b>Importa il tuo CV</b><code>jsa import ~/cv.pdf</code><p>Legge .docx, .pdf o testo e compila il profilo. Oppure rispondi a delle domande con jsa setup.</p></li><li><b>Avvia la pipeline</b><code>jsa run</code><p>Scarica, deduplica, assegna i punteggi e apre la lista. Circa cinque minuti su una watchlist di aziende.</p></li><li><b>Lavora la lista</b><code>jsa serve</code><p>La dashboard si apre sulle poche offerte che valgono la tua prossima ora, con il motivo in parole e il rovescio detto onestamente.</p></li></ol>
+
+<h2>Per iniziare</h2>
+<pre>git clone https://github.com/D0M3N1C0X/job-search-agent
+cd job-search-agent
+python3 -m jsa demo</pre>
+<p class="note">macOS, Linux e Windows. `jsa install` la mette anche nel Dock.</p>
+
+<h2>Cosa non fa</h2>
+<div class="honest">Non invia le candidature. Gli ATS non espongono endpoint pubblici per farlo, e un modulo è una firma: lo strumento prepara il pacchetto — documenti, risposte standard, lista di controllo — e l'invio lo fai tu.</div>
+
+<footer>Licenza MIT · costruito da Domenico Perroni · <a href="https://github.com/D0M3N1C0X/job-search-agent">github.com/D0M3N1C0X/job-search-agent</a></footer>
+</div>
+<script>
+  const sel = document.getElementById('lang');
+  sel.onchange = e => { location.href = e.target.value === 'it' ? 'index.html' : 'index.en.html'; };
+</script>
+</body></html>

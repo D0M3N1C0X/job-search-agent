@@ -4,6 +4,9 @@
 [![Open the dashboard](https://img.shields.io/badge/%E2%97%B1%20The%20dashboard-30363d?style=for-the-badge)](#the-dashboard)
 [![CI](https://github.com/D0M3N1C0X/job-search-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/D0M3N1C0X/job-search-agent/actions/workflows/ci.yml)
 
+**[Try the live dashboard →](https://d0m3n1c0x.github.io/job-search-agent/demo/)** — the real
+thing on synthetic data, in English or Italian, nothing to install.
+
 A job search that runs as a pipeline instead of a browser tab habit: pull
 postings from sources that do not break, score them against your profile with
 rules you can read, generate a tailored CV and cover letter, and measure which
