@@ -72,6 +72,64 @@ def cmd_init(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_import(args: argparse.Namespace) -> int:
+    """Start from the CV you already have instead of a blank profile."""
+    from .cvimport import UnreadableCV, parse, read_text, to_profile
+
+    home = Path(args.path).expanduser() if args.path else (config.REPO_ROOT / "profile")
+    target = home / "profile.json"
+    if target.exists() and not args.force:
+        print(f"{target} already exists. Use --force to replace it.")
+        return 1
+
+    try:
+        text, how = read_text(args.cv)
+    except UnreadableCV as exc:
+        print(f"\n{colour('Could not read that CV', BOLD)}\n\n{exc}", file=sys.stderr)
+        return 2
+
+    draft = parse(text, how)
+    base = read_json(config.REPO_ROOT / "profile.example" / "profile.json")
+    profile = to_profile(draft, base)
+
+    home.mkdir(parents=True, exist_ok=True)
+    write_json(target, profile)
+    for name in ("tracks.json", "answers.json", "watchlist.json"):
+        source = config.REPO_ROOT / "profile.example" / name
+        if source.exists() and not (home / name).exists():
+            shutil.copy(source, home / name)
+    for folder in ("inbox", "output"):
+        (home / folder).mkdir(exist_ok=True)
+
+    found = [
+        ("name", draft.name), ("headline", draft.headline), ("location", draft.location),
+        ("email", draft.email), ("phone", draft.phone), ("linkedin", draft.linkedin),
+    ]
+    print(f"\n{colour('Read', BOLD)} {args.cv}  ({how}, {draft.characters:,} characters)\n")
+    for label, value in found:
+        mark = colour("✓", GREEN) if value else colour("—", YELLOW)
+        print(f"  {mark} {label:<12}{value or '(not found)'}")
+    print(f"  {colour('✓', GREEN) if draft.experience else colour('—', YELLOW)} "
+          f"{'experience':<12}{len(draft.experience)} roles, "
+          f"{sum(len(r['bullets']) for r in draft.experience)} bullets")
+    print(f"  {colour('✓', GREEN) if draft.education else colour('—', YELLOW)} "
+          f"{'education':<12}{len(draft.education)} entries")
+    print(f"  {colour('✓', GREEN) if draft.skills else colour('—', YELLOW)} "
+          f"{'skills':<12}{len(draft.skills)}")
+    langs = ", ".join(f"{lang['name']} ({lang['level']})" for lang in draft.languages)
+    print(f"  {colour('✓', GREEN) if draft.languages else colour('—', YELLOW)} "
+          f"{'languages':<12}{langs or '(not found)'}")
+
+    print(f"\nWritten to {colour(str(target), BOLD)}")
+    if draft.missing:
+        print(colour(f"\nNot recognised: {', '.join(draft.missing)}.", YELLOW))
+    print("\nA CV has no schema, so read the file before trusting it — especially the")
+    print("experience bullets and the dates. Then:")
+    print("  jsa setup --force     answer questions instead, if the import missed too much")
+    print("  jsa probe <slug> --add / jsa run")
+    return 0
+
+
 def cmd_setup(args: argparse.Namespace) -> int:
     """Build a profile by answering questions instead of editing JSON."""
     from .wizard import Cancelled, run
@@ -775,6 +833,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("path", nargs="?")
     p.add_argument("--force", action="store_true")
     p.set_defaults(func=cmd_init)
+
+    p = sub.add_parser("import", help="build your profile from a CV you already have")
+    p.add_argument("cv", help="path to a .docx, .pdf or .txt CV")
+    p.add_argument("path", nargs="?", help="where to write it (default: ./profile)")
+    p.add_argument("--force", action="store_true", help="overwrite an existing profile")
+    p.set_defaults(func=cmd_import)
 
     p = sub.add_parser("setup", help="build your profile by answering questions")
     p.add_argument("path", nargs="?", help="where to write it (default: ./profile)")

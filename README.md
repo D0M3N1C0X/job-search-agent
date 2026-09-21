@@ -31,7 +31,8 @@ Then point it at your own search:
 
 ```bash
 python3 -m jsa install    # `jsa` on your PATH, plus a Dock app on macOS
-jsa setup                 # build your profile by answering questions — no JSON
+jsa import ~/cv.pdf       # start from the CV you already have (.docx, .pdf, .txt)
+jsa setup                 # or answer questions instead — no JSON either way
 jsa run                   # fetch, enrich, score, shortlist, dashboard — the whole loop
 jsa serve                 # the dashboard, editable: statuses and notes save to the database
 ```
@@ -111,7 +112,8 @@ reply, where good postings actually come from.
 
 | Stage | Command | What happens |
 |---|---|---|
-| **Set up** | `jsa setup` | Builds your profile from questions, picking positioning tracks from a library of eight |
+| **Set up** | `jsa import` | Reads the CV you already have — .docx, .pdf or text — and fills the profile in |
+| | `jsa setup` | Or builds it from questions, picking positioning tracks from a library of eight |
 | **Discover** | `jsa fetch` | Pulls from ATS boards, job-alert emails and LinkedIn guest search; deduplicates across all of them |
 | **Enrich** | `jsa enrich` | Fetches full descriptions only for postings whose title already looks plausible |
 | **Score** | `jsa score` | Deterministic 0–100 fit per positioning track, with hard gates and an explainable breakdown |
@@ -203,6 +205,13 @@ jsa setup                   # answer questions; it writes the profile for you
 jsa probe <company-slugs> --add
 jsa run
 ```
+
+`jsa import` reads a CV and fills in identity, experience, education, skills and
+languages. The PDF reader is a real one: it follows each font's `/ToUnicode`
+map and reconstructs lines from the text cursor, because a PDF stores glyph
+codes at coordinates rather than words in lines — read naively, a Word export
+comes out as unbroken gibberish. Scanned PDFs still cannot be read, and it says
+so instead of importing nonsense.
 
 `jsa setup` asks about your experience, skills, languages, where you will work
 and what would rule a posting out, then writes `profile.json`, `tracks.json`
