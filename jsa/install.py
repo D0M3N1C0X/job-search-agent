@@ -29,6 +29,8 @@ LABEL = "dev.jobsearchagent.dashboard"
 APPS_DIR = Path.home() / "Applications"
 APP_PATH = APPS_DIR / f"{APP_NAME}.app"
 AGENT_PATH = Path.home() / "Library" / "LaunchAgents" / f"{LABEL}.plist"
+DAILY_LABEL = f"{LABEL}.daily"
+DAILY_PATH = Path.home() / "Library" / "LaunchAgents" / f"{DAILY_LABEL}.plist"
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 WINDOWS = sys.platform == "win32"
@@ -250,7 +252,30 @@ def build_windows_launcher(port: int) -> Path:
     return written or targets[0]
 
 
-def install(port: int = 8765, at_login: bool = False) -> dict[str, Any]:
+def build_daily(hour: int, minute: int) -> Path:
+    """Run `jsa daily` every day at a set time.
+
+    Calendar-driven rather than an interval, and with no KeepAlive: this is a
+    task that finishes, not a service. If the Mac is asleep at the time, launchd
+    runs it at the next wake.
+    """
+    DAILY_PATH.parent.mkdir(parents=True, exist_ok=True)
+    DAILY_PATH.write_bytes(plistlib.dumps({
+        "Label": DAILY_LABEL,
+        "ProgramArguments": [sys.executable, "-m", "jsa", "daily"],
+        "WorkingDirectory": str(REPO_ROOT),
+        "StartCalendarInterval": {"Hour": hour, "Minute": minute},
+        "RunAtLoad": False,
+        "ProcessType": "Background",
+        "StandardErrorPath": str(REPO_ROOT / "profile" / "daily.log"),
+        "StandardOutPath": str(REPO_ROOT / "profile" / "daily.log"),
+    }))
+    subprocess.run(["launchctl", "unload", str(DAILY_PATH)], capture_output=True, check=False)
+    subprocess.run(["launchctl", "load", str(DAILY_PATH)], capture_output=True, check=False)
+    return DAILY_PATH
+
+
+def install(port: int = 8765, at_login: bool = False, daily: str | None = None) -> dict[str, Any]:
     """Install the `jsa` command, and whatever passes for an app on this system."""
     shim, path_ok = build_shim()
     result: dict[str, Any] = {
@@ -261,6 +286,9 @@ def install(port: int = 8765, at_login: bool = False) -> dict[str, Any]:
         result["app"] = build_app(port)
         if at_login:
             result["agent"] = build_agent(port)
+        if daily:
+            hour, _, minute = daily.partition(":")
+            result["daily"] = build_daily(int(hour), int(minute or 0))
     elif WINDOWS:
         result["app"] = build_windows_launcher(port)
         if at_login:
@@ -276,6 +304,10 @@ def install(port: int = 8765, at_login: bool = False) -> dict[str, Any]:
 
 def uninstall() -> list[str]:
     removed = []
+    if DAILY_PATH.exists():
+        subprocess.run(["launchctl", "unload", str(DAILY_PATH)], capture_output=True, check=False)
+        DAILY_PATH.unlink()
+        removed.append(str(DAILY_PATH))
     if WINDOWS:
         for candidate in (Path.home() / "Desktop" / f"{APP_NAME}.bat",
                           Path.home() / "AppData" / "Roaming" / "Microsoft" / "Windows"
@@ -312,6 +344,7 @@ def status(port: int = 8765) -> dict[str, Any]:
         "command_on_path": on_path(shim.parent) if shim.exists() else False,
         "app": APP_PATH.exists(),
         "login_agent": AGENT_PATH.exists(),
+        "daily_agent": DAILY_PATH.exists(),
         "server_running": running,
         "port": port,
     }

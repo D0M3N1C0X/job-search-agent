@@ -15,11 +15,13 @@ from .config import ConfigError
 from .models import STATUSES, Job
 from .packet import build_packet
 from .render import Overlay, ats_check, build_cover, build_cv, output_name
+from .util import slugify
 from .score import explain, score_all
 from .sources import ats as ats_sources
 from .sources import linkedin, mailbox
 from .store import Store
-from .util import FetchError, days_between, log, read_json, setup_logging, today, write_json
+from .util import (FetchError, days_between, log, now, read_json, setup_logging,
+                   today, write_json)
 
 GREEN, YELLOW, RED, DIM, BOLD, OFF = "\033[32m", "\033[33m", "\033[31m", "\033[2m", "\033[1m", "\033[0m"
 
@@ -420,6 +422,139 @@ def cmd_add(args: argparse.Namespace, cfg: config.Config,
 
 
 @with_workspace
+def cmd_daily(args: argparse.Namespace, cfg: config.Config, store: Store) -> int:
+    """Run the pipeline, then speak only if there is a reason to."""
+    from .daily import LAST_RUN, message, notify, summarise, write_digest
+
+    if not args.no_fetch:
+        ns = lambda **kw: argparse.Namespace(home=args.home, **kw)  # noqa: E731
+        cmd_fetch(ns(source=args.source, company=None, pages=2, fast=True, cache_ttl=900))
+        cmd_enrich(ns(min_score=30, limit=120))
+        cmd_score(ns(rescore=False))
+
+    summary = summarise(store, cfg, args.min_score)
+    digest = write_digest(summary, cfg.output_dir / "digest.md")
+    said = message(summary)
+
+    print(f"\n{colour('Daily digest', BOLD)}  {digest}")
+    if said is None:
+        print("Nothing new and nothing overdue — staying quiet.")
+    else:
+        text, subtitle = said
+        print(f"  {text}")
+        if not args.quiet:
+            notify("job-search-agent", text, subtitle)
+    store.set_meta(LAST_RUN, now())
+    return 0
+
+
+@with_workspace
+def cmd_apply(args: argparse.Namespace, cfg: config.Config, store: Store) -> int:
+    """Posting to sendable folder, in one command.
+
+    This exists because the multi-step flow was the reason nothing left the
+    house: seven roles sat shortlisted for a fortnight while the documents
+    waited on a session that never happened.
+    """
+    from .apply import build_apply_page, draft_letter
+    from .packet import build_packet
+
+    job = store.get_job(args.job_id)
+    if job is None:
+        print(f"No job matching {args.job_id!r}")
+        return 1
+
+    scores = score_all(job, cfg.profile, cfg.tracks)
+    best = scores[0]
+    track = cfg.track(args.track or best.track)
+    overlay_data = read_json(args.overlay) if args.overlay else {}
+    overlay = Overlay.from_dict(overlay_data)
+
+    cfg.output_dir.mkdir(parents=True, exist_ok=True)
+    cv_path = cfg.output_dir / output_name("CV", job.company, job.title)
+    build_cv(cfg.profile, track, overlay=overlay, path=cv_path)
+
+    letter = overlay_data.get("cover_letter") or draft_letter(job, cfg.profile, track, best)
+    letter.setdefault("company", job.company)
+    letter.setdefault("role", job.title)
+    letter.setdefault("date", today())
+    cover_path = cfg.output_dir / output_name("Cover", job.company, job.title)
+    build_cover(cfg.profile, letter, path=cover_path)
+
+    report = ats_check(cv_path, cfg.profile, job.description, job.company)
+    folder = build_packet(cfg, job, cv_path=cv_path, cover_path=cover_path, track=track,
+                          ats_report=report, notes=overlay_data.get("notes", ""))
+    answers_file = cfg.home / "answers.json"
+    answers = read_json(answers_file) if answers_file.exists() else {}
+    page = build_apply_page(job, cfg.profile, answers,
+                            folder, [folder / cv_path.name, folder / cover_path.name], report)
+
+    print(f"{colour(job.title, BOLD)} — {job.company}")
+    print(f"{best.score}/100 · {best.track} · {job.location or 'location n/a'}\n")
+    print(report.render())
+    if not overlay_data.get("cover_letter"):
+        print(colour("\nThe cover letter is a draft assembled from the score. Read it before "
+                     "sending — the first and last paragraphs need your words.", YELLOW))
+    todo = [k for k, v in answers.items() if isinstance(v, str) and v.startswith("TODO")]
+    if todo:
+        print(colour(f"Still TODO in answers.json: {', '.join(todo)}", YELLOW))
+    print(f"\nPacket  {folder}")
+    print(f"Helper  {page}")
+
+    store.set_status(job.id, "ready", track=track["id"],
+                     cv_path=str(cv_path), cover_path=str(cover_path))
+    if not args.no_open and sys.platform == "darwin":
+        import subprocess
+
+        subprocess.run(["open", str(page)], check=False)
+        if job.url:
+            subprocess.run(["open", job.url], check=False)
+    else:
+        print("\nOpen the helper page in a browser, then the posting.")
+    return 0
+
+
+@with_workspace
+def cmd_next(args: argparse.Namespace, cfg: config.Config, store: Store) -> int:
+    """The single next thing to do. One, not a list.
+
+    Forty-seven postings above 75 is not a shortlist, it is a reason to do
+    nothing. This picks one.
+    """
+    ready = [a for a in store.applications(open_only=True) if a["status"] in ("ready", "drafted")]
+    if ready and not args.skip_ready:
+        app = ready[0]
+        print(f"{colour('Finish this one first', BOLD)}\n")
+        print(f"  {app['company']} — {app['title']}")
+        print(f"  {app['status']} since {app['last_update'][:10]}")
+        folder = cfg.output_dir / f"{slugify(app['company'])}_{slugify(app['title'], 32)}"
+        if (folder / "apply.html").exists():
+            print(f"\n  open {folder / 'apply.html'}")
+        else:
+            print(f"\n  jsa apply {app['job_id'][:8]}")
+        print(f"\n  Or skip it: jsa next --skip-ready")
+        return 0
+
+    rows = store.best_scores(min_score=args.min_score, limit=1, include_applied=False)
+    if not rows:
+        print("Nothing untouched above the threshold. `jsa run` to look for more.")
+        return 0
+    row = rows[0]
+    breakdown = row["breakdown"]
+    print(f"{colour('Apply to this one', BOLD)}\n")
+    print(f"  {colour(row['title'], BOLD)}")
+    print(f"  {row['company']} · {row['location'] or 'location n/a'} · {row['score']}/100 "
+          f"· {row['track']}\n")
+    skills = breakdown.get("skills", {})
+    matched = (skills.get("must_have", []) + skills.get("nice_to_have", []))[:6]
+    if matched:
+        print(f"  Matches: {', '.join(matched)}")
+    print(f"  {row['url']}\n")
+    print(f"  {colour('jsa apply ' + row['id'][:8], BOLD)}")
+    return 0
+
+
+@with_workspace
 def cmd_brief(args: argparse.Namespace, cfg: config.Config,
               store: Store) -> int:
     """Everything needed to tailor an application, as JSON on stdout.
@@ -683,7 +818,7 @@ def cmd_install(args: argparse.Namespace) -> int:
     """Make the tool reachable: a `jsa` command anywhere, and an app in the Dock."""
     from .install import install
 
-    result = install(port=args.port, at_login=args.login)
+    result = install(port=args.port, at_login=args.login, daily=args.daily)
 
     print(f"{colour('Command', BOLD)}")
     print(f"  {result['shim']}")
@@ -706,6 +841,10 @@ def cmd_install(args: argparse.Namespace) -> int:
         print("\n  The server will also start automatically when you log in.")
     elif result["app"] and result["platform"] == "darwin":
         print("\n  Add `--login` to keep the server running in the background.")
+    if result.get("daily"):
+        print(f"\n{colour('Daily run', BOLD)}\n  every day at {args.daily} — "
+              f"a notification only when something new clears the threshold, or something "
+              f"is overdue.")
     if result.get("note"):
         print(f"\n  {result['note']}")
     print("\nRemove all of it with: jsa uninstall")
@@ -750,6 +889,7 @@ def cmd_where(args: argparse.Namespace) -> int:
     else:
         print("  jsa command    not installed (run `python3 -m jsa install`)")
     print(f"  starts at login{'  yes' if state['login_agent'] else '  no'}")
+    print(f"  daily run      {'yes' if state.get('daily_agent') else 'no (jsa install --daily 08:30)'}")
     print(f"\n{colour('Files', BOLD)}")
     print(f"  profile        {cfg.home}")
     print(f"  database       {cfg.db_path}")
@@ -815,6 +955,8 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("install", help="put the dashboard in the Dock as a macOS app")
     p.add_argument("--port", type=int, default=8765)
     p.add_argument("--login", action="store_true", help="also keep the server running from login")
+    p.add_argument("--daily", metavar="HH:MM",
+                   help="also run the pipeline every day at this time and notify if it matters")
     p.set_defaults(func=cmd_install)
 
     p = sub.add_parser("uninstall", help="remove the app and the login agent")
@@ -896,6 +1038,26 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--text", help="posting text")
     p.add_argument("--file", help="file containing the posting text")
     p.set_defaults(func=cmd_add)
+
+    p = sub.add_parser("daily", help="run the pipeline and notify only if it matters")
+    p.add_argument("--min-score", type=int, default=75)
+    p.add_argument("--source", choices=["all", "ats", "linkedin", "mailbox"], default="ats")
+    p.add_argument("--no-fetch", action="store_true", help="summarise what is already stored")
+    p.add_argument("--quiet", action="store_true", help="write the digest, send no notification")
+    p.set_defaults(func=cmd_daily)
+
+    p = sub.add_parser("apply", help="one command: documents, packet and form helper")
+    p.add_argument("job_id")
+    p.add_argument("--track")
+    p.add_argument("--overlay", help="a tailored overlay, if you wrote one")
+    p.add_argument("--no-open", action="store_true", help="do not open anything")
+    p.set_defaults(func=cmd_apply)
+
+    p = sub.add_parser("next", help="the single next thing to do")
+    p.add_argument("--min-score", type=int, default=70)
+    p.add_argument("--skip-ready", action="store_true",
+                   help="ignore packets already prepared and pick a new posting")
+    p.set_defaults(func=cmd_next)
 
     p = sub.add_parser("brief", help="dump everything needed to tailor an application (JSON)")
     p.add_argument("job_id")

@@ -40,6 +40,11 @@ jsa run                   # fetch, enrich, score, shortlist, dashboard — the w
 jsa serve                 # the dashboard, editable: statuses and notes save to the database
 ```
 
+`jsa daily` runs the pipeline and notifies you **only** when something new clears
+your threshold or something has gone overdue — silence otherwise, because an
+alert that arrives every morning stops being an alert. `jsa install --daily
+08:30` schedules it.
+
 `jsa doctor` checks the whole setup — interpreter, profile, database, network,
 PATH — and explains anything that is wrong. It keeps working when the workspace
 is the broken part, which is when you need it.
@@ -121,7 +126,9 @@ reply, where good postings actually come from.
 | **Enrich** | `jsa enrich` | Fetches full descriptions only for postings whose title already looks plausible |
 | **Score** | `jsa score` | Deterministic 0–100 fit per positioning track, with hard gates and an explainable breakdown |
 | **Shortlist** | `jsa top` / `jsa show` | Ranked list; per-job breakdown of exactly why it scored what it scored |
-| **Tailor** | `jsa brief` → `jsa docs` | Emits a tailoring brief for the model, then renders CV + cover letter as `.docx` |
+| **Apply** | `jsa apply <id>` | One command: CV, draft cover letter, packet, and a local page that fills the employer's form |
+| **Decide** | `jsa next` | The single next thing to do — one posting, not a list |
+| **Tailor** | `jsa brief` → `jsa docs` | Or the long way: a brief for the model, then documents from a hand-written overlay |
 | **Package** | (part of `jsa docs`) | One folder per application: documents, standard form answers, submission checklist |
 | **Track** | `jsa status` / `jsa due` | Application state machine with follow-up and ghosting horizons |
 | **Measure** | `jsa stats` / `jsa dashboard` | Funnel, response rate by track, source mix — as text or a self-contained HTML page |

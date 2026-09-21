@@ -350,6 +350,20 @@ class Store:
             rows = self.db.execute("SELECT * FROM events ORDER BY at").fetchall()
         return [dict(r) for r in rows]
 
+    # ---------------------------------------------------------------- meta
+
+    def get_meta(self, key: str, default: str = "") -> str:
+        row = self.db.execute("SELECT value FROM meta WHERE key = ?", (key,)).fetchone()
+        return row["value"] if row else default
+
+    def set_meta(self, key: str, value: str) -> None:
+        self.db.execute(
+            "INSERT INTO meta(key, value) VALUES (?,?) "
+            "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+            (key, value),
+        )
+        self.db.commit()
+
     # --------------------------------------------------------------- stats
 
     def counts(self) -> dict[str, int]:
