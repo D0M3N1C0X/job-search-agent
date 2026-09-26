@@ -45,7 +45,9 @@ sends an email, creates an account or types into a form you did not open. The
 form-filling bookmarklet runs only when you click it, on a page you opened, and
 never touches a submit button.
 
-**Your data stays in `profile/`**, which is git-ignored. There are no accounts,
+**Your data stays in your workspace** — `profile/` in a clone, which is
+git-ignored, or `~/.jsa` when installed as a package; an installed copy never
+writes into its own package directory. There are no accounts,
 no API keys and no telemetry; the only outbound requests are to the job boards
 you list and, if you enable it, LinkedIn's guest search.
 

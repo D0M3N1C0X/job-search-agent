@@ -16,13 +16,14 @@ import shutil
 from pathlib import Path
 from typing import Any
 
-from .config import REPO_ROOT, load
+from . import config
+from .config import load
 from .sources.ats import guess_country
 from .models import Job
 from .score import score_all
 from .store import Store
 
-DEMO_HOME = REPO_ROOT / ".demo"
+DEMO_HOME = config.DEMO_HOME
 SEED = 20260904
 
 COMPANIES = [
@@ -126,7 +127,11 @@ def build(home: Path = DEMO_HOME, count: int = 90) -> Any:
     """Create the workspace, seed it, score it. Returns the loaded config."""
     if home.exists():
         shutil.rmtree(home)
-    shutil.copytree(REPO_ROOT / "profile.example", home)
+    home.mkdir(parents=True)
+    # Profile files only: a jobs.db left in the example by an earlier run would
+    # otherwise seed the demo with whatever that run fetched.
+    for name in config.PROFILE_FILES:
+        shutil.copy(config.EXAMPLE_DIR / name, home / name)
     cfg = load(home)
     store = Store(cfg.db_path)
     for job in synthesise(count):

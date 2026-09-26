@@ -57,20 +57,20 @@ def verdict_colour(verdict: str) -> str:
 # --------------------------------------------------------------- commands
 
 def cmd_init(args: argparse.Namespace) -> int:
-    target = Path(args.path or (config.REPO_ROOT / "profile")).expanduser()
+    target = Path(args.path).expanduser() if args.path else config.workspace(args.home)
     if target.exists() and any(target.iterdir()) and not args.force:
         print(f"{target} already exists. Use --force to overwrite.")
         return 1
     target.mkdir(parents=True, exist_ok=True)
-    for name in ("profile.json", "tracks.json", "watchlist.json", "answers.json"):
-        source = config.REPO_ROOT / "profile.example" / name
+    for name in config.PROFILE_FILES:
+        source = config.EXAMPLE_DIR / name
         if source.exists():
             shutil.copy(source, target / name)
     (target / "inbox").mkdir(exist_ok=True)
     (target / "output").mkdir(exist_ok=True)
     print(f"Workspace ready in {target}")
     print("Next: run `jsa setup` to fill it in by answering questions,\n"
-          "      or edit profile/profile.json by hand if you prefer.")
+          f"      or edit {target / 'profile.json'} by hand if you prefer.")
     return 0
 
 
@@ -78,7 +78,7 @@ def cmd_import(args: argparse.Namespace) -> int:
     """Start from the CV you already have instead of a blank profile."""
     from .cvimport import UnreadableCV, parse, read_text, to_profile
 
-    home = Path(args.path).expanduser() if args.path else (config.REPO_ROOT / "profile")
+    home = Path(args.path).expanduser() if args.path else config.workspace(args.home)
     target = home / "profile.json"
     if target.exists() and not args.force:
         print(f"{target} already exists. Use --force to replace it.")
@@ -91,13 +91,13 @@ def cmd_import(args: argparse.Namespace) -> int:
         return 2
 
     draft = parse(text, how)
-    base = read_json(config.REPO_ROOT / "profile.example" / "profile.json")
+    base = read_json(config.EXAMPLE_DIR / "profile.json")
     profile = to_profile(draft, base)
 
     home.mkdir(parents=True, exist_ok=True)
     write_json(target, profile)
     for name in ("tracks.json", "answers.json", "watchlist.json"):
-        source = config.REPO_ROOT / "profile.example" / name
+        source = config.EXAMPLE_DIR / name
         if source.exists() and not (home / name).exists():
             shutil.copy(source, home / name)
     for folder in ("inbox", "output"):
@@ -136,7 +136,7 @@ def cmd_setup(args: argparse.Namespace) -> int:
     """Build a profile by answering questions instead of editing JSON."""
     from .wizard import Cancelled, run
 
-    home = Path(args.path).expanduser() if args.path else (config.REPO_ROOT / "profile")
+    home = Path(args.path).expanduser() if args.path else config.workspace(args.home)
     try:
         written = run(home, force=args.force)
     except Cancelled:
@@ -147,7 +147,7 @@ def cmd_setup(args: argparse.Namespace) -> int:
     print("  1. jsa probe <company-slug> --add     find employers to watch")
     print("  2. jsa run                            fetch, score, and open the shortlist")
     print("\nEverything it wrote is plain JSON you can edit later — especially")
-    print("profile/tracks.json, once you see what the scoring gets wrong.")
+    print(f"{home / 'tracks.json'}, once you see what the scoring gets wrong.")
     return 0
 
 
@@ -263,7 +263,7 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
     quiet = (" · " + colour(f"{totals['quiet']} boards suddenly empty", YELLOW)) if totals["quiet"] else ""
     print(f"{colour(str(totals['new']), BOLD)} new · {totals['seen']} already known · {failed}{quiet}")
     if totals["new"]:
-        print("Next: `python3 -m jsa score` then `python3 -m jsa top`")
+        print(f"Next: `{config.COMMAND} score` then `{config.COMMAND} top`")
     return 0
 
 
@@ -790,7 +790,7 @@ def cmd_run(args: argparse.Namespace) -> int:
 
         serve(cfg, port=args.port)
     else:
-        print("Open it, or run `python3 -m jsa serve` for the editable version.")
+        print(f"Open it, or run `{config.COMMAND} serve` for the editable version.")
     return 0
 
 
@@ -818,7 +818,7 @@ def cmd_demo(args: argparse.Namespace) -> int:
           f"{counts['applications']} walked into the tracker")
     print(f"Workspace: {DEMO_HOME}  (delete it, or run `jsa demo` again to rebuild)\n")
     if args.no_serve:
-        print(f"Open it with: JSA_HOME={DEMO_HOME} python3 -m jsa serve")
+        print(f"Open it with: JSA_HOME={DEMO_HOME} {config.COMMAND} serve")
         return 0
     serve(cfg, port=args.port, open_browser=not args.no_browser)
     return 0
@@ -897,7 +897,7 @@ def cmd_where(args: argparse.Namespace) -> int:
         note = "" if state["command_on_path"] else "  (its folder is not on your PATH)"
         print(f"  jsa command    {state['command']}{note}")
     else:
-        print("  jsa command    not installed (run `python3 -m jsa install`)")
+        print(f"  jsa command    not installed (run `{config.COMMAND} install`)")
     print(f"  starts at login{'  yes' if state['login_agent'] else '  no'}")
     print(f"  daily run      {'yes' if state.get('daily_agent') else 'no (jsa install --daily 08:30)'}")
     print(f"\n{colour('Files', BOLD)}")
@@ -905,7 +905,7 @@ def cmd_where(args: argparse.Namespace) -> int:
     print(f"  database       {cfg.db_path}")
     print(f"  documents      {cfg.output_dir}")
     if not state["server_running"]:
-        print("\nStart it with: python3 -m jsa serve")
+        print(f"\nStart it with: {config.COMMAND} serve")
     return 0
 
 
