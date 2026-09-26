@@ -7,7 +7,7 @@ you set up by hand (profile, tracks, database) needs attention.
 
 ## [Unreleased]
 
-## [1.0.0] — unreleased
+## [1.0.0] — 2026-09-26
 
 The first public release.
 
