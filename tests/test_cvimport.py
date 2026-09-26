@@ -5,11 +5,14 @@ just as importantly, the cases where it must refuse rather than guess.
 """
 
 import unittest
+import zipfile
 import zlib
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest import mock
 
 from jsa.cvimport import UnreadableCV, Draft, parse, read_text, to_profile, _heading
+from jsa import pdftext
 from jsa.pdftext import extract, legibility
 from jsa.util import read_json
 
@@ -155,6 +158,23 @@ class TestRefusals(unittest.TestCase):
             with self.assertRaises(UnreadableCV):
                 read_text(path)
 
+    def test_an_old_doc_renamed_to_docx_is_refused_without_a_traceback(self):
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "cv.docx"
+            path.write_bytes(b"\xd0\xcf\x11\xe0" + b"\0" * 600)   # the OLE header of a .doc
+            with self.assertRaises(UnreadableCV) as caught:
+                read_text(path)
+        self.assertIn("not a readable .docx", str(caught.exception))
+
+    def test_a_docx_that_inflates_to_gigabytes_is_refused_before_it_does(self):
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "cv.docx"
+            with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+                z.writestr("word/document.xml", "<w:p>" + "x" * 5000 + "</w:p>")
+            with mock.patch("jsa.docx.MAX_DOCUMENT_XML", 1000):
+                with self.assertRaises(UnreadableCV):
+                    read_text(path)
+
 
 class TestToProfile(unittest.TestCase):
     def test_the_draft_fills_the_example_shape(self):
@@ -205,6 +225,11 @@ class TestPdfText(unittest.TestCase):
         # Declaring no /Filter means the bytes are already plain; inflating
         # them anyway silently loses the whole page.
         self.assertIn("Hello world", self.read(compress=False))
+
+    def test_a_stream_that_inflates_past_any_cv_is_dropped(self):
+        with mock.patch.object(pdftext, "MAX_STREAM", 1000):
+            self.assertIsNone(pdftext._inflate(zlib.compress(b"\0" * 50_000)))
+            self.assertEqual(pdftext._inflate(zlib.compress(b"short")), b"short")
 
     def test_legibility_separates_prose_from_rubbish(self):
         self.assertGreater(legibility("Employee relations and HR policy, 2026."), 0.95)

@@ -15,6 +15,7 @@ it reports its own gaps instead of quietly inventing structure.
 from __future__ import annotations
 
 import re
+import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -86,6 +87,10 @@ class Draft:
     characters: int = 0
 
 
+# A CV with photos is a few megabytes. Anything this size is something else.
+MAX_CV_BYTES = 50 * 1024 * 1024
+
+
 class UnreadableCV(Exception):
     """The file was opened but no usable text came out."""
 
@@ -96,9 +101,18 @@ def read_text(path: str | Path) -> tuple[str, str]:
     if not file.exists():
         raise UnreadableCV(f"{file} does not exist.")
     suffix = file.suffix.lower()
+    if file.stat().st_size > MAX_CV_BYTES:
+        raise UnreadableCV(f"{file.name} is {file.stat().st_size // 2**20} MB — too large to be a CV.")
 
     if suffix == ".docx":
-        text, how = docx_text(file), "docx"
+        try:
+            text, how = docx_text(file), "docx"
+        except (zipfile.BadZipFile, KeyError, ValueError, UnicodeDecodeError) as exc:
+            # Usually an old .doc renamed to .docx, or a file still syncing.
+            raise UnreadableCV(
+                f"{file.name} is not a readable .docx ({type(exc).__name__}: {exc}).\n"
+                "  Open it in Word or Pages and save it again as .docx, or export it as PDF."
+            ) from exc
     elif suffix == ".pdf":
         text, how = pdf_text(file), "pdf"
         quality = legibility(text)
