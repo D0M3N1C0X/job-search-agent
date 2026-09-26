@@ -20,8 +20,8 @@ from .score import explain, score_all
 from .sources import ats as ats_sources
 from .sources import linkedin, mailbox
 from .store import Store
-from .util import (FetchError, days_between, log, now, read_json, safe_url, setup_logging,
-                   spreadsheet_safe, today, write_json)
+from .util import (FetchError, days_between, decode_entities, log, now, read_json, safe_url,
+                   setup_logging, spreadsheet_safe, today, write_json)
 
 GREEN, YELLOW, RED, DIM, BOLD, OFF = "\033[32m", "\033[33m", "\033[31m", "\033[2m", "\033[1m", "\033[0m"
 
@@ -310,8 +310,17 @@ def cmd_reindex(args: argparse.Namespace, cfg: config.Config,
 
     Country and remote-ness are inferred from free-text locations. When that
     table improves, jobs already in the database should benefit too — otherwise
-    a gate fixed today only applies to postings found tomorrow.
+    a gate fixed today only applies to postings found tomorrow. The same goes
+    for descriptions stored while only a dozen HTML entities were decoded: a
+    posting that still reads "M&uuml;nchen" is cleaned here, not on refetch.
     """
+    cleaned = 0
+    stale = store.db.execute("SELECT id, description FROM jobs WHERE description LIKE '%&%;%'").fetchall()
+    for row in stale:
+        text = decode_entities(row["description"])
+        if text != row["description"]:
+            store.db.execute("UPDATE jobs SET description = ? WHERE id = ?", (text, row["id"]))
+            cleaned += 1
     changed = 0
     for job in store.jobs():
         country = ats_sources.guess_country(job.location)
@@ -323,7 +332,8 @@ def cmd_reindex(args: argparse.Namespace, cfg: config.Config,
             )
             changed += 1
     store.commit()
-    print(f"Updated location fields on {changed} job(s). Run `jsa score --rescore` next.")
+    print(f"Updated location fields on {changed} job(s) and decoded leftover HTML entities in "
+          f"{cleaned} description(s). Run `{config.COMMAND} score --rescore` next.")
     return 0
 
 
