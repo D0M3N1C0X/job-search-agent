@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "job-search-agent"
-version = "1.0.0"
+version = "1.1.0"
 description = "A job search that runs as a pipeline: public ATS board APIs, deterministic explainable fit scoring, tailored .docx documents, funnel analytics."
 readme = "README.md"
 requires-python = ">=3.10"

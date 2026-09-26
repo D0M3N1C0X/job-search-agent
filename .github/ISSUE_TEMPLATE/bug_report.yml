@@ -25,7 +25,7 @@ body:
     attributes:
       label: Version and Python
       description: Output of `jsa --version` and `python3 -V`.
-      placeholder: job-search-agent 1.0.0 / Python 3.12.4
+      placeholder: job-search-agent 1.1.0 / Python 3.12.4
     validations: { required: true }
   - type: dropdown
     id: area
