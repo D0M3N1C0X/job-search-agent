@@ -165,13 +165,6 @@ class Store:
             rows = self.db.execute("SELECT * FROM jobs ORDER BY first_seen DESC").fetchall()
         return [Job.from_row(r) for r in rows]
 
-    def open_count(self, source: str, company: str) -> int:
-        """How many roles from one board are still believed open."""
-        return self.db.execute(
-            "SELECT COUNT(*) FROM jobs WHERE source = ? AND company = ? AND closed_at IS NULL",
-            (source, company),
-        ).fetchone()[0]
-
     def mark_closed(self, jobs: list[Job], source: str) -> int:
         """Flag postings a source stopped listing.
 

@@ -52,6 +52,12 @@ from 1.0.0 work as they are.
 
 - The unpaid-work gate rejected well-paid jobs whose benefits mention
   volunteering days (671 of its 719 rejections in an audit were wrong).
+- Job descriptions keep their accented letters: only a handful of HTML
+  entities were decoded, so a Greenhouse posting read "M&uuml;nchen" and
+  "Krak&oacute;w" on screen, and keyword matching saw "m and uuml nchen".
+  Entities are also decoded once rather than twice.
+- `jsa export` wrote titles and companies from feeds into cells a spreadsheet
+  would run as formulas.
 - Location matching covers every European country and the cities postings
   actually use; "Limassol" no longer resolves to Peru, and "Łódź" is found.
 - `jsa init` copies `answers.json`, so the packet carries your standard answers.

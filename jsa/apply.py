@@ -19,6 +19,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .config import COMMAND
 from .models import Job, Score
 from .util import today
 
@@ -233,6 +234,13 @@ def build_apply_page(job: Job, profile: dict[str, Any], answers: dict[str, Any],
               f'border-radius:10px;padding:14px;overflow-x:auto;font-size:12.5px;color:#a2a9b6">'
               f'{html.escape(ats_report.render())}</pre>') if ats_report else ""
 
+    # A posting whose link was dropped as unsafe has none: an empty href would
+    # only reload this page.
+    posting = (f'<a class="cta" href="{html.escape(job.url, quote=True)}" target="_blank" '
+               f'rel="noopener noreferrer">Open the posting →</a>' if job.url else
+               '<span class="sub">No link to the posting was kept — find it on the '
+               'company\'s careers page.</span>')
+
     page = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -242,8 +250,7 @@ def build_apply_page(job: Job, profile: dict[str, Any], answers: dict[str, Any],
 <h1>{html.escape(job.title)}</h1>
 <p class="sub">{html.escape(job.company)} · {html.escape(job.location or '')}</p>
 
-<a class="cta" href="{html.escape(job.url, quote=True)}" target="_blank" rel="noopener">
-  Open the posting →</a>
+{posting}
 <a class="cta ghost" href=".">Open this folder</a>
 
 <div class="warn">Nothing here submits anything. The form is yours to check and send.</div>
@@ -265,7 +272,7 @@ def build_apply_page(job: Job, profile: dict[str, Any], answers: dict[str, Any],
 {report}
 
 <h2>When you have sent it</h2>
-<ul class="check"><li>Run <code>jsa status {job.id[:8]} submitted</code> so the funnel
+<ul class="check"><li>Run <code>{html.escape(COMMAND)} status {job.id[:8]} submitted</code> so the funnel
  knows, and the follow-up clock starts.</li></ul>
 
 </div><script>
