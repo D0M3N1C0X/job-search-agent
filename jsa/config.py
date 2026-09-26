@@ -173,9 +173,12 @@ def example_home() -> Path:
         return EXAMPLE_DIR
     target = SCRATCH_DIR / "example"
     target.mkdir(parents=True, exist_ok=True)
+    # Compared rather than copied once: after an upgrade the package's example
+    # may have changed, and a stale copy would score with last version's tracks.
     for name in (*PROFILE_FILES, "tracks.library.json"):
-        if not (target / name).exists() and (EXAMPLE_DIR / name).exists():
-            shutil.copy(EXAMPLE_DIR / name, target / name)
+        source, copy = EXAMPLE_DIR / name, target / name
+        if source.exists() and (not copy.exists() or copy.read_bytes() != source.read_bytes()):
+            shutil.copy(source, copy)
     return target
 
 

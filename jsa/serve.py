@@ -29,13 +29,13 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
+from .config import CHECKOUT, REPO_ROOT
 from .dashboard import charts_for, collect, funnel_stats
 from .store import Store
 from .webapp import render_page
 
 MAX_BODY = 64 * 1024
 ALLOWED_HOSTS = {"127.0.0.1", "::1", "localhost"}
-REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
 class Run:
@@ -68,7 +68,10 @@ class Run:
             self.returncode = None
             self.proc = subprocess.Popen(
                 [sys.executable, "-u", "-m", "jsa", "--home", str(home), "run", *args],
-                cwd=REPO_ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                # A clone runs `-m jsa` from the repository; an installed copy
+                # from the workspace, never from inside site-packages.
+                cwd=REPO_ROOT if CHECKOUT else home,
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                 text=True, bufsize=1,
             )
         threading.Thread(target=self._drain, daemon=True).start()

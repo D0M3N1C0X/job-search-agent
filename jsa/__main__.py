@@ -20,8 +20,8 @@ from .score import explain, score_all
 from .sources import ats as ats_sources
 from .sources import linkedin, mailbox
 from .store import Store
-from .util import (FetchError, days_between, log, now, read_json, setup_logging,
-                   today, write_json)
+from .util import (FetchError, days_between, log, now, read_json, safe_url, setup_logging,
+                   spreadsheet_safe, today, write_json)
 
 GREEN, YELLOW, RED, DIM, BOLD, OFF = "\033[32m", "\033[33m", "\033[31m", "\033[2m", "\033[1m", "\033[0m"
 
@@ -58,8 +58,10 @@ def verdict_colour(verdict: str) -> str:
 
 def cmd_init(args: argparse.Namespace) -> int:
     target = Path(args.path).expanduser() if args.path else config.workspace(args.home)
-    if target.exists() and any(target.iterdir()) and not args.force:
-        print(f"{target} already exists. Use --force to overwrite.")
+    # Only a profile blocks this: `jsa install --login` creates the directory
+    # early to hold serve.log, and that must not stop anyone setting it up.
+    if any((target / name).exists() for name in config.PROFILE_FILES) and not args.force:
+        print(f"{target} already has a profile. Use --force to overwrite it.")
         return 1
     target.mkdir(parents=True, exist_ok=True)
     for name in config.PROFILE_FILES:
@@ -96,7 +98,7 @@ def cmd_import(args: argparse.Namespace) -> int:
 
     home.mkdir(parents=True, exist_ok=True)
     write_json(target, profile)
-    for name in ("tracks.json", "answers.json", "watchlist.json"):
+    for name in (n for n in config.PROFILE_FILES if n != "profile.json"):
         source = config.EXAMPLE_DIR / name
         if source.exists() and not (home / name).exists():
             shutil.copy(source, home / name)
@@ -199,8 +201,12 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
             needle = args.company.lower()
             entries = [e for e in entries if needle in e["company"].lower()]
         for entry in entries:
-            # Read before the fetch: afterwards the answer is always "what we just saw".
-            known = store.open_count(entry["provider"], entry["company"]) or entry.get("open_roles", 0)
+            # What this board listed on its last successful fetch, else what
+            # `jsa probe` counted when it was added. Keyed by board, not by
+            # company name: Workable, for one, names jobs after its own account.
+            listed_key = f"listed:{entry['provider']}:{entry['handle']}"
+            last = store.get_meta(listed_key)
+            known = int(last) if last.isdigit() else entry.get("open_roles", 0)
             try:
                 jobs = ats_sources.fetch_company(entry, cache_dir=cfg.cache_dir, cache_ttl=args.cache_ttl)
             except Exception as exc:  # noqa: BLE001 - one bad board must not end the run
@@ -215,14 +221,17 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
             for job in jobs:
                 counts[store.upsert_job(job)] += 1
             store.mark_closed(jobs, entry["provider"])
+            store.set_meta(listed_key, str(len(jobs)))
             totals["new"] += counts["new"]
             totals["seen"] += counts["seen"]
             if not jobs and known:
                 # A board that changed shape answers 200 with nothing in it,
-                # which looks exactly like a company that stopped hiring.
+                # which looks exactly like a company that stopped hiring. Said
+                # once, on the run it happens: the count is now recorded as 0.
                 totals["quiet"] += 1
                 print(f"{entry['company']:<32} {entry['provider']:<16}   0 listed  "
-                      + colour(f"had {known} open — check it: `jsa probe {entry['handle']}`", YELLOW))
+                      + colour(f"had {known} open — check it: "
+                               f"`{config.COMMAND} probe {entry['handle']}`", YELLOW))
                 continue
             marker = colour(f"+{counts['new']}", GREEN) if counts["new"] else colour("+0", DIM)
             print(f"{entry['company']:<32} {entry['provider']:<16} {len(jobs):>3} listed  {marker}")
@@ -832,7 +841,7 @@ def cmd_install(args: argparse.Namespace) -> int:
     """Make the tool reachable: a `jsa` command anywhere, and an app in the Dock."""
     from .install import install
 
-    result = install(port=args.port, at_login=args.login, daily=args.daily)
+    result = install(port=args.port, at_login=args.login, daily=args.daily, home=args.home)
 
     print(f"{colour('Command', BOLD)}")
     print(f"  {result['shim']}")
@@ -921,10 +930,15 @@ def cmd_export(args: argparse.Namespace, cfg: config.Config,
     out.parent.mkdir(parents=True, exist_ok=True)
     fields = ["company", "title", "location", "track", "status", "channel",
               "created_at", "submitted_at", "last_update", "url", "notes"]
+    # Titles, companies and notes come from feeds and people; a cell starting
+    # with = + - or @ is a formula to a spreadsheet, and the URL may predate
+    # the check in Job. The file is for reading, so it gets neither.
+    safe = [{**{k: spreadsheet_safe(v) for k, v in row.items()}, "url": safe_url(row.get("url"))}
+            for row in rows]
     with out.open("w", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=fields, extrasaction="ignore")
         writer.writeheader()
-        writer.writerows(rows)
+        writer.writerows(safe)
     print(f"{len(rows)} applications → {out}")
     return 0
 
