@@ -139,6 +139,16 @@ class TestFetchSaysWhenABoardGoesQuiet(CliCase):
         self.assertIn("had 1 open", out)
         self.assertIn("1 boards suddenly empty", out)
 
+    def test_a_failed_board_shows_why_not_just_the_url(self):
+        entry = self.cfg.watchlist[0]
+        error = cli.FetchError("https://boards-api.greenhouse.io/v1/boards/x/jobs?content=true"
+                               " -> <urlopen error Tunnel connection failed: 403 Forbidden>")
+        with mock.patch.object(cli.ats_sources, "fetch_company", side_effect=error):
+            out = self.run_cmd(cli.cmd_fetch, source="ats", company=entry["company"],
+                               cache_ttl=0, pages=1, fast=True)
+        self.assertIn("Tunnel connection failed: 403", out)
+        self.assertIn("1 sources failed", out)
+
     def test_an_empty_board_that_was_always_empty_is_not(self):
         entry = self.cfg.watchlist[0]          # nothing stored for it, no open_roles
         self.assertFalse(entry.get("open_roles"))

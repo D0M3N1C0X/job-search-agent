@@ -58,7 +58,11 @@ The first public release.
 - `jsa demo` no longer inherits a `jobs.db` left in the example profile by an
   earlier run.
 - `jsa fetch` flags a board that suddenly returns nothing after listing open
-  roles, instead of printing it as a normal empty board.
+  roles, instead of printing it as a normal empty board. A failed source now
+  shows why it failed rather than a truncated URL, and LinkedIn counts as
+  failed when every query fails instead of reporting "0 listed".
+- The form-filling bookmarklet altered answers containing `%` (a browser
+  percent-decodes the link before running it), and a `%22` broke it outright.
 - Oversized HTTP responses, gzip bombs, and PDF or DOCX files that inflate past
   any plausible CV are refused; a `.docx` that is not one gets an explanation
   instead of a traceback.

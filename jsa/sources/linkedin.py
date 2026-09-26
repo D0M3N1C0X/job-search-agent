@@ -81,8 +81,14 @@ def search(
     pause: float = 1.5,
     **opts: Any,
 ) -> list[Job]:
-    """Run every configured query. `queries` come from the profile's search block."""
+    """Run every configured query. `queries` come from the profile's search block.
+
+    One failing query is skipped and the rest still count. If every one fails,
+    that is raised rather than returned as an empty list, which would read
+    exactly like a quiet week.
+    """
     found: dict[str, Job] = {}
+    failures: list[str] = []
     for query in queries:
         for page in range(pages):
             params = {
@@ -99,6 +105,7 @@ def search(
                 html = http_get(url, **opts)
             except FetchError as exc:
                 log.warning("linkedin: %s (query %r) — skipping", exc, query.get("keywords"))
+                failures.append(str(exc).split(" -> ", 1)[-1])
                 break
             batch = parse_cards(html)
             if not batch:
@@ -106,6 +113,9 @@ def search(
             for job in batch:
                 found.setdefault(job.id, job)
             time.sleep(pause)
+
+    if queries and not found and len(failures) == len(queries):
+        raise FetchError(f"all {len(queries)} queries failed -> {failures[-1]}")
 
     if with_descriptions:
         # Detail pages are the most rate-limited call here, so they get a
