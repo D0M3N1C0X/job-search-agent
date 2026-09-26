@@ -260,6 +260,20 @@ def html_to_text(html: str) -> str:
     return _BLANKS.sub("\n\n", text).strip()
 
 
+_ENTITY_REF = re.compile(r"&(?:#\d+|#[xX][0-9a-fA-F]+|[A-Za-z][A-Za-z0-9]{1,31});")
+
+
+def decode_entities(text: str) -> str:
+    """Decode the entity references left in text that is already plain.
+
+    For descriptions stored before html_to_text decoded every entity. Unlike
+    html_to_text it strips nothing, and it only decodes complete references
+    ending in ";": HTML also honours a few without one, which would turn a
+    literal "&notice" in plain text into "¬ice".
+    """
+    return _ENTITY_REF.sub(lambda m: unescape_html(m.group(0)), text).replace("\xa0", " ")
+
+
 def spreadsheet_safe(value: Any) -> str:
     """Text a spreadsheet shows as text rather than evaluating as a formula."""
     text = "" if value is None else str(value)

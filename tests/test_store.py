@@ -30,6 +30,16 @@ class TestJobs(StoreCase):
         self.assertEqual(self.store.upsert_job(job()), "seen")
         self.assertEqual(self.store.counts()["jobs"], 1)
 
+    def test_a_stored_description_is_read_back_as_written(self):
+        # Loading used to run it through the HTML stripper again, so any
+        # "<...>" in plain text vanished every time the job was read.
+        stored = job()
+        self.store.upsert_job(stored)
+        text = "Salary <50k> plus bonus; wrap names in <b> tags"
+        self.store.db.execute("UPDATE jobs SET description = ? WHERE id = ?", (text, stored.id))
+        self.store.db.commit()
+        self.assertEqual(self.store.get_job(stored.id).description, text)
+
     def test_same_role_from_another_source_does_not_duplicate(self):
         self.store.upsert_job(job(source="greenhouse"))
         self.store.upsert_job(job(source="linkedin", title="HR Advisor (m/f/d)",
