@@ -36,6 +36,7 @@ def build_packet(
     track: dict[str, Any],
     ats_report: Any = None,
     notes: str = "",
+    letter_todo: int = 0,
 ) -> Path:
     """Create `output/<company>_<role>/` with documents, answers and a checklist."""
     folder = cfg.output_dir / f"{slugify(job.company)}_{slugify(job.title, 32)}"
@@ -60,6 +61,8 @@ def build_packet(
         "",
         "## Before you send",
         "",
+        *([f"- [ ] Write the {letter_todo} part(s) of the cover letter marked [[WRITE: …]]"]
+          if letter_todo else []),
         "- [ ] Read the CV end to end — every line is yours to defend",
         "- [ ] Read the cover letter aloud once",
         "- [ ] Check the company name and role title in both documents",

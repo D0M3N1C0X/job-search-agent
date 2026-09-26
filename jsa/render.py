@@ -18,6 +18,7 @@ from typing import Any
 
 from .docx import Document, extract_text
 from .models import canonical
+from .pdftext import extract as pdf_text
 from .util import log, slugify
 
 MAX_BULLETS_PER_ROLE = 4
@@ -302,7 +303,8 @@ def ats_check(cv_path: str | Path, profile: dict[str, Any], job_text: str = "",
     Missing keywords are reported, never auto-inserted: a gap in the profile
     is information, not something to paper over.
     """
-    text = extract_text(cv_path)
+    # Their own CV may be a PDF; read it the way an ATS would.
+    text = pdf_text(cv_path) if Path(cv_path).suffix.lower() == ".pdf" else extract_text(cv_path)
     lower = canonical(text)
     identity = profile["identity"]
     words = len(text.split())
