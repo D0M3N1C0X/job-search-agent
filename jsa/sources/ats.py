@@ -413,12 +413,14 @@ def personio(handle: str, company: str = "", *, domain: str = "jobs.personio.de"
 
 def parse_personio(body: str, company: str, *, handle: str = "", domain: str = "jobs.personio.de") -> list[Job]:
     try:
-        root = ET.fromstring(body)
+        # Standard-library expat resolves no external entities and caps entity
+        # expansion (billion laughs), which is what defusedxml exists to add.
+        root = ET.fromstring(body)  # noqa: S314
     except ET.ParseError as exc:
         raise FetchError(f"personio/{handle}: malformed XML ({exc})") from exc
     jobs = []
     for pos in root.iter("position"):
-        get = lambda tag: (pos.findtext(tag) or "").strip()  # noqa: E731
+        get = lambda tag, pos=pos: (pos.findtext(tag) or "").strip()  # noqa: E731
         parts = []
         for desc in pos.iter("jobDescription"):
             parts.append(

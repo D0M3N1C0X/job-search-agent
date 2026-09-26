@@ -57,20 +57,20 @@ def verdict_colour(verdict: str) -> str:
 # --------------------------------------------------------------- commands
 
 def cmd_init(args: argparse.Namespace) -> int:
-    target = Path(args.path or (config.REPO_ROOT / "profile")).expanduser()
+    target = Path(args.path).expanduser() if args.path else config.workspace(args.home)
     if target.exists() and any(target.iterdir()) and not args.force:
         print(f"{target} already exists. Use --force to overwrite.")
         return 1
     target.mkdir(parents=True, exist_ok=True)
-    for name in ("profile.json", "tracks.json", "watchlist.json", "answers.json"):
-        source = config.REPO_ROOT / "profile.example" / name
+    for name in config.PROFILE_FILES:
+        source = config.EXAMPLE_DIR / name
         if source.exists():
             shutil.copy(source, target / name)
     (target / "inbox").mkdir(exist_ok=True)
     (target / "output").mkdir(exist_ok=True)
     print(f"Workspace ready in {target}")
     print("Next: run `jsa setup` to fill it in by answering questions,\n"
-          "      or edit profile/profile.json by hand if you prefer.")
+          f"      or edit {target / 'profile.json'} by hand if you prefer.")
     return 0
 
 
@@ -78,7 +78,7 @@ def cmd_import(args: argparse.Namespace) -> int:
     """Start from the CV you already have instead of a blank profile."""
     from .cvimport import UnreadableCV, parse, read_text, to_profile
 
-    home = Path(args.path).expanduser() if args.path else (config.REPO_ROOT / "profile")
+    home = Path(args.path).expanduser() if args.path else config.workspace(args.home)
     target = home / "profile.json"
     if target.exists() and not args.force:
         print(f"{target} already exists. Use --force to replace it.")
@@ -91,13 +91,13 @@ def cmd_import(args: argparse.Namespace) -> int:
         return 2
 
     draft = parse(text, how)
-    base = read_json(config.REPO_ROOT / "profile.example" / "profile.json")
+    base = read_json(config.EXAMPLE_DIR / "profile.json")
     profile = to_profile(draft, base)
 
     home.mkdir(parents=True, exist_ok=True)
     write_json(target, profile)
     for name in ("tracks.json", "answers.json", "watchlist.json"):
-        source = config.REPO_ROOT / "profile.example" / name
+        source = config.EXAMPLE_DIR / name
         if source.exists() and not (home / name).exists():
             shutil.copy(source, home / name)
     for folder in ("inbox", "output"):
@@ -136,7 +136,7 @@ def cmd_setup(args: argparse.Namespace) -> int:
     """Build a profile by answering questions instead of editing JSON."""
     from .wizard import Cancelled, run
 
-    home = Path(args.path).expanduser() if args.path else (config.REPO_ROOT / "profile")
+    home = Path(args.path).expanduser() if args.path else config.workspace(args.home)
     try:
         written = run(home, force=args.force)
     except Cancelled:
@@ -147,7 +147,7 @@ def cmd_setup(args: argparse.Namespace) -> int:
     print("  1. jsa probe <company-slug> --add     find employers to watch")
     print("  2. jsa run                            fetch, score, and open the shortlist")
     print("\nEverything it wrote is plain JSON you can edit later — especially")
-    print("profile/tracks.json, once you see what the scoring gets wrong.")
+    print(f"{home / 'tracks.json'}, once you see what the scoring gets wrong.")
     return 0
 
 
@@ -191,7 +191,7 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
     if cfg.demo:
         print(colour("Running on the bundled demo profile — `jsa init` to use your own.", YELLOW))
     wanted = args.source
-    totals = {"new": 0, "seen": 0, "failed": 0}
+    totals = {"new": 0, "seen": 0, "failed": 0, "quiet": 0}
 
     if wanted in ("all", "ats"):
         entries = cfg.watchlist
@@ -199,12 +199,17 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
             needle = args.company.lower()
             entries = [e for e in entries if needle in e["company"].lower()]
         for entry in entries:
+            # Read before the fetch: afterwards the answer is always "what we just saw".
+            known = store.open_count(entry["provider"], entry["company"]) or entry.get("open_roles", 0)
             try:
                 jobs = ats_sources.fetch_company(entry, cache_dir=cfg.cache_dir, cache_ttl=args.cache_ttl)
             except Exception as exc:  # noqa: BLE001 - one bad board must not end the run
                 totals["failed"] += 1
-                print(f"{entry['company']:<32} "
-                      f"{colour(f'{type(exc).__name__}: {exc}'[:70], RED)}")
+                # FetchError reads "<url> -> <reason>"; the company and board are
+                # already on the line, and a truncated URL used to hide the reason.
+                reason = str(exc).split(" -> ", 1)[-1]
+                print(f"{entry['company']:<32} {entry['provider']:<16} "
+                      + colour(f"failed — {type(exc).__name__}: {reason}"[:100], RED))
                 continue
             counts = {"new": 0, "seen": 0}
             for job in jobs:
@@ -212,6 +217,13 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
             store.mark_closed(jobs, entry["provider"])
             totals["new"] += counts["new"]
             totals["seen"] += counts["seen"]
+            if not jobs and known:
+                # A board that changed shape answers 200 with nothing in it,
+                # which looks exactly like a company that stopped hiring.
+                totals["quiet"] += 1
+                print(f"{entry['company']:<32} {entry['provider']:<16}   0 listed  "
+                      + colour(f"had {known} open — check it: `jsa probe {entry['handle']}`", YELLOW))
+                continue
             marker = colour(f"+{counts['new']}", GREEN) if counts["new"] else colour("+0", DIM)
             print(f"{entry['company']:<32} {entry['provider']:<16} {len(jobs):>3} listed  {marker}")
 
@@ -230,8 +242,9 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
                       f"{colour('+' + str(counts['new']), GREEN)}")
             except Exception as exc:  # noqa: BLE001 - secondary source, best effort
                 totals["failed"] += 1
-                print(f"{'LinkedIn (guest)':<32} "
-                      f"{colour(f'unavailable — {type(exc).__name__}: {exc}'[:80], YELLOW)}")
+                reason = str(exc).split(" -> ", 1)[-1]
+                print(f"{'LinkedIn (guest)':<32} {'linkedin':<16} "
+                      + colour(f"unavailable — {type(exc).__name__}: {reason}"[:100], YELLOW))
 
     if wanted in ("all", "mailbox"):
         try:
@@ -251,9 +264,10 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
     print()
     failed = (colour(f"{totals['failed']} sources failed", RED) if totals["failed"]
               else "0 sources failed")
-    print(f"{colour(str(totals['new']), BOLD)} new · {totals['seen']} already known · {failed}")
+    quiet = (" · " + colour(f"{totals['quiet']} boards suddenly empty", YELLOW)) if totals["quiet"] else ""
+    print(f"{colour(str(totals['new']), BOLD)} new · {totals['seen']} already known · {failed}{quiet}")
     if totals["new"]:
-        print("Next: `python3 -m jsa score` then `python3 -m jsa top`")
+        print(f"Next: `{config.COMMAND} score` then `{config.COMMAND} top`")
     return 0
 
 
@@ -532,7 +546,7 @@ def cmd_next(args: argparse.Namespace, cfg: config.Config, store: Store) -> int:
             print(f"\n  open {folder / 'apply.html'}")
         else:
             print(f"\n  jsa apply {app['job_id'][:8]}")
-        print(f"\n  Or skip it: jsa next --skip-ready")
+        print("\n  Or skip it: jsa next --skip-ready")
         return 0
 
     rows = store.best_scores(min_score=args.min_score, limit=1, include_applied=False)
@@ -660,7 +674,7 @@ def cmd_status(args: argparse.Namespace, cfg: config.Config,
     if args.status == "submitted":
         days = cfg.profile.get("preferences", {}).get("follow_up_days", 10)
         follow_up = f"in {days} days"
-    application = store.set_status(
+    store.set_status(
         job.id, args.status, channel=args.channel, notes=args.note,
         next_action_at=args.next_action,
     )
@@ -700,9 +714,9 @@ def cmd_due(args: argparse.Namespace, cfg: config.Config,
               "then `jsa status <id> shortlisted`.")
         return 0
     by_age = lambda item: item[0]  # noqa: E731
-    for age, row, why in sorted(overdue, key=by_age, reverse=True):
+    for _age, row, why in sorted(overdue, key=by_age, reverse=True):
         print(f"{colour('!', YELLOW)} {row['company'][:24]:<26}{row['title'][:38]:<40}{why}")
-    for age, row, why in sorted(waiting, key=by_age, reverse=True):
+    for _age, row, why in sorted(waiting, key=by_age, reverse=True):
         print(f"  {row['company'][:24]:<26}{row['title'][:38]:<40}{colour(why, DIM)}")
     if not overdue:
         print(f"\n{len(waiting)} open, nothing overdue.")
@@ -780,7 +794,7 @@ def cmd_run(args: argparse.Namespace) -> int:
 
         serve(cfg, port=args.port)
     else:
-        print("Open it, or run `python3 -m jsa serve` for the editable version.")
+        print(f"Open it, or run `{config.COMMAND} serve` for the editable version.")
     return 0
 
 
@@ -808,7 +822,7 @@ def cmd_demo(args: argparse.Namespace) -> int:
           f"{counts['applications']} walked into the tracker")
     print(f"Workspace: {DEMO_HOME}  (delete it, or run `jsa demo` again to rebuild)\n")
     if args.no_serve:
-        print(f"Open it with: JSA_HOME={DEMO_HOME} python3 -m jsa serve")
+        print(f"Open it with: JSA_HOME={DEMO_HOME} {config.COMMAND} serve")
         return 0
     serve(cfg, port=args.port, open_browser=not args.no_browser)
     return 0
@@ -826,7 +840,7 @@ def cmd_install(args: argparse.Namespace) -> int:
         print(f"  {colour('jsa', GREEN)} now works from any directory — try `jsa where`.")
     else:
         print(colour(f"  {result['shim'].parent} is not on your PATH.", YELLOW))
-        print(f"  Add this line to ~/.zshrc, then open a new terminal:")
+        print("  Add this line to ~/.zshrc, then open a new terminal:")
         print(f"    export PATH=\"{result['shim'].parent}:$PATH\"")
 
     if result["app"]:
@@ -887,7 +901,7 @@ def cmd_where(args: argparse.Namespace) -> int:
         note = "" if state["command_on_path"] else "  (its folder is not on your PATH)"
         print(f"  jsa command    {state['command']}{note}")
     else:
-        print("  jsa command    not installed (run `python3 -m jsa install`)")
+        print(f"  jsa command    not installed (run `{config.COMMAND} install`)")
     print(f"  starts at login{'  yes' if state['login_agent'] else '  no'}")
     print(f"  daily run      {'yes' if state.get('daily_agent') else 'no (jsa install --daily 08:30)'}")
     print(f"\n{colour('Files', BOLD)}")
@@ -895,7 +909,7 @@ def cmd_where(args: argparse.Namespace) -> int:
     print(f"  database       {cfg.db_path}")
     print(f"  documents      {cfg.output_dir}")
     if not state["server_running"]:
-        print(f"\nStart it with: python3 -m jsa serve")
+        print(f"\nStart it with: {config.COMMAND} serve")
     return 0
 
 
@@ -917,11 +931,15 @@ def cmd_export(args: argparse.Namespace, cfg: config.Config,
 
 # ------------------------------------------------------------------ parser
 
+WORKSPACE_HELP = "where to write it (default: the workspace every other command reads — see --home)"
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="jsa", description="job-search-agent — find, score, apply, track.")
     parser.add_argument("--version", action="version", version=f"job-search-agent {__version__}")
-    parser.add_argument("--home", help="profile directory (default: ./profile or $JSA_HOME)")
+    parser.add_argument("--home", help="profile directory (default: $JSA_HOME, else ./profile "
+                                       "in a clone or ~/.jsa when installed; `jsa where` shows it)")
     parser.add_argument("-v", "--verbose", action="store_true")
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -972,18 +990,18 @@ def build_parser() -> argparse.ArgumentParser:
     p.set_defaults(func=cmd_where)
 
     p = sub.add_parser("init", help="create a profile workspace from the example")
-    p.add_argument("path", nargs="?")
+    p.add_argument("path", nargs="?", help=WORKSPACE_HELP)
     p.add_argument("--force", action="store_true")
     p.set_defaults(func=cmd_init)
 
     p = sub.add_parser("import", help="build your profile from a CV you already have")
     p.add_argument("cv", help="path to a .docx, .pdf or .txt CV")
-    p.add_argument("path", nargs="?", help="where to write it (default: ./profile)")
+    p.add_argument("path", nargs="?", help=WORKSPACE_HELP)
     p.add_argument("--force", action="store_true", help="overwrite an existing profile")
     p.set_defaults(func=cmd_import)
 
     p = sub.add_parser("setup", help="build your profile by answering questions")
-    p.add_argument("path", nargs="?", help="where to write it (default: ./profile)")
+    p.add_argument("path", nargs="?", help=WORKSPACE_HELP)
     p.add_argument("--force", action="store_true", help="overwrite an existing profile")
     p.set_defaults(func=cmd_setup)
 

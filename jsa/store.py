@@ -135,7 +135,8 @@ class Store:
             return "seen"
         cols = ", ".join(row)
         marks = ", ".join("?" for _ in row)
-        self.db.execute(f"INSERT INTO jobs ({cols}) VALUES ({marks})", list(row.values()))
+        # Column names come from the Job dataclass, never from input; values are bound.
+        self.db.execute(f"INSERT INTO jobs ({cols}) VALUES ({marks})", list(row.values()))  # noqa: S608
         self.log_event(job.id, "discovered", f"{job.source}: {job.title} @ {job.company}")
         self.db.commit()
         return "new"
@@ -164,6 +165,13 @@ class Store:
             rows = self.db.execute("SELECT * FROM jobs ORDER BY first_seen DESC").fetchall()
         return [Job.from_row(r) for r in rows]
 
+    def open_count(self, source: str, company: str) -> int:
+        """How many roles from one board are still believed open."""
+        return self.db.execute(
+            "SELECT COUNT(*) FROM jobs WHERE source = ? AND company = ? AND closed_at IS NULL",
+            (source, company),
+        ).fetchone()[0]
+
     def mark_closed(self, jobs: list[Job], source: str) -> int:
         """Flag postings a source stopped listing.
 
@@ -179,7 +187,7 @@ class Store:
         companies = {job.company for job in jobs}
         marks = ",".join("?" for _ in companies)
         rows = self.db.execute(
-            f"SELECT id FROM jobs WHERE source = ? AND closed_at IS NULL AND company IN ({marks})",
+            f"SELECT id FROM jobs WHERE source = ? AND closed_at IS NULL AND company IN ({marks})",  # noqa: S608
             [source, *companies],
         ).fetchall()
         stale = [r["id"] for r in rows if r["id"] not in seen]

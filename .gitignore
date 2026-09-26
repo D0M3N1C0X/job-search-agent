@@ -16,6 +16,9 @@ inbox/
 __pycache__/
 *.py[cod]
 .venv/
+*.egg-info/
+build/
+dist/
 venv/
 .mypy_cache/
 .ruff_cache/

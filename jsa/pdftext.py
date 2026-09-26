@@ -81,14 +81,21 @@ def _unescape(raw: bytes) -> bytes:
     return bytes(out)
 
 
+# A CV's content streams are kilobytes. One that inflates past this is not a
+# CV, and inflating it anyway is how a small file fills the memory.
+MAX_STREAM = 16 * 1024 * 1024
+
+
 def _inflate(data: bytes) -> bytes | None:
-    for attempt in (lambda b: zlib.decompress(b),
-                    lambda b: zlib.decompressobj().decompress(b),
-                    lambda b: zlib.decompress(b, -15)):
+    # A decompressobj tolerates the truncated streams and trailing bytes some
+    # exporters write; raw deflate (-15) covers streams with no zlib header.
+    for wbits in (zlib.MAX_WBITS, -zlib.MAX_WBITS):
+        inflater = zlib.decompressobj(wbits)
         try:
-            return attempt(data)
+            out = inflater.decompress(data, MAX_STREAM)
         except zlib.error:
             continue
+        return None if inflater.unconsumed_tail else out
     return None
 
 

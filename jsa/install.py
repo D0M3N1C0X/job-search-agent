@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import os
 import plistlib
+import shlex
 import sysconfig
 import shutil
 import struct
@@ -23,6 +24,8 @@ import zlib
 from pathlib import Path
 from typing import Any
 
+from .config import CHECKOUT, REPO_ROOT, workspace
+
 APP_NAME = "Job Pipeline"
 BUNDLE_ID = "dev.jobsearchagent.dashboard"
 LABEL = "dev.jobsearchagent.dashboard"
@@ -31,7 +34,9 @@ APP_PATH = APPS_DIR / f"{APP_NAME}.app"
 AGENT_PATH = Path.home() / "Library" / "LaunchAgents" / f"{LABEL}.plist"
 DAILY_LABEL = f"{LABEL}.daily"
 DAILY_PATH = Path.home() / "Library" / "LaunchAgents" / f"{DAILY_LABEL}.plist"
-REPO_ROOT = Path(__file__).resolve().parent.parent
+# launchd starts agents from the repository in a clone, where `-m jsa` needs it
+# as the working directory; an installed package is importable from anywhere.
+RUN_DIR = REPO_ROOT if CHECKOUT else Path.home()
 
 WINDOWS = sys.platform == "win32"
 
@@ -80,7 +85,7 @@ REPO="{repo}"
 PY="{python}"
 PORT={port}
 URL="http://127.0.0.1:$PORT/"
-
+{env}
 if ! curl -s -o /dev/null --max-time 1 "$URL"; then
   cd "$REPO" || exit 1
   nohup "$PY" -m jsa serve --port "$PORT" --no-browser >/dev/null 2>&1 &
@@ -123,7 +128,7 @@ def _icon_pixel(x: int, y: int, size: int) -> tuple[int, int, int, int]:
     if not inside:
         return (0, 0, 0, 0)
     # Three descending bars: the funnel this whole tool is about.
-    for row, (top, left, width) in enumerate(((30, 22, 56), (48, 30, 40), (66, 38, 24))):
+    for top, left, width in ((30, 22, 56), (48, 30, 40), (66, 38, 24)):
         if top * unit <= y <= (top + 11) * unit and left * unit <= x <= (left + width) * unit:
             return (255, 255, 255, 255)
     shade = int(31 + 40 * (y / size))
@@ -168,8 +173,21 @@ def on_path(directory: Path) -> bool:
     return directory in entries
 
 
+def installed_command() -> tuple[Path, bool]:
+    """Where pip or pipx already put `jsa`, and whether it is on PATH."""
+    found = shutil.which(SHIM_NAME)
+    if found:
+        return Path(found), True
+    scripts = Path(sysconfig.get_path("scripts"))
+    return scripts / SHIM_NAME, on_path(scripts)
+
+
 def build_shim() -> tuple[Path, bool]:
     """Install the `jsa` command. Returns (path, whether its directory is on PATH)."""
+    if not CHECKOUT:
+        # A shim exists to make a clone importable from anywhere. An installed
+        # package already has its command; a second one would only shadow it.
+        return installed_command()
     target = shim_path()
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(SHIM.format(repo=REPO_ROOT, python=sys.executable), encoding="utf-8")
@@ -186,8 +204,10 @@ def build_app(port: int) -> Path:
     resources.mkdir(parents=True, exist_ok=True)
 
     launcher = macos / "launcher"
+    # Like launchd, an app opened from the Dock does not see the shell's JSA_HOME.
+    env = f"export JSA_HOME={shlex.quote(str(workspace()))}\n" if os.environ.get("JSA_HOME") else ""
     launcher.write_text(
-        LAUNCHER.format(repo=REPO_ROOT, python=sys.executable, port=port), encoding="utf-8"
+        LAUNCHER.format(repo=RUN_DIR, python=sys.executable, port=port, env=env), encoding="utf-8"
     )
     launcher.chmod(0o755)
 
@@ -216,17 +236,34 @@ def build_app(port: int) -> Path:
 
 # -------------------------------------------------------------- agent
 
+def _agent_environment() -> dict[str, Any]:
+    """What a launchd job needs to find the same workspace as this shell.
+
+    launchd does not inherit the shell's environment, so a JSA_HOME set here
+    would silently not apply to the background server or the daily run.
+    """
+    home = os.environ.get("JSA_HOME")
+    return {"EnvironmentVariables": {"JSA_HOME": str(workspace())}} if home else {}
+
+
+def _log_path(name: str) -> str:
+    folder = workspace()
+    folder.mkdir(parents=True, exist_ok=True)   # launchd will not create it
+    return str(folder / name)
+
+
 def build_agent(port: int) -> Path:
     AGENT_PATH.parent.mkdir(parents=True, exist_ok=True)
     AGENT_PATH.write_bytes(plistlib.dumps({
         "Label": LABEL,
         "ProgramArguments": [sys.executable, "-m", "jsa", "serve",
                              "--port", str(port), "--no-browser"],
-        "WorkingDirectory": str(REPO_ROOT),
+        "WorkingDirectory": str(RUN_DIR),
         "RunAtLoad": True,
         "KeepAlive": True,
         "ProcessType": "Background",
-        "StandardErrorPath": str(REPO_ROOT / "profile" / "serve.log"),
+        "StandardErrorPath": _log_path("serve.log"),
+        **_agent_environment(),
     }))
     subprocess.run(["launchctl", "unload", str(AGENT_PATH)], capture_output=True, check=False)
     subprocess.run(["launchctl", "load", str(AGENT_PATH)], capture_output=True, check=False)
@@ -263,12 +300,13 @@ def build_daily(hour: int, minute: int) -> Path:
     DAILY_PATH.write_bytes(plistlib.dumps({
         "Label": DAILY_LABEL,
         "ProgramArguments": [sys.executable, "-m", "jsa", "daily"],
-        "WorkingDirectory": str(REPO_ROOT),
+        "WorkingDirectory": str(RUN_DIR),
         "StartCalendarInterval": {"Hour": hour, "Minute": minute},
         "RunAtLoad": False,
         "ProcessType": "Background",
-        "StandardErrorPath": str(REPO_ROOT / "profile" / "daily.log"),
-        "StandardOutPath": str(REPO_ROOT / "profile" / "daily.log"),
+        "StandardErrorPath": _log_path("daily.log"),
+        "StandardOutPath": _log_path("daily.log"),
+        **_agent_environment(),
     }))
     subprocess.run(["launchctl", "unload", str(DAILY_PATH)], capture_output=True, check=False)
     subprocess.run(["launchctl", "load", str(DAILY_PATH)], capture_output=True, check=False)
@@ -338,7 +376,7 @@ def status(port: int = 8765) -> dict[str, Any]:
             running = True
     except Exception:  # noqa: BLE001 - "not running" is the only thing we need
         running = False
-    shim = shim_path()
+    shim = shim_path() if CHECKOUT else installed_command()[0]
     return {
         "command": shim if shim.exists() else None,
         "command_on_path": on_path(shim.parent) if shim.exists() else False,
