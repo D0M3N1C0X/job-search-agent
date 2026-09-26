@@ -1,0 +1,11 @@
+# The project has no Python dependencies to update; its workflows do. Actions
+# are third-party code that runs with this repository's token.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]

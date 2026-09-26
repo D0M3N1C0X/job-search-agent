@@ -10,6 +10,7 @@
 ## Checklist
 
 - [ ] No new runtime dependency (see CONTRIBUTING.md — this one is not negotiable)
-- [ ] Tests pass offline and in under a second
+- [ ] Tests pass offline and in under a second, and `ruff check .` is clean
+- [ ] Anything new that shows or passes on posting text has a hostile-input test
 - [ ] A new source adapter separates fetching from parsing, with a fixture test
 - [ ] Nothing from `profile/` is included, and `profile.example/` stays synthetic

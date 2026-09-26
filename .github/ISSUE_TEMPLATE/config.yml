@@ -3,3 +3,6 @@ contact_links:
   - name: Question about how it works
     url: https://github.com/D0M3N1C0X/job-search-agent/discussions
     about: Ask here rather than opening an issue.
+  - name: Report a security problem
+    url: https://github.com/D0M3N1C0X/job-search-agent/security/advisories/new
+    about: Privately, please — not as a public issue. See SECURITY.md.
