@@ -517,8 +517,8 @@ function openJob(id) {
            ${j.notes ? `<div class="desc" style="margin-top:9px">${esc(j.notes)}</div>` : ''}`}
     </div>
     <div class="dsec"><h3>${T.next_step}</h3>
-      <code class="cmd">python3 -m jsa brief ${j.id.slice(0,8)}</code>
-      <code class="cmd">python3 -m jsa docs ${j.id.slice(0,8)} --overlay &lt;overlay.json&gt;</code>
+      <code class="cmd">${esc(DATA.command || 'jsa')} brief ${esc(j.id.slice(0,8))}</code>
+      <code class="cmd">${esc(DATA.command || 'jsa')} docs ${esc(j.id.slice(0,8))} --overlay &lt;overlay.json&gt;</code>
       <button class="btn" id="copy" style="margin-top:9px">Copy job id</button></div>
     ${j.description ? `<div class="dsec"><h3>${T.posting}</h3><div class="desc">${esc(j.description)}</div></div>` : ''}`;
 

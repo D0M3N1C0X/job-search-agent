@@ -16,11 +16,11 @@ import sys
 from pathlib import Path
 from typing import Any, Callable
 
-from .config import REPO_ROOT
+from .config import EXAMPLE_DIR
 from .sources.ats import guess_country
 from .util import write_json
 
-LIBRARY = REPO_ROOT / "profile.example" / "tracks.library.json"
+LIBRARY = EXAMPLE_DIR / "tracks.library.json"
 CEFR = ["A1", "A2", "B1", "B2", "C1", "C2", "native"]
 
 # One pattern shape covers every language: postings are overwhelmingly in
@@ -323,7 +323,7 @@ def run(home: Path, *, force: bool = False) -> Path:
     if not sys.stdin.isatty():
         raise SystemExit(
             "`jsa setup` asks questions, so it needs a terminal.\n"
-            "If you are scripting this, copy profile.example/ and edit the JSON directly."
+            "If you are scripting this, run `jsa init` and edit the JSON it writes."
         )
     profile_path = home / "profile.json"
     if profile_path.exists() and not force:

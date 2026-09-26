@@ -1,7 +1,8 @@
 name: Release
 
 # Push a tag like v1.0.0 and this publishes the GitHub release, with the notes
-# taken from that version's section of CHANGELOG.md. It refuses to publish if
+# taken from that version's section of CHANGELOG.md and the wheel and sdist
+# attached, so `pipx install <wheel URL>` works. It refuses to publish if
 # the tag, pyproject.toml, jsa/__init__.py and the changelog disagree, or if the
 # tests fail on the tagged commit.
 on:
@@ -40,6 +41,8 @@ jobs:
           PY
       - name: Tests pass on the tagged commit
         run: python -m unittest discover -s tests -t .
+      - name: Build the wheel and sdist
+        run: pipx run build --outdir dist
       - name: Release notes from the changelog
         run: |
           awk -v head="## [${GITHUB_REF_NAME#v}]" \
@@ -50,5 +53,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" --verify-tag \
+          gh release create "$GITHUB_REF_NAME" dist/* --verify-tag \
             --title "$GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/notes.md"

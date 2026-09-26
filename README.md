@@ -66,11 +66,18 @@ already up. Add `--login` to keep the server running from login, or
 `jsa uninstall` to remove all of it. `jsa where` says what is installed, where
 your data lives, and whether the dashboard is reachable.
 
-If you would rather use packaging, `pip install -e .` or `pipx install -e .`
-from inside the clone gives you the same `jsa` command. Keep the `-e`: the tool
-runs from the clone, where the example profile and your `profile/` live, and a
-non-editable install cannot find them. There are no runtime dependencies either
-way.
+If you would rather not keep a clone at all, install it as a package:
+
+```bash
+pipx install git+https://github.com/D0M3N1C0X/job-search-agent
+jsa demo
+```
+
+An installed copy keeps your workspace in `~/.jsa` instead of `./profile`, and
+the demo and scratch files in `~/.cache/job-search-agent`; nothing is written
+into the package itself. From a clone, `pip install -e .` gives you the same
+`jsa` command with the workspace staying in `./profile`. There are no runtime
+dependencies either way.
 
 ### Two launchers, if you prefer files
 
@@ -265,7 +272,10 @@ would rather start from a file, `jsa init` copies the example instead.
 and your database are not. `profile.example/` holds a synthetic persona so a
 fresh clone runs end to end before anyone types a personal detail.
 
-To point at a workspace somewhere else, set `JSA_HOME=/path/to/profile`.
+The workspace is `./profile` in a clone and `~/.jsa` when installed as a
+package. To keep it somewhere else, set `JSA_HOME=/path/to/profile` or pass
+`--home`; `jsa setup`, `init` and `import` write to the same place every other
+command reads from, and `jsa where` tells you which one that is.
 
 ---
 

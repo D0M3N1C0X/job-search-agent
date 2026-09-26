@@ -34,6 +34,10 @@ The first public release.
   it locally with statuses and notes written to SQLite.
 - `jsa install` puts `jsa` on PATH and, on macOS, adds a Dock app and optional
   login and daily schedules. `jsa doctor` diagnoses the setup.
+- Installable as a package (`pipx install git+https://github.com/D0M3N1C0X/job-search-agent`,
+  or the wheel attached to each release): the workspace then lives in `~/.jsa`
+  and scratch files in `~/.cache/job-search-agent`. From a clone it stays in
+  `./profile`.
 
 ### Hardened before release
 
@@ -48,6 +52,11 @@ The first public release.
   command; the notification call is removed.
 - The dashboard's *Run pipeline* button ran against the default workspace
   instead of the one on screen (visible with `jsa demo` or `--home`).
+- `jsa setup`, `init` and `import` ignored `JSA_HOME` and wrote to `./profile`
+  while every other command read from `JSA_HOME`. Background jobs installed on
+  macOS now carry `JSA_HOME` too, since launchd does not inherit the shell's.
+- `jsa demo` no longer inherits a `jobs.db` left in the example profile by an
+  earlier run.
 - `jsa fetch` flags a board that suddenly returns nothing after listing open
   roles, instead of printing it as a normal empty board.
 - Oversized HTTP responses, gzip bombs, and PDF or DOCX files that inflate past

@@ -1,10 +1,10 @@
-# Optional. The project runs straight from a clone with `python3 -m jsa`;
-# this exists only so `pip install -e .` or `pipx install -e .` can put a `jsa`
-# command on PATH for people who prefer that route. Editable only: the tool
-# finds profile.example/ and profile/ next to the package, in the clone. There
-# are no runtime dependencies, and there never will be.
+# Optional. The project runs straight from a clone with `python3 -m jsa`; this
+# is for `pipx install git+https://github.com/D0M3N1C0X/job-search-agent` (or
+# `pip install .`), which puts a `jsa` command on PATH and keeps the workspace
+# in ~/.jsa instead of ./profile. There are no runtime dependencies, and there
+# never will be.
 [build-system]
-requires = ["setuptools>=61"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -13,7 +13,8 @@ version = "1.0.0"
 description = "A job search that runs as a pipeline: public ATS board APIs, deterministic explainable fit scoring, tailored .docx documents, funnel analytics."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "Domenico Perroni" }]
 keywords = ["job-search", "ats", "people-analytics", "hr", "greenhouse", "lever", "ashby"]
 dependencies = []
@@ -21,7 +22,6 @@ classifiers = [
   "Development Status :: 4 - Beta",
   "Environment :: Console",
   "Intended Audience :: End Users/Desktop",
-  "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3 :: Only",
   "Topic :: Office/Business",
 ]
@@ -34,7 +34,16 @@ Issues = "https://github.com/D0M3N1C0X/job-search-agent/issues"
 jsa = "jsa.__main__:main"
 
 [tool.setuptools]
-packages = ["jsa", "jsa.sources"]
+packages = ["jsa", "jsa.sources", "jsa.example"]
+
+# The synthetic example profile ships inside the package as jsa/example/, so an
+# installed copy can run the demo and seed a new workspace. In a clone it stays
+# where people look for it, at the top of the repository.
+[tool.setuptools.package-dir]
+"jsa.example" = "profile.example"
+
+[tool.setuptools.package-data]
+"jsa.example" = ["*.json"]
 
 # Lint runs in CI only (`ruff check .`); nothing here is needed to run the tool.
 # The rules are the ones that find bugs rather than argue about style: pyflakes,

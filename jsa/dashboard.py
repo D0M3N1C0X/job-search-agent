@@ -16,6 +16,7 @@ from typing import Any
 from .models import STATUSES
 from .score import SCORER_VERSION
 from .store import Store
+from .config import COMMAND
 from .util import days_between, now, safe_url
 
 RESPONSE_STATUSES = {"screening", "interview", "offer", "rejected"}
@@ -156,6 +157,7 @@ def collect(store: Store, *, interactive: bool, limit: int = 4000) -> dict[str, 
     return {
         "generated": now(),
         "interactive": interactive,
+        "command": COMMAND,
         "scorer_version": SCORER_VERSION,
         "statuses": STATUSES,
         "counts": stats["counts"],
