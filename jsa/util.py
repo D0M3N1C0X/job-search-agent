@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import gzip
 import hashlib
 import json
 import logging
@@ -13,6 +12,7 @@ import time
 import unicodedata
 import urllib.error
 import urllib.request
+import zlib
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -96,6 +96,48 @@ def days_between(earlier: str | None, later: str | None = None) -> int | None:
     return (b - a).days
 
 
+_HOSTLIKE = re.compile(r"[\w-]+(\.[\w-]+)+(/|$)")
+
+
+def safe_url(url: str | None) -> str:
+    """The URL if it is a web link, otherwise "".
+
+    Posting URLs come from feeds other people write, and they end up in an
+    `href`, in `open` on macOS and in a browser. A `javascript:` link runs code
+    in the dashboard the moment it is clicked; a `file:` URL or a bare path
+    makes `open` launch whatever it names. Only http(s) survives. A scheme-less
+    "www.example.com/jobs/1", which is how people paste into `jsa add`, gets
+    https added rather than being thrown away.
+    """
+    value = (url or "").strip()
+    if re.match(r"(?i)https?://\S", value):
+        return value
+    if _HOSTLIKE.match(value):
+        return "https://" + value
+    return ""
+
+
+# A Greenhouse board with every description inlined is a few megabytes. Nothing
+# legitimate comes close to this; a misbehaving server or a gzip bomb does.
+MAX_RESPONSE = 32 * 1024 * 1024
+
+
+def _read_capped(resp: Any, url: str) -> bytes:
+    raw = resp.read(MAX_RESPONSE + 1)
+    if len(raw) > MAX_RESPONSE:
+        raise FetchError(f"{url} -> response larger than {MAX_RESPONSE // 2**20} MB, refused")
+    if resp.headers.get("Content-Encoding") != "gzip":
+        return raw
+    inflater = zlib.decompressobj(16 + zlib.MAX_WBITS)
+    try:
+        body = inflater.decompress(raw, MAX_RESPONSE + 1)
+    except zlib.error as exc:
+        raise FetchError(f"{url} -> corrupt gzip body ({exc})") from exc
+    if len(body) > MAX_RESPONSE or inflater.unconsumed_tail:
+        raise FetchError(f"{url} -> response inflates past {MAX_RESPONSE // 2**20} MB, refused")
+    return body
+
+
 def http_get(
     url: str,
     *,
@@ -111,6 +153,9 @@ def http_get(
     on-disk cache, which keeps repeated runs (and the test suite) offline-ish
     and polite to the sources.
     """
+    # urllib also speaks file:// and ftp://; nothing this tool fetches does.
+    if not re.match(r"(?i)https?://", url):
+        raise FetchError(f"{url} -> only http(s) URLs are fetched")
     cache_file = None
     if cache_dir is not None:
         cache_dir.mkdir(parents=True, exist_ok=True)
@@ -132,11 +177,12 @@ def http_get(
         try:
             req = urllib.request.Request(url, headers=req_headers)
             with urllib.request.urlopen(req, timeout=timeout, context=_SSL) as resp:
-                raw = resp.read()
-                if resp.headers.get("Content-Encoding") == "gzip":
-                    raw = gzip.decompress(raw)
+                raw = _read_capped(resp, url)
                 charset = resp.headers.get_content_charset() or "utf-8"
-                body = raw.decode(charset, errors="replace")
+                try:
+                    body = raw.decode(charset, errors="replace")
+                except LookupError:  # a charset Python has never heard of
+                    body = raw.decode("utf-8", errors="replace")
             if cache_file is not None:
                 cache_file.write_text(body, encoding="utf-8")
             return body

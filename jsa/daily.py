@@ -30,7 +30,16 @@ def _applescript(value: str) -> str:
 
 
 def notify(title: str, message: str, subtitle: str = "") -> bool:
-    """A desktop notification through whatever the platform already has."""
+    """A desktop notification through whatever the platform already has.
+
+    The message carries job titles and company names, which come from feeds
+    other people write, so it only ever travels as an argument or a quoted
+    literal — never through a shell.
+    """
+    if sys.platform == "win32":
+        # Windows has no notification command that does not mean building a
+        # PowerShell script out of that text. The digest file is the channel.
+        return False
     try:
         if sys.platform == "darwin":
             script = (f"display notification {_applescript(message)} "
@@ -38,14 +47,8 @@ def notify(title: str, message: str, subtitle: str = "") -> bool:
                       + (f" subtitle {_applescript(subtitle)}" if subtitle else ""))
             subprocess.run(["osascript", "-e", script], check=True, capture_output=True, timeout=10)
             return True
-        if sys.platform == "win32":
-            ps = (f'[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications,'
-                  f' ContentType=WindowsRuntime] > $null; '
-                  f'Write-Output {message!r}')
-            subprocess.run(["powershell", "-NoProfile", "-Command", ps],
-                           check=False, capture_output=True, timeout=10)
-            return False  # best effort; the digest file is the reliable channel
-        subprocess.run(["notify-send", title, message], check=True, capture_output=True, timeout=10)
+        # "--" so a message that starts with a dash is not read as an option.
+        subprocess.run(["notify-send", "--", title, message], check=True, capture_output=True, timeout=10)
         return True
     except (OSError, subprocess.SubprocessError):
         return False
