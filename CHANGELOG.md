@@ -7,6 +7,24 @@ you set up by hand (profile, tracks, database) needs attention.
 
 ## [Unreleased]
 
+### Added
+
+- Your own CVs, attached unchanged: `jsa cv add <file> --track <id>` or
+  `--company <name>`. A CV written for the company wins, then the one for the
+  winning track; the generated CV is used only when neither exists
+  (`jsa apply --generated-cv` asks for it anyway). The ATS check reads PDFs.
+- Cover letters built on your own model: `letter.json` in the workspace holds
+  your anchor sentence, your evidence tagged by topic, and your close. The
+  draft uses the evidence the posting asks about, in your order, and leaves
+  why-this-company and the honest gap as `[[WRITE: …]]` parts, with the
+  track's skills the posting asks for and your CV does not show as hints. The
+  packet and the helper page say how many are left. Dates are written out
+  ("18 September 2026").
+- `jsa autoprepare --min-score 80 --per-week 5`: the daily run prepares
+  packets for the best untouched postings, up to a weekly cap that counts
+  packets made by hand too, and the notification leads with what is ready.
+  You still read each one and press send.
+
 ## [1.1.0] — 2026-09-26
 
 Nothing you set up by hand needs to change: profiles, tracks and databases

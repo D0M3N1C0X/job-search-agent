@@ -457,7 +457,7 @@ def cmd_add(args: argparse.Namespace, cfg: config.Config,
 @with_workspace
 def cmd_daily(args: argparse.Namespace, cfg: config.Config, store: Store) -> int:
     """Run the pipeline, then speak only if there is a reason to."""
-    from .daily import LAST_RUN, message, notify, summarise, write_digest
+    from .daily import LAST_RUN, message, notify, prepare_best, summarise, write_digest
 
     if not args.no_fetch:
         ns = lambda **kw: argparse.Namespace(home=args.home, **kw)  # noqa: E731
@@ -465,9 +465,12 @@ def cmd_daily(args: argparse.Namespace, cfg: config.Config, store: Store) -> int
         cmd_enrich(ns(min_score=30, limit=120))
         cmd_score(ns(rescore=False))
 
+    prepared = [] if args.no_prepare else prepare_best(cfg, store)
+    for done in prepared:
+        print(f"Prepared  {done['job'].title} — {done['job'].company}  →  {done['folder']}")
     summary = summarise(store, cfg, args.min_score)
-    digest = write_digest(summary, cfg.output_dir / "digest.md")
-    said = message(summary)
+    digest = write_digest(summary, cfg.output_dir / "digest.md", prepared)
+    said = message(summary, prepared)
 
     print(f"\n{colour('Daily digest', BOLD)}  {digest}")
     if said is None:
@@ -489,53 +492,35 @@ def cmd_apply(args: argparse.Namespace, cfg: config.Config, store: Store) -> int
     house: seven roles sat shortlisted for a fortnight while the documents
     waited on a session that never happened.
     """
-    from .apply import build_apply_page, draft_letter
-    from .packet import build_packet
+    from .apply import prepare_packet
 
     job = store.get_job(args.job_id)
     if job is None:
         print(f"No job matching {args.job_id!r}")
         return 1
 
-    scores = score_all(job, cfg.profile, cfg.tracks)
-    best = scores[0]
-    track = cfg.track(args.track or best.track)
     overlay_data = read_json(args.overlay) if args.overlay else {}
-    overlay = Overlay.from_dict(overlay_data)
-
-    cfg.output_dir.mkdir(parents=True, exist_ok=True)
-    cv_path = cfg.output_dir / output_name("CV", job.company, job.title)
-    build_cv(cfg.profile, track, overlay=overlay, path=cv_path)
-
-    letter = overlay_data.get("cover_letter") or draft_letter(job, cfg.profile, track, best)
-    letter.setdefault("company", job.company)
-    letter.setdefault("role", job.title)
-    letter.setdefault("date", today())
-    cover_path = cfg.output_dir / output_name("Cover", job.company, job.title)
-    build_cover(cfg.profile, letter, path=cover_path)
-
-    report = ats_check(cv_path, cfg.profile, job.description, job.company)
-    folder = build_packet(cfg, job, cv_path=cv_path, cover_path=cover_path, track=track,
-                          ats_report=report, notes=overlay_data.get("notes", ""))
-    answers_file = cfg.home / "answers.json"
-    answers = read_json(answers_file) if answers_file.exists() else {}
-    page = build_apply_page(job, cfg.profile, answers,
-                            folder, [folder / cv_path.name, folder / cover_path.name], report)
+    done = prepare_packet(cfg, store, job, track_id=args.track, overlay_data=overlay_data,
+                          generated_cv=args.generated_cv)
+    best, report, answers = done["score"], done["report"], done["answers"]
+    folder, page = done["folder"], done["page"]
 
     print(f"{colour(job.title, BOLD)} — {job.company}")
     print(f"{best.score}/100 · {best.track} · {job.location or 'location n/a'}\n")
+    if done["own_cv"] is not None:
+        print(f"CV      your own: {done['own_cv'].name}")
     print(report.render())
-    if not overlay_data.get("cover_letter"):
-        print(colour("\nThe cover letter is a draft assembled from the score. Read it before "
-                     "sending — the first and last paragraphs need your words.", YELLOW))
+    if done["letter_drafted"]:
+        print(colour(f"\n{done['letter_note']}", YELLOW))
+    if done["letter_todo"]:
+        print(colour(f"The cover letter has {done['letter_todo']} part(s) marked [[WRITE: …]] "
+                     "to write before sending.", YELLOW))
     todo = [k for k, v in answers.items() if isinstance(v, str) and v.startswith("TODO")]
     if todo:
         print(colour(f"Still TODO in answers.json: {', '.join(todo)}", YELLOW))
     print(f"\nPacket  {folder}")
     print(f"Helper  {page}")
 
-    store.set_status(job.id, "ready", track=track["id"],
-                     cv_path=str(cv_path), cover_path=str(cover_path))
     if not args.no_open and sys.platform == "darwin":
         import subprocess
 
@@ -544,6 +529,88 @@ def cmd_apply(args: argparse.Namespace, cfg: config.Config, store: Store) -> int
             subprocess.run(["open", job.url], check=False)
     else:
         print("\nOpen the helper page in a browser, then the posting.")
+    return 0
+
+
+def _own_workspace(cfg: config.Config) -> bool:
+    """Commands that write the profile must not write into the bundled example."""
+    if cfg.demo:
+        print("This is the bundled demo profile. Set up your own first: "
+              f"`{config.COMMAND} import <your CV>` or `{config.COMMAND} setup`.")
+        return False
+    return True
+
+
+def cmd_cv(args: argparse.Namespace) -> int:
+    """Your own CVs, and which posting each is for."""
+    from . import documents
+
+    cfg = config.load(args.home)
+    action = args.action or "list"
+    if action != "list" and not _own_workspace(cfg):
+        return 1
+    track_ids = [t["id"] for t in cfg.tracks]
+
+    if action == "add":
+        if args.track and args.track not in track_ids:
+            print(f"No track called {args.track!r}. Yours are: {', '.join(track_ids)}")
+            return 1
+        try:
+            stored = documents.add(cfg.home, Path(args.file).expanduser(),
+                                   track=args.track, company=args.company)
+        except ValueError as exc:
+            print(exc)
+            return 1
+        what = f"track {args.track}" if args.track else f"postings at {args.company}"
+        print(f"{colour(stored.name, BOLD)} will be attached for {what}.")
+        for problem in documents.check(stored, cfg.profile):
+            print(colour(f"  but: {problem}", YELLOW))
+        return 0
+
+    if action == "remove":
+        if documents.remove(cfg.home, track=args.track, company=args.company):
+            print("Removed. That posting type gets the generated CV again.")
+            return 0
+        print("Nothing was attached for that.")
+        return 1
+
+    index = documents.load(cfg.home)
+    print(colour("By track", BOLD))
+    for track in cfg.tracks:
+        file = index["tracks"].get(track["id"])
+        print(f"  {track['id']:<24}{file or colour('generated from your profile', DIM)}")
+    if index["companies"]:
+        print(colour("\nBy company (wins over the track)", BOLD))
+        for company, file in index["companies"].items():
+            print(f"  {company:<24}{file}")
+    for file in sorted(set(index["tracks"].values()) | set(index["companies"].values())):
+        for problem in documents.check(documents.folder(cfg.home) / file, cfg.profile):
+            print(colour(f"\n{file}: {problem}", YELLOW))
+    print(f"\nAdd one: {config.COMMAND} cv add <file> --track <id>  (or --company <name>)")
+    return 0
+
+
+def cmd_autoprepare(args: argparse.Namespace) -> int:
+    """How many of the best postings `jsa daily` prepares on its own each week."""
+    cfg = config.load(args.home)
+    prefs = cfg.profile.get("preferences", {}).get("prepare") or {}
+    if args.off or args.min_score is not None or args.per_week is not None:
+        if not _own_workspace(cfg):
+            return 1
+        path = cfg.home / "profile.json"
+        data = read_json(path)
+        current = data.setdefault("preferences", {}).get("prepare") or {}
+        prefs = {"min_score": args.min_score if args.min_score is not None else current.get("min_score", 80),
+                 "per_week": 0 if args.off else (args.per_week if args.per_week is not None
+                                                  else current.get("per_week", 5))}
+        data["preferences"]["prepare"] = prefs
+        write_json(path, data)
+    if not prefs.get("per_week"):
+        print("Off: `jsa daily` finds and scores, and leaves the packets to you.")
+        print(f"Turn it on: {config.COMMAND} autoprepare --min-score 80 --per-week 5")
+        return 0
+    print(f"`jsa daily` prepares up to {prefs['per_week']} packet(s) a week for postings scoring "
+          f"{prefs['min_score']} or more. You read each one and press send.")
     return 0
 
 
@@ -1086,6 +1153,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--source", choices=["all", "ats", "linkedin", "mailbox"], default="ats")
     p.add_argument("--no-fetch", action="store_true", help="summarise what is already stored")
     p.add_argument("--quiet", action="store_true", help="write the digest, send no notification")
+    p.add_argument("--no-prepare", action="store_true", help="do not prepare any packets this run")
     p.set_defaults(func=cmd_daily)
 
     p = sub.add_parser("apply", help="one command: documents, packet and form helper")
@@ -1093,7 +1161,29 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--track")
     p.add_argument("--overlay", help="a tailored overlay, if you wrote one")
     p.add_argument("--no-open", action="store_true", help="do not open anything")
+    p.add_argument("--generated-cv", action="store_true",
+                   help="build the CV from the profile even if you attached your own")
     p.set_defaults(func=cmd_apply)
+
+    p = sub.add_parser("cv", help="your own CVs: which one is attached for which postings")
+    cv_sub = p.add_subparsers(dest="action")
+    for name, text in (("add", "attach a CV for a track or a company"),
+                       ("remove", "stop attaching it")):
+        q = cv_sub.add_parser(name, help=text)
+        if name == "add":
+            q.add_argument("file", help="a .pdf or .docx")
+        which = q.add_mutually_exclusive_group(required=True)
+        which.add_argument("--track", help="a positioning track id (see `jsa cv`)")
+        which.add_argument("--company", help="a company it was written for")
+    cv_sub.add_parser("list", help="what is attached for what (the default)")
+    p.set_defaults(func=cmd_cv)
+
+    p = sub.add_parser("autoprepare",
+                       help="let `jsa daily` prepare the best packets on its own, up to a weekly cap")
+    p.add_argument("--min-score", type=int)
+    p.add_argument("--per-week", type=int)
+    p.add_argument("--off", action="store_true")
+    p.set_defaults(func=cmd_autoprepare)
 
     p = sub.add_parser("next", help="the single next thing to do")
     p.add_argument("--min-score", type=int, default=70)

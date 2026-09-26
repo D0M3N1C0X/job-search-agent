@@ -130,7 +130,7 @@ def build(home: Path = DEMO_HOME, count: int = 90) -> Any:
     home.mkdir(parents=True)
     # Profile files only: a jobs.db left in the example by an earlier run would
     # otherwise seed the demo with whatever that run fetched.
-    for name in config.PROFILE_FILES:
+    for name in (*config.PROFILE_FILES, "letter.json"):
         shutil.copy(config.EXAMPLE_DIR / name, home / name)
     cfg = load(home)
     store = Store(cfg.db_path)
