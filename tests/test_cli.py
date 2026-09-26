@@ -129,15 +129,37 @@ class TestFetchSaysWhenABoardGoesQuiet(CliCase):
     """A board that changes shape answers with an empty list. That is the
     failure this project exists to catch, so it must not print as normal."""
 
+    def fetch(self, entry, jobs):
+        with mock.patch.object(cli.ats_sources, "fetch_company", return_value=jobs):
+            return self.run_cmd(cli.cmd_fetch, source="ats", company=entry["company"],
+                                cache_ttl=0, pages=1, fast=True)
+
+    def listing(self, entry, n):
+        # Named the way Workable does it — after its own account, not the
+        # watchlist entry — which is why the count is kept per board.
+        return [Job(source=entry["provider"], company=entry["company"] + " Ltd.",
+                    title=f"HR Advisor {i}", url=f"https://example.com/{i}") for i in range(n)]
+
     def test_an_empty_board_that_had_open_roles_is_flagged(self):
         entry = self.cfg.watchlist[0]
-        self.store.upsert_job(Job(source=entry["provider"], company=entry["company"],
-                                  title="HR Advisor", url="https://example.com/1"))
-        with mock.patch.object(cli.ats_sources, "fetch_company", return_value=[]):
-            out = self.run_cmd(cli.cmd_fetch, source="ats", company=entry["company"],
-                               cache_ttl=0, pages=1, fast=True)
-        self.assertIn("had 1 open", out)
+        self.fetch(entry, self.listing(entry, 3))
+        out = self.fetch(entry, [])
+        self.assertIn("had 3 open", out)
         self.assertIn("1 boards suddenly empty", out)
+
+    def test_it_says_so_on_the_run_it_happens_not_every_run_after(self):
+        entry = self.cfg.watchlist[0]
+        self.fetch(entry, self.listing(entry, 2))
+        self.assertIn("suddenly empty", self.fetch(entry, []))
+        self.assertNotIn("suddenly empty", self.fetch(entry, []))
+
+    def test_a_failed_fetch_does_not_reset_what_the_board_listed(self):
+        entry = self.cfg.watchlist[0]
+        self.fetch(entry, self.listing(entry, 2))
+        with mock.patch.object(cli.ats_sources, "fetch_company", side_effect=cli.FetchError("x -> 503")):
+            self.run_cmd(cli.cmd_fetch, source="ats", company=entry["company"],
+                         cache_ttl=0, pages=1, fast=True)
+        self.assertIn("had 2 open", self.fetch(entry, []))
 
     def test_a_failed_board_shows_why_not_just_the_url(self):
         entry = self.cfg.watchlist[0]
@@ -215,7 +237,7 @@ class TestWindowsShim(unittest.TestCase):
     def test_the_windows_launcher_starts_the_server_only_if_it_is_down(self):
         from jsa.install import LAUNCHER_WINDOWS
 
-        script = LAUNCHER_WINDOWS.format(repo="C:\\repo", python="C:\\py.exe", port=8765)
+        script = LAUNCHER_WINDOWS.format(repo="C:\\repo", python="C:\\py.exe", port=8765, env="")
         self.assertIn("curl -s -o NUL", script)          # is it already up?
         self.assertIn("if errorlevel 1", script)         # only then start it
         self.assertIn("-m jsa serve --port 8765", script)
