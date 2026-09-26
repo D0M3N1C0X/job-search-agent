@@ -13,6 +13,7 @@ import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest import mock
 
 from jsa import __main__ as cli
 from jsa import config
@@ -122,6 +123,29 @@ class TestScoringCommand(CliCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestFetchSaysWhenABoardGoesQuiet(CliCase):
+    """A board that changes shape answers with an empty list. That is the
+    failure this project exists to catch, so it must not print as normal."""
+
+    def test_an_empty_board_that_had_open_roles_is_flagged(self):
+        entry = self.cfg.watchlist[0]
+        self.store.upsert_job(Job(source=entry["provider"], company=entry["company"],
+                                  title="HR Advisor", url="https://example.com/1"))
+        with mock.patch.object(cli.ats_sources, "fetch_company", return_value=[]):
+            out = self.run_cmd(cli.cmd_fetch, source="ats", company=entry["company"],
+                               cache_ttl=0, pages=1, fast=True)
+        self.assertIn("had 1 open", out)
+        self.assertIn("1 boards suddenly empty", out)
+
+    def test_an_empty_board_that_was_always_empty_is_not(self):
+        entry = self.cfg.watchlist[0]          # nothing stored for it, no open_roles
+        self.assertFalse(entry.get("open_roles"))
+        with mock.patch.object(cli.ats_sources, "fetch_company", return_value=[]):
+            out = self.run_cmd(cli.cmd_fetch, source="ats", company=entry["company"],
+                               cache_ttl=0, pages=1, fast=True)
+        self.assertNotIn("suddenly empty", out)
 
 
 class TestShim(unittest.TestCase):

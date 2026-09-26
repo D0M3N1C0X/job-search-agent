@@ -191,7 +191,7 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
     if cfg.demo:
         print(colour("Running on the bundled demo profile — `jsa init` to use your own.", YELLOW))
     wanted = args.source
-    totals = {"new": 0, "seen": 0, "failed": 0}
+    totals = {"new": 0, "seen": 0, "failed": 0, "quiet": 0}
 
     if wanted in ("all", "ats"):
         entries = cfg.watchlist
@@ -199,6 +199,8 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
             needle = args.company.lower()
             entries = [e for e in entries if needle in e["company"].lower()]
         for entry in entries:
+            # Read before the fetch: afterwards the answer is always "what we just saw".
+            known = store.open_count(entry["provider"], entry["company"]) or entry.get("open_roles", 0)
             try:
                 jobs = ats_sources.fetch_company(entry, cache_dir=cfg.cache_dir, cache_ttl=args.cache_ttl)
             except Exception as exc:  # noqa: BLE001 - one bad board must not end the run
@@ -212,6 +214,13 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
             store.mark_closed(jobs, entry["provider"])
             totals["new"] += counts["new"]
             totals["seen"] += counts["seen"]
+            if not jobs and known:
+                # A board that changed shape answers 200 with nothing in it,
+                # which looks exactly like a company that stopped hiring.
+                totals["quiet"] += 1
+                print(f"{entry['company']:<32} {entry['provider']:<16}   0 listed  "
+                      + colour(f"had {known} open — check it: `jsa probe {entry['handle']}`", YELLOW))
+                continue
             marker = colour(f"+{counts['new']}", GREEN) if counts["new"] else colour("+0", DIM)
             print(f"{entry['company']:<32} {entry['provider']:<16} {len(jobs):>3} listed  {marker}")
 
@@ -251,7 +260,8 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
     print()
     failed = (colour(f"{totals['failed']} sources failed", RED) if totals["failed"]
               else "0 sources failed")
-    print(f"{colour(str(totals['new']), BOLD)} new · {totals['seen']} already known · {failed}")
+    quiet = (" · " + colour(f"{totals['quiet']} boards suddenly empty", YELLOW)) if totals["quiet"] else ""
+    print(f"{colour(str(totals['new']), BOLD)} new · {totals['seen']} already known · {failed}{quiet}")
     if totals["new"]:
         print("Next: `python3 -m jsa score` then `python3 -m jsa top`")
     return 0
