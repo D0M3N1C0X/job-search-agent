@@ -1,0 +1,54 @@
+name: Release
+
+# Push a tag like v1.0.0 and this publishes the GitHub release, with the notes
+# taken from that version's section of CHANGELOG.md. It refuses to publish if
+# the tag, pyproject.toml, jsa/__init__.py and the changelog disagree, or if the
+# tests fail on the tagged commit.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: The tag, the package and the changelog agree
+        run: |
+          python - "${GITHUB_REF_NAME#v}" <<'PY'
+          import pathlib, re, sys, tomllib
+          tag = sys.argv[1]
+          project = tomllib.loads(pathlib.Path("pyproject.toml").read_text())["project"]["version"]
+          package = re.search(r'__version__ = "([^"]+)"', pathlib.Path("jsa/__init__.py").read_text())[1]
+          changelog = pathlib.Path("CHANGELOG.md").read_text()
+          problems = []
+          if project != tag:
+              problems.append(f"pyproject.toml says {project}")
+          if package != tag:
+              problems.append(f"jsa/__init__.py says {package}")
+          if not re.search(rf"^## \[{re.escape(tag)}\] — \d{{4}}-\d{{2}}-\d{{2}}$", changelog, re.M):
+              problems.append(f"CHANGELOG.md needs a dated '## [{tag}] — YYYY-MM-DD' heading")
+          sys.exit(f"v{tag}: " + "; ".join(problems) if problems else 0)
+          PY
+      - name: Tests pass on the tagged commit
+        run: python -m unittest discover -s tests -t .
+      - name: Release notes from the changelog
+        run: |
+          awk -v head="## [${GITHUB_REF_NAME#v}]" \
+            'index($0, head) == 1 { on = 1; next } /^## \[/ { on = 0 } /^\[[^]]+\]: / { on = 0 } on' \
+            CHANGELOG.md > "$RUNNER_TEMP/notes.md"
+          test -s "$RUNNER_TEMP/notes.md"
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" --verify-tag \
+            --title "$GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/notes.md"

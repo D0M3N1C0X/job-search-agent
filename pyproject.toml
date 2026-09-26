@@ -1,7 +1,8 @@
 # Optional. The project runs straight from a clone with `python3 -m jsa`;
-# this exists only so `pip install -e .` or `pipx install .` can put a `jsa`
-# command on PATH for people who prefer that route. There are no runtime
-# dependencies, and there never will be.
+# this exists only so `pip install -e .` or `pipx install -e .` can put a `jsa`
+# command on PATH for people who prefer that route. Editable only: the tool
+# finds profile.example/ and profile/ next to the package, in the clone. There
+# are no runtime dependencies, and there never will be.
 [build-system]
 requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
