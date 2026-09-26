@@ -16,7 +16,7 @@ from typing import Any
 from .models import STATUSES
 from .score import SCORER_VERSION
 from .store import Store
-from .util import days_between, now
+from .util import days_between, now, safe_url
 
 RESPONSE_STATUSES = {"screening", "interview", "offer", "rejected"}
 FUNNEL = ["shortlisted", "drafted", "ready", "submitted", "screening", "interview", "offer"]
@@ -140,7 +140,7 @@ def collect(store: Store, *, interactive: bool, limit: int = 4000) -> dict[str, 
             "location": row["location"] or "",
             "country": row["country"] or "",
             "remote": row["remote"] or "unknown",
-            "url": row["url"],
+            "url": safe_url(row["url"]),   # rows can predate the check in Job
             "source": row["source"],
             "first_seen": row["first_seen"],
             "posted_at": row["posted_at"] or "",
