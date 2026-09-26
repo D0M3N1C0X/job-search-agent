@@ -205,8 +205,11 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
                 jobs = ats_sources.fetch_company(entry, cache_dir=cfg.cache_dir, cache_ttl=args.cache_ttl)
             except Exception as exc:  # noqa: BLE001 - one bad board must not end the run
                 totals["failed"] += 1
-                print(f"{entry['company']:<32} "
-                      f"{colour(f'{type(exc).__name__}: {exc}'[:70], RED)}")
+                # FetchError reads "<url> -> <reason>"; the company and board are
+                # already on the line, and a truncated URL used to hide the reason.
+                reason = str(exc).split(" -> ", 1)[-1]
+                print(f"{entry['company']:<32} {entry['provider']:<16} "
+                      + colour(f"failed — {type(exc).__name__}: {reason}"[:100], RED))
                 continue
             counts = {"new": 0, "seen": 0}
             for job in jobs:
@@ -239,8 +242,9 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
                       f"{colour('+' + str(counts['new']), GREEN)}")
             except Exception as exc:  # noqa: BLE001 - secondary source, best effort
                 totals["failed"] += 1
-                print(f"{'LinkedIn (guest)':<32} "
-                      f"{colour(f'unavailable — {type(exc).__name__}: {exc}'[:80], YELLOW)}")
+                reason = str(exc).split(" -> ", 1)[-1]
+                print(f"{'LinkedIn (guest)':<32} {'linkedin':<16} "
+                      + colour(f"unavailable — {type(exc).__name__}: {reason}"[:100], YELLOW))
 
     if wanted in ("all", "mailbox"):
         try:
@@ -927,11 +931,15 @@ def cmd_export(args: argparse.Namespace, cfg: config.Config,
 
 # ------------------------------------------------------------------ parser
 
+WORKSPACE_HELP = "where to write it (default: the workspace every other command reads — see --home)"
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="jsa", description="job-search-agent — find, score, apply, track.")
     parser.add_argument("--version", action="version", version=f"job-search-agent {__version__}")
-    parser.add_argument("--home", help="profile directory (default: ./profile or $JSA_HOME)")
+    parser.add_argument("--home", help="profile directory (default: $JSA_HOME, else ./profile "
+                                       "in a clone or ~/.jsa when installed; `jsa where` shows it)")
     parser.add_argument("-v", "--verbose", action="store_true")
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -982,18 +990,18 @@ def build_parser() -> argparse.ArgumentParser:
     p.set_defaults(func=cmd_where)
 
     p = sub.add_parser("init", help="create a profile workspace from the example")
-    p.add_argument("path", nargs="?")
+    p.add_argument("path", nargs="?", help=WORKSPACE_HELP)
     p.add_argument("--force", action="store_true")
     p.set_defaults(func=cmd_init)
 
     p = sub.add_parser("import", help="build your profile from a CV you already have")
     p.add_argument("cv", help="path to a .docx, .pdf or .txt CV")
-    p.add_argument("path", nargs="?", help="where to write it (default: ./profile)")
+    p.add_argument("path", nargs="?", help=WORKSPACE_HELP)
     p.add_argument("--force", action="store_true", help="overwrite an existing profile")
     p.set_defaults(func=cmd_import)
 
     p = sub.add_parser("setup", help="build your profile by answering questions")
-    p.add_argument("path", nargs="?", help="where to write it (default: ./profile)")
+    p.add_argument("path", nargs="?", help=WORKSPACE_HELP)
     p.add_argument("--force", action="store_true", help="overwrite an existing profile")
     p.set_defaults(func=cmd_setup)
 

@@ -205,7 +205,11 @@ def _bookmarklet(profile: dict[str, Any], answers: dict[str, Any]) -> str:
     payload = {k: [FIELD_KEYS[k], v] for k, v in values.items()
                if v and not str(v).startswith("TODO")}
     script = BOOKMARKLET % json.dumps(payload, ensure_ascii=False)
-    return "javascript:" + html.escape(" ".join(script.split()), quote=True)
+    # A browser percent-decodes a javascript: URL before running it, so an
+    # answer like "100%25 remote" arrived as "100% remote", and a %22 turned
+    # into a quote that broke the script. Escaping % itself keeps text as typed.
+    script = " ".join(script.split()).replace("%", "%25")
+    return "javascript:" + html.escape(script, quote=True)
 
 
 def build_apply_page(job: Job, profile: dict[str, Any], answers: dict[str, Any],

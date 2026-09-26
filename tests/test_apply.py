@@ -101,6 +101,17 @@ class TestApplyPage(unittest.TestCase):
         self.assertIn("60000 EUR", script)          # a real answer is carried
         self.assertNotIn("TODO", script)            # an undecided one is not
 
+    def test_a_percent_sign_survives_the_browser_decoding_the_link(self):
+        import html as htmllib
+        from urllib.parse import unquote
+
+        answer = 'PLN 12k + 10% bonus, "100%25" remote, %22'
+        page = self.page({"salary_expectation": answer})
+        href = htmllib.unescape(page.split('href="javascript:')[1].split('"')[0])
+        script = unquote(href)                       # what the browser runs
+        payload = json.loads(script.split("var d=", 1)[1].split(",n=0;", 1)[0])
+        self.assertEqual(payload["salary"][1], answer)
+
     def test_every_answer_gets_a_copy_button(self):
         html = self.page({"a": "one", "b": "two", "c": "three"})
         self.assertEqual(html.count("data-copy="), 3)

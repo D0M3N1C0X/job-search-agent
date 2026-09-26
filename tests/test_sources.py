@@ -179,15 +179,31 @@ class TestLinkedInSearch(unittest.TestCase):
         self.assertEqual(len(jobs), 1)
         self.assertFalse(any("jobPosting/" in u for u in urls))
 
-    def test_a_failing_query_does_not_lose_the_run(self):
+    def test_a_failing_query_does_not_lose_the_others(self):
         from jsa.util import FetchError
 
-        def boom(url, **opts):
-            raise FetchError("429 Too Many Requests", status=429)
+        def flaky(url, **opts):
+            if "keywords=HR+Advisor" in url:
+                raise FetchError("429 Too Many Requests", status=429)
+            return DETAIL_HTML if "jobPosting/" in url else LINKEDIN_HTML
 
-        with mock.patch.object(linkedin, "http_get", boom), \
+        with mock.patch.object(linkedin, "http_get", flaky), \
              mock.patch.object(linkedin.time, "sleep", lambda *_: None):
-            self.assertEqual(linkedin.search(queries=[{"keywords": "HR"}], pages=1), [])
+            jobs = linkedin.search(queries=[{"keywords": "HR Advisor"}, {"keywords": "People"}],
+                                   pages=1)
+        self.assertEqual(len(jobs), 1)
+
+    def test_every_query_failing_is_an_error_not_an_empty_week(self):
+        from jsa.util import FetchError
+
+        def blocked(url, **opts):
+            raise FetchError(f"{url} -> Tunnel connection failed: 403 Forbidden")
+
+        with mock.patch.object(linkedin, "http_get", blocked), \
+             mock.patch.object(linkedin.time, "sleep", lambda *_: None):
+            with self.assertRaises(FetchError) as caught:
+                linkedin.search(queries=[{"keywords": "HR"}, {"keywords": "People"}], pages=1)
+        self.assertIn("all 2 queries failed -> Tunnel connection failed: 403", str(caught.exception))
 
 
 class TestMailbox(unittest.TestCase):
