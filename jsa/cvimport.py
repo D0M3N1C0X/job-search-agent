@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import re
 import zipfile
+import zlib
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -107,7 +108,8 @@ def read_text(path: str | Path) -> tuple[str, str]:
     if suffix == ".docx":
         try:
             text, how = docx_text(file), "docx"
-        except (zipfile.BadZipFile, KeyError, ValueError, UnicodeDecodeError) as exc:
+        except (zipfile.BadZipFile, KeyError, ValueError, zlib.error, EOFError,
+                NotImplementedError) as exc:
             # Usually an old .doc renamed to .docx, or a file still syncing.
             raise UnreadableCV(
                 f"{file.name} is not a readable .docx ({type(exc).__name__}: {exc}).\n"

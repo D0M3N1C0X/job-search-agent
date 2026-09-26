@@ -14,6 +14,7 @@ import urllib.error
 import urllib.request
 import zlib
 from datetime import datetime, timezone
+from html import unescape as unescape_html
 from pathlib import Path
 from typing import Any
 
@@ -122,19 +123,38 @@ def safe_url(url: str | None) -> str:
 MAX_RESPONSE = 32 * 1024 * 1024
 
 
+class TruncatedResponse(OSError):
+    """The connection closed before the body was complete.
+
+    An OSError so http_get retries it like any other dropped connection. It is
+    never returned, so half a JSON document is never parsed or cached.
+    """
+
+
 def _read_capped(resp: Any, url: str) -> bytes:
     raw = resp.read(MAX_RESPONSE + 1)
     if len(raw) > MAX_RESPONSE:
         raise FetchError(f"{url} -> response larger than {MAX_RESPONSE // 2**20} MB, refused")
+    # read(n) returns short where read() would raise IncompleteRead.
+    declared = resp.headers.get("Content-Length") or ""
+    if declared.isdigit() and len(raw) < int(declared):
+        raise TruncatedResponse(f"body ended after {len(raw)} of {declared} bytes")
     if resp.headers.get("Content-Encoding") != "gzip":
         return raw
-    inflater = zlib.decompressobj(16 + zlib.MAX_WBITS)
-    try:
-        body = inflater.decompress(raw, MAX_RESPONSE + 1)
-    except zlib.error as exc:
-        raise FetchError(f"{url} -> corrupt gzip body ({exc})") from exc
-    if len(body) > MAX_RESPONSE or inflater.unconsumed_tail:
-        raise FetchError(f"{url} -> response inflates past {MAX_RESPONSE // 2**20} MB, refused")
+    # One decompressor per gzip member, as gzip.decompress does, each capped by
+    # what is left of the budget so a bomb stops at the limit, not after it.
+    body, data = b"", raw
+    while data:
+        inflater = zlib.decompressobj(16 + zlib.MAX_WBITS)
+        try:
+            body += inflater.decompress(data, MAX_RESPONSE + 1 - len(body))
+        except zlib.error as exc:
+            raise FetchError(f"{url} -> corrupt gzip body ({exc})") from exc
+        if len(body) > MAX_RESPONSE or inflater.unconsumed_tail:
+            raise FetchError(f"{url} -> response inflates past {MAX_RESPONSE // 2**20} MB, refused")
+        if not inflater.eof:
+            raise TruncatedResponse("gzip body ended mid-stream")
+        data = inflater.unused_data
     return body
 
 
@@ -215,28 +235,35 @@ _TAG = re.compile(r"<[^>]+>")
 _WS = re.compile(r"[ \t\r\f\v]+")
 _BLANKS = re.compile(r"\n{3,}")
 
-_ENTITIES = {
-    "&nbsp;": " ", "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"',
-    "&#39;": "'", "&apos;": "'", "&rsquo;": "’", "&mdash;": "—",
-    "&ndash;": "–", "&hellip;": "…", "&bull;": "•",
-}
-
-
 def html_to_text(html: str) -> str:
-    """Flatten an HTML job description into readable plain text."""
+    """Flatten an HTML job description into readable plain text.
+
+    Entities are decoded once, after the tags are gone, and all of them: a
+    short table used to leave "M&uuml;nchen" and "Krak&oacute;w" in the text,
+    where neither the reader nor the location gate could recognise them, and
+    decoding &amp; before &lt; turned a literal "&lt;" into a tag.
+    """
     if not html:
         return ""
+    # Greenhouse sends the HTML itself entity-escaped. Undo that layer first,
+    # so its tags are tags and its text keeps exactly one layer of entities.
+    if "<" not in html and "&lt;" in html:
+        html = unescape_html(html)
     text = re.sub(r"(?is)<(script|style)\b.*?</\1>", " ", html)
     text = re.sub(r"(?i)<br\s*/?>", "\n", text)
     text = re.sub(r"(?i)</(p|div|li|h[1-6]|tr)>", "\n", text)
     text = re.sub(r"(?i)<li\b[^>]*>", "• ", text)
     text = _TAG.sub(" ", text)
-    for entity, char in _ENTITIES.items():
-        text = text.replace(entity, char)
-    text = re.sub(r"&#(\d+);", lambda m: chr(int(m.group(1))), text)
+    text = unescape_html(text).replace("\xa0", " ")
     text = _WS.sub(" ", text)
     text = "\n".join(line.strip() for line in text.split("\n"))
     return _BLANKS.sub("\n\n", text).strip()
+
+
+def spreadsheet_safe(value: Any) -> str:
+    """Text a spreadsheet shows as text rather than evaluating as a formula."""
+    text = "" if value is None else str(value)
+    return "'" + text if text[:1] in ("=", "+", "-", "@", "\t", "\r") else text
 
 
 def slugify(value: str, max_length: int = 48) -> str:

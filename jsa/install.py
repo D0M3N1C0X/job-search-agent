@@ -55,6 +55,7 @@ set "PYTHONPATH={repo};%PYTHONPATH%"
 """
 
 SHIM = SHIM_WINDOWS if WINDOWS else SHIM_POSIX
+SHIM_MARKER = "Written by `jsa install`"
 SHIM_NAME = "jsa.bat" if WINDOWS else "jsa"
 
 # Where a command-line shim can go without administrator rights. First writable
@@ -69,7 +70,7 @@ else:
 # Double-clickable launcher for Windows, since there is no .app bundle there.
 LAUNCHER_WINDOWS = """@echo off
 title Job Pipeline
-set "PYTHONPATH={repo};%PYTHONPATH%"
+{env}set "PYTHONPATH={repo};%PYTHONPATH%"
 set "URL=http://127.0.0.1:{port}/"
 curl -s -o NUL --max-time 1 "%URL%"
 if errorlevel 1 (
@@ -175,11 +176,13 @@ def on_path(directory: Path) -> bool:
 
 def installed_command() -> tuple[Path, bool]:
     """Where pip or pipx already put `jsa`, and whether it is on PATH."""
-    found = shutil.which(SHIM_NAME)
+    # pip writes jsa.exe on Windows, not the jsa.bat a clone's shim is called;
+    # which() consults PATHEXT, so asking for "jsa" finds either.
+    found = shutil.which("jsa")
     if found:
         return Path(found), True
     scripts = Path(sysconfig.get_path("scripts"))
-    return scripts / SHIM_NAME, on_path(scripts)
+    return scripts / ("jsa.exe" if WINDOWS else "jsa"), on_path(scripts)
 
 
 def build_shim() -> tuple[Path, bool]:
@@ -197,15 +200,25 @@ def build_shim() -> tuple[Path, bool]:
 
 # ---------------------------------------------------------------- app
 
-def build_app(port: int) -> Path:
+def _pinned_home(home: str | None) -> Path | None:
+    """The workspace to write into background jobs, when it is not the default.
+
+    launchd, a Dock app and a Desktop .bat see neither the shell's JSA_HOME nor
+    the --home that `jsa install` was given; without this they would quietly
+    run against the default workspace instead.
+    """
+    return workspace(home) if home or os.environ.get("JSA_HOME") else None
+
+
+def build_app(port: int, home: str | None = None) -> Path:
     macos = APP_PATH / "Contents" / "MacOS"
     resources = APP_PATH / "Contents" / "Resources"
     macos.mkdir(parents=True, exist_ok=True)
     resources.mkdir(parents=True, exist_ok=True)
 
     launcher = macos / "launcher"
-    # Like launchd, an app opened from the Dock does not see the shell's JSA_HOME.
-    env = f"export JSA_HOME={shlex.quote(str(workspace()))}\n" if os.environ.get("JSA_HOME") else ""
+    pinned = _pinned_home(home)
+    env = f"export JSA_HOME={shlex.quote(str(pinned))}\n" if pinned else ""
     launcher.write_text(
         LAUNCHER.format(repo=RUN_DIR, python=sys.executable, port=port, env=env), encoding="utf-8"
     )
@@ -236,23 +249,18 @@ def build_app(port: int) -> Path:
 
 # -------------------------------------------------------------- agent
 
-def _agent_environment() -> dict[str, Any]:
-    """What a launchd job needs to find the same workspace as this shell.
-
-    launchd does not inherit the shell's environment, so a JSA_HOME set here
-    would silently not apply to the background server or the daily run.
-    """
-    home = os.environ.get("JSA_HOME")
-    return {"EnvironmentVariables": {"JSA_HOME": str(workspace())}} if home else {}
+def _agent_environment(home: str | None = None) -> dict[str, Any]:
+    pinned = _pinned_home(home)
+    return {"EnvironmentVariables": {"JSA_HOME": str(pinned)}} if pinned else {}
 
 
-def _log_path(name: str) -> str:
-    folder = workspace()
+def _log_path(name: str, home: str | None = None) -> str:
+    folder = workspace(home)
     folder.mkdir(parents=True, exist_ok=True)   # launchd will not create it
     return str(folder / name)
 
 
-def build_agent(port: int) -> Path:
+def build_agent(port: int, home: str | None = None) -> Path:
     AGENT_PATH.parent.mkdir(parents=True, exist_ok=True)
     AGENT_PATH.write_bytes(plistlib.dumps({
         "Label": LABEL,
@@ -262,17 +270,19 @@ def build_agent(port: int) -> Path:
         "RunAtLoad": True,
         "KeepAlive": True,
         "ProcessType": "Background",
-        "StandardErrorPath": _log_path("serve.log"),
-        **_agent_environment(),
+        "StandardErrorPath": _log_path("serve.log", home),
+        **_agent_environment(home),
     }))
     subprocess.run(["launchctl", "unload", str(AGENT_PATH)], capture_output=True, check=False)
     subprocess.run(["launchctl", "load", str(AGENT_PATH)], capture_output=True, check=False)
     return AGENT_PATH
 
 
-def build_windows_launcher(port: int) -> Path:
+def build_windows_launcher(port: int, home: str | None = None) -> Path:
     """A double-clickable .bat on the Desktop, and in the Start Menu if it exists."""
-    script = LAUNCHER_WINDOWS.format(repo=REPO_ROOT, python=sys.executable, port=port)
+    pinned = _pinned_home(home)
+    env = f'set "JSA_HOME={pinned}"\n' if pinned else ""
+    script = LAUNCHER_WINDOWS.format(repo=REPO_ROOT, python=sys.executable, port=port, env=env)
     targets = [Path.home() / "Desktop" / f"{APP_NAME}.bat"]
     start_menu = (Path.home() / "AppData" / "Roaming" / "Microsoft" / "Windows"
                   / "Start Menu" / "Programs")
@@ -289,7 +299,7 @@ def build_windows_launcher(port: int) -> Path:
     return written or targets[0]
 
 
-def build_daily(hour: int, minute: int) -> Path:
+def build_daily(hour: int, minute: int, home: str | None = None) -> Path:
     """Run `jsa daily` every day at a set time.
 
     Calendar-driven rather than an interval, and with no KeepAlive: this is a
@@ -304,16 +314,17 @@ def build_daily(hour: int, minute: int) -> Path:
         "StartCalendarInterval": {"Hour": hour, "Minute": minute},
         "RunAtLoad": False,
         "ProcessType": "Background",
-        "StandardErrorPath": _log_path("daily.log"),
-        "StandardOutPath": _log_path("daily.log"),
-        **_agent_environment(),
+        "StandardErrorPath": _log_path("daily.log", home),
+        "StandardOutPath": _log_path("daily.log", home),
+        **_agent_environment(home),
     }))
     subprocess.run(["launchctl", "unload", str(DAILY_PATH)], capture_output=True, check=False)
     subprocess.run(["launchctl", "load", str(DAILY_PATH)], capture_output=True, check=False)
     return DAILY_PATH
 
 
-def install(port: int = 8765, at_login: bool = False, daily: str | None = None) -> dict[str, Any]:
+def install(port: int = 8765, at_login: bool = False, daily: str | None = None,
+            home: str | None = None) -> dict[str, Any]:
     """Install the `jsa` command, and whatever passes for an app on this system."""
     shim, path_ok = build_shim()
     result: dict[str, Any] = {
@@ -321,14 +332,14 @@ def install(port: int = 8765, at_login: bool = False, daily: str | None = None) 
         "platform": sys.platform,
     }
     if sys.platform == "darwin":
-        result["app"] = build_app(port)
+        result["app"] = build_app(port, home)
         if at_login:
-            result["agent"] = build_agent(port)
+            result["agent"] = build_agent(port, home)
         if daily:
             hour, _, minute = daily.partition(":")
-            result["daily"] = build_daily(int(hour), int(minute or 0))
+            result["daily"] = build_daily(int(hour), int(minute or 0), home)
     elif WINDOWS:
-        result["app"] = build_windows_launcher(port)
+        result["app"] = build_windows_launcher(port, home)
         if at_login:
             result["note"] = ("Starting at login is not set up automatically on Windows. "
                               "Put a shortcut to the launcher in your Startup folder "
@@ -354,7 +365,10 @@ def uninstall() -> list[str]:
                 candidate.unlink()
                 removed.append(str(candidate))
     shim = shim_path()
-    if shim.exists() and "job-search-agent" in shim.read_text(errors="ignore"):
+    # Only the shim `jsa install` wrote. pipx's own entry point also mentions
+    # job-search-agent (in its interpreter path), and deleting it would
+    # uninstall the command out from under pipx.
+    if shim.exists() and SHIM_MARKER in shim.read_text(errors="ignore"):
         shim.unlink()
         removed.append(str(shim))
     if AGENT_PATH.exists():

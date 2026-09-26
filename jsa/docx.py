@@ -14,6 +14,7 @@ from __future__ import annotations
 import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
+from html import unescape
 from xml.sax.saxutils import escape
 
 # A4 in twips (1/1440 inch), with 0.75" margins.
@@ -189,15 +190,6 @@ class Document:
             )
         return out
 
-    def plain_text(self) -> str:
-        """The text an ATS would extract. Used by the built-in ATS check."""
-        import re
-
-        xml = self.document_xml()
-        xml = xml.replace("</w:p>", "\n").replace("<w:tab/>", "\t")
-        text = re.sub(r"<[^>]+>", "", xml)
-        return "\n".join(line.strip() for line in text.split("\n")).strip()
-
 
 def extract_text(path: str | Path) -> str:
     """Read a .docx back as plain text — no dependency, works on any .docx."""
@@ -210,7 +202,6 @@ def extract_text(path: str | Path) -> str:
             raise ValueError("word/document.xml is larger than any CV")
         xml = z.read("word/document.xml").decode("utf-8")
     xml = xml.replace("</w:p>", "\n").replace("<w:tab/>", "\t").replace("<w:br/>", "\n")
-    text = re.sub(r"<[^>]+>", "", xml)
-    for entity, char in (("&amp;", "&"), ("&lt;", "<"), ("&gt;", ">"), ("&quot;", '"'), ("&apos;", "'")):
-        text = text.replace(entity, char)
+    # Once, all at once: replacing &amp; before &lt; decoded "&amp;lt;" twice.
+    text = unescape(re.sub(r"<[^>]+>", "", xml))
     return "\n".join(line.strip() for line in text.split("\n")).strip()
