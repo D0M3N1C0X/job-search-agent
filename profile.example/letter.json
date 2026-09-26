@@ -1,0 +1,31 @@
+{
+  "_comment": "Your own letter, taken apart. The engine reuses the anchor, the evidence the posting asks about, and the close; why this company and the honest gap are left as [[WRITE: …]] parts for you. Placeholders: {company}, {role}, {city}. Every sentence here must be true of you — it is sent as written.",
+  "en": {
+    "anchor": "At Example Corp I resolve around 120 HR cases a week across three European entities, covering leave, payroll and policy questions.",
+    "evidence_intro": "Much of what this role lists day-to-day I already do.",
+    "evidence": [
+      {
+        "about": ["process improvement", "continuous improvement", "root cause", "case management", "hr operations", "service desk"],
+        "text": "I analyse recurring case patterns and turn them into process changes the wider HR operations team has adopted."
+      },
+      {
+        "about": ["reporting", "sql", "people analytics", "attrition", "headcount", "workforce planning", "dashboards"],
+        "text": "I maintain quarterly workforce reporting in SQL for headcount, attrition and service-desk performance."
+      },
+      {
+        "about": ["onboarding", "contract administration", "employee lifecycle", "hr administration"],
+        "text": "Before that I supported onboarding and contract administration for around 300 employees at Sample Group."
+      }
+    ],
+    "closing": [
+      "I am an EU citizen, currently in Amsterdam and able to relocate to {city}.",
+      "I work in English and Spanish every day and have Dutch at B1.",
+      "I would welcome a conversation about the role."
+    ],
+    "closing_local": [
+      "I am an EU citizen based in Amsterdam.",
+      "I work in English and Spanish every day and have Dutch at B1.",
+      "I would welcome a conversation about the role."
+    ]
+  }
+}

@@ -20,8 +20,8 @@ from pathlib import Path
 from typing import Any
 
 from .config import COMMAND
-from .models import Job, Score
-from .util import today
+from .models import Job, Score, canonical
+from .util import read_json, today
 
 # How the draft opens, per track. Kept short on purpose: a generic opening is
 # worse than a plain one, and the human is going to rewrite this line anyway.
@@ -77,12 +77,142 @@ def _gap(score: Score, lang: str) -> str:
     return ""
 
 
+MONTHS = {
+    "en": ["January", "February", "March", "April", "May", "June", "July", "August",
+           "September", "October", "November", "December"],
+    "it": ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto",
+           "settembre", "ottobre", "novembre", "dicembre"],
+}
+
+
+def long_date(iso: str, language: str) -> str:
+    """'2026-09-18' as a letter writes it: '18 September 2026'."""
+    year, month, day = (int(part) for part in iso[:10].split("-"))
+    return f"{day} {MONTHS.get(language, MONTHS['en'])[month - 1]} {year}"
+
+
+# ------------------------------------------------------------ letter model
+#
+# A letter worth sending has four paragraphs, and only two of them can be
+# assembled: the evidence and the close are the same person on any posting,
+# so they come from the person's own model letter (letter.json in the
+# workspace), chosen to fit the posting. Why this company, and the honest gap,
+# have to be written for it — an engine that filled them in would be making
+# claims about an employer nobody checked. Those two are left as marked
+# [[WRITE: …]] parts, and the packet will not call the letter ready while one
+# is left.
+
+WRITE = "[[WRITE:"
+
+WHY_PROMPT = {
+    "en": "[[WRITE: why {role} at {company} specifically — one thing you can verify (a product, "
+          "a market, a public commitment) and where it meets your own work.]]",
+    "it": "[[WRITE: perché {role} in {company} — una cosa verificabile (un prodotto, un mercato, "
+          "un impegno pubblico) e dove incontra il tuo lavoro.]]",
+}
+GAP_PROMPT = {
+    "en": "[[WRITE: the honest gap — what this posting asks for that your CV does not show{hints}, "
+          "and why it is the kind you close in the first month. Say it plainly; do not dress up "
+          "adjacent work.]]",
+    "it": "[[WRITE: il gap onesto — cosa chiede l'annuncio che il CV non mostra{hints}, e perché si "
+          "colma nel primo mese. Dillo chiaramente, senza gonfiare esperienze vicine.]]",
+}
+MODEL_NOTE = {
+    "en": "Built from your letter model. The parts marked [[WRITE: …]] are yours to write before "
+          "sending: why this company, and the honest gap.",
+    "it": "Costruita dal tuo modello di lettera. Le parti [[WRITE: …]] vanno scritte da te prima "
+          "dell'invio: perché questa azienda, e il gap onesto.",
+}
+
+
+def load_letter_model(home: Path) -> dict[str, Any] | None:
+    """The person's letter.json, if they have one."""
+    path = home / "letter.json"
+    return read_json(path) if path.exists() else None
+
+
+def unwritten(letter: dict[str, Any]) -> int:
+    """How many [[WRITE: …]] parts are still in the letter."""
+    return sum(p.count(WRITE) for p in letter.get("paragraphs", []))
+
+
+def _city(location: str | None) -> str:
+    return (location or "").split(",")[0].strip()
+
+
+def _about(entry: dict[str, Any], text: str) -> int:
+    return sum(1 for term in entry.get("about", [])
+               if canonical(term) and f" {canonical(term)} " in f" {text} ")
+
+
+def _from_model(job: Job, profile: dict[str, Any], score: Score, language: str,
+                model: dict[str, Any], missing: list[str]) -> list[str]:
+    home_city = _city(profile.get("identity", {}).get("location", ""))
+    city = _city(job.location)
+    local = (not city or canonical(city) == canonical(home_city) or job.remote == "remote"
+             or canonical(city) in ("remote", "hybrid"))
+
+    def fill(sentence: str) -> str:
+        return sentence.format(company=job.company, role=job.title, city=city or home_city)
+
+    why = WHY_PROMPT[language].format(role=job.title, company=job.company)
+    paragraphs = [" ".join([why] + ([fill(model["anchor"])] if model.get("anchor") else []))]
+
+    # The three pieces of evidence the posting asks about most, told in the
+    # order the person wrote them — their order carries sense ("Before that…")
+    # that a ranking would break. If nothing matches, the first two still
+    # speak to the work in general.
+    text = canonical(job.text())
+    evidence = model.get("evidence", [])
+    relevant = sorted((e for e in evidence if _about(e, text)), key=lambda e: -_about(e, text))[:3]
+    chosen = sorted(relevant, key=evidence.index) if relevant else evidence[:2]
+    if chosen:
+        intro = [fill(model["evidence_intro"])] if model.get("evidence_intro") else []
+        paragraphs.append(" ".join(intro + [fill(e["text"]) for e in chosen]))
+
+    # Always asked for: every posting has a gap worth naming, and the person
+    # knows it better than a keyword list. The hints are the skills of this
+    # track the posting mentions and the CV never does.
+    gap = _gap(score, language)
+    label = {"en": "it asks for", "it": "chiede"}[language]
+    hints = f" ({label}: {', '.join(missing[:5])})" if missing else ""
+    paragraphs.append(" ".join(([gap] if gap else []) + [GAP_PROMPT[language].format(hints=hints)]))
+
+    closing = model.get("closing_local") if local and model.get("closing_local") else model.get("closing")
+    if closing:
+        paragraphs.append(" ".join(fill(s) for s in closing))
+    return paragraphs
+
+
 def draft_letter(job: Job, profile: dict[str, Any], track: dict[str, Any],
-                 score: Score, lang: str | None = None) -> dict[str, Any]:
-    """A first-draft cover letter assembled from facts already in the profile."""
+                 score: Score, lang: str | None = None, *,
+                 model: dict[str, Any] | None = None,
+                 missing: list[str] | None = None) -> dict[str, Any]:
+    """A first-draft cover letter: from the person's letter model when there
+    is one, otherwise assembled from facts already in the profile."""
     language = lang or score.breakdown.get("language", "en")
     if language not in OPENINGS:
         language = "en"
+
+    if model:
+        section = model.get(language)
+        note = MODEL_NOTE[language]
+        if section is None and model.get("en"):
+            # Better an English letter than an invented Italian one.
+            section, note = model["en"], MODEL_NOTE["en"] + (
+                " The posting is in Italian and your model has no Italian section, so this "
+                "draft is in English." if language == "it" else "")
+            language = "en"
+        if section:
+            return {
+                "company": job.company,
+                "role": job.title,
+                "company_location": job.location,
+                "date": long_date(today(), language),
+                "language": language,
+                "paragraphs": _from_model(job, profile, score, language, section, missing or []),
+                "_draft_note": note,
+            }
 
     identity = profile.get("identity", {})
     opening = OPENINGS[language].format(role=job.title, company=job.company)
@@ -113,7 +243,7 @@ def draft_letter(job: Job, profile: dict[str, Any], track: dict[str, Any],
         "company": job.company,
         "role": job.title,
         "company_location": job.location,
-        "date": today(),
+        "date": long_date(today(), language),
         "language": language,
         "paragraphs": paragraphs,
         "_draft_note": DRAFT_NOTE[language],
@@ -214,7 +344,8 @@ def _bookmarklet(profile: dict[str, Any], answers: dict[str, Any]) -> str:
 
 
 def build_apply_page(job: Job, profile: dict[str, Any], answers: dict[str, Any],
-                     folder: Path, files: list[Path], ats_report: Any = None) -> Path:
+                     folder: Path, files: list[Path], ats_report: Any = None,
+                     letter_todo: int = 0) -> Path:
     """A local page that makes filling the employer's form a copy-and-click job."""
     rows = []
     for key, value in answers.items():
@@ -234,6 +365,10 @@ def build_apply_page(job: Job, profile: dict[str, Any], answers: dict[str, Any],
               f'border-radius:10px;padding:14px;overflow-x:auto;font-size:12.5px;color:#a2a9b6">'
               f'{html.escape(ats_report.render())}</pre>') if ats_report else ""
 
+    unfinished = (f'<div class="warn">The cover letter still has {letter_todo} part'
+                  f'{"s" if letter_todo != 1 else ""} marked [[WRITE: …]] — write '
+                  f'{"them" if letter_todo != 1 else "it"} before sending.</div>'
+                  if letter_todo else "")
     # A posting whose link was dropped as unsafe has none: an empty href would
     # only reload this page.
     posting = (f'<a class="cta" href="{html.escape(job.url, quote=True)}" target="_blank" '
@@ -254,6 +389,7 @@ def build_apply_page(job: Job, profile: dict[str, Any], answers: dict[str, Any],
 <a class="cta ghost" href=".">Open this folder</a>
 
 <div class="warn">Nothing here submits anything. The form is yours to check and send.</div>
+{unfinished}
 
 <h2>Your documents</h2>
 <ul class="check">{attachments}</ul>
@@ -287,3 +423,67 @@ document.querySelectorAll('button[data-copy]').forEach(b => b.onclick = async ()
     out = folder / "apply.html"
     out.write_text(page, encoding="utf-8")
     return out
+
+
+# ------------------------------------------------------------- the packet
+
+def prepare_packet(cfg: Any, store: Any, job: Job, *, track_id: str | None = None,
+                   overlay_data: dict[str, Any] | None = None,
+                   generated_cv: bool = False) -> dict[str, Any]:
+    """Everything `jsa apply` builds, without printing or opening anything.
+
+    Shared with `jsa daily`, which prepares the best postings unattended; the
+    person still reads the packet and presses send.
+    """
+    from . import documents
+    from .packet import build_packet
+    from .render import Overlay, ats_check, build_cover, build_cv, output_name
+    from .score import score_all
+
+    best = score_all(job, cfg.profile, cfg.tracks)[0]
+    track = cfg.track(track_id or best.track)
+    overlay_data = overlay_data or {}
+    cfg.output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Their own CV for this company or this track, unchanged; else the built one.
+    own_cv = None if generated_cv else documents.pick(cfg.home, job, track["id"])
+    if own_cv is not None:
+        cv_path = own_cv
+    else:
+        cv_path = cfg.output_dir / output_name("CV", job.company, job.title)
+        build_cv(cfg.profile, track, overlay=Overlay.from_dict(overlay_data), path=cv_path)
+    report = ats_check(cv_path, cfg.profile, job.description, job.company)
+
+    letter = overlay_data.get("cover_letter")
+    drafted = not letter
+    if drafted:
+        # Skills from this track's own vocabulary that the posting mentions and
+        # the attached CV never does: a precise list, where the ATS keyword
+        # sweep also returns the posting's filler words.
+        cv_text = f" {canonical(documents.text_of(Path(cv_path)))} "
+        skills = best.breakdown.get("skills", {})
+        asked = list(skills.get("must_have", [])) + list(skills.get("nice_to_have", []))
+        not_shown = [term for term in asked if f" {canonical(term)} " not in cv_text]
+        letter = draft_letter(job, cfg.profile, track, best, model=load_letter_model(cfg.home),
+                              missing=not_shown)
+    letter.setdefault("company", job.company)
+    letter.setdefault("role", job.title)
+    letter.setdefault("date", long_date(today(), letter.get("language", "en")))
+    todo = unwritten(letter)
+    cover_path = cfg.output_dir / output_name("Cover", job.company, job.title)
+    build_cover(cfg.profile, letter, path=cover_path)
+
+    folder = build_packet(cfg, job, cv_path=cv_path, cover_path=cover_path, track=track,
+                          ats_report=report, notes=overlay_data.get("notes", ""), letter_todo=todo)
+    answers_file = cfg.home / "answers.json"
+    answers = read_json(answers_file) if answers_file.exists() else {}
+    page = build_apply_page(job, cfg.profile, answers, folder,
+                            [folder / cv_path.name, folder / cover_path.name], report,
+                            letter_todo=todo)
+    store.set_status(job.id, "ready", track=track["id"],
+                     cv_path=str(cv_path), cover_path=str(cover_path))
+    return {
+        "job": job, "score": best, "track": track, "report": report, "answers": answers,
+        "folder": folder, "page": page, "own_cv": own_cv, "letter_drafted": drafted,
+        "letter_note": letter.get("_draft_note", ""), "letter_todo": todo,
+    }
