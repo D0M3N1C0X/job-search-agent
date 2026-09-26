@@ -34,3 +34,23 @@ jsa = "jsa.__main__:main"
 
 [tool.setuptools]
 packages = ["jsa", "jsa.sources"]
+
+# Lint runs in CI only (`ruff check .`); nothing here is needed to run the tool.
+# The rules are the ones that find bugs rather than argue about style: pyflakes,
+# bugbear, bare excepts, and the security checks that matter for code that
+# parses other people's data.
+[tool.ruff]
+target-version = "py310"
+line-length = 110
+
+[tool.ruff.lint]
+select = ["E9", "F", "B", "BLE", "S"]
+ignore = [
+  "S603",  # subprocess without a shell is the safe form; every call passes a list
+  "S607",  # osascript, launchctl, notify-send: resolved from PATH on purpose
+  "S311",  # random only picks synthetic demo data
+  "B905",  # both zip() calls truncate on purpose
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "S105", "S106", "S108", "S310"]

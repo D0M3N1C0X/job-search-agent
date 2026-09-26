@@ -123,7 +123,7 @@ def _icon_pixel(x: int, y: int, size: int) -> tuple[int, int, int, int]:
     if not inside:
         return (0, 0, 0, 0)
     # Three descending bars: the funnel this whole tool is about.
-    for row, (top, left, width) in enumerate(((30, 22, 56), (48, 30, 40), (66, 38, 24))):
+    for top, left, width in ((30, 22, 56), (48, 30, 40), (66, 38, 24)):
         if top * unit <= y <= (top + 11) * unit and left * unit <= x <= (left + width) * unit:
             return (255, 255, 255, 255)
     shade = int(31 + 40 * (y / size))

@@ -14,7 +14,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from .util import read_json
 
 
 class ConfigError(Exception):
@@ -67,10 +66,10 @@ def validate(profile: dict[str, Any], tracks: list[dict[str, Any]], path: Path) 
                 f"profile.json has no '{key}' section ({description}): {path}",
                 "Run `jsa setup` to write a complete profile.",
             )
-    for field in ("name", "email"):
-        if not profile["identity"].get(field):
+    for name in ("name", "email"):
+        if not profile["identity"].get(name):
             raise ConfigError(
-                f"profile.json is missing identity.{field}: {path}",
+                f"profile.json is missing identity.{name}: {path}",
                 "Every generated CV needs it. Run `jsa setup` or add it by hand.",
             )
     if not tracks:

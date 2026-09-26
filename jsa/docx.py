@@ -142,7 +142,7 @@ class Document:
         tabs = f'<w:tabs><w:tab w:val="right" w:pos="{RIGHT_TAB}"/></w:tabs>'
         runs = self._run(left, bold=True)
         if right:
-            runs += f"<w:r><w:tab/></w:r>" + self._run(right, bold=False, color="444444")
+            runs += "<w:r><w:tab/></w:r>" + self._run(right, bold=False, color="444444")
         self._p("RoleLine", runs, extra_ppr=tabs)
 
     def meta(self, text: str) -> None:

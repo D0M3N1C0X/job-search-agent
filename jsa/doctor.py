@@ -13,7 +13,6 @@ import sqlite3
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
 
 from . import MINIMUM_PYTHON, __version__
 from .config import ConfigError, load, resolve_home
