@@ -13,8 +13,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from datetime import datetime, timedelta, timezone
+
 from .store import Store
-from .util import days_between, now
+from .util import days_between, log, now
 
 LAST_RUN = "daily:last_notified"
 
@@ -81,12 +83,53 @@ def summarise(store: Store, cfg: Any, threshold: int) -> dict[str, Any]:
     }
 
 
-def message(summary: dict[str, Any]) -> tuple[str, str] | None:
+def prepare_best(cfg: Any, store: Store) -> list[dict[str, Any]]:
+    """Build packets for the best untouched postings, up to a weekly cap.
+
+    Off unless the profile says otherwise (`jsa autoprepare`). The cap counts
+    every packet made in the last seven days, by hand or here, because the
+    point is a pace someone can actually send at — five good applications
+    read and sent beat twenty prepared and ignored.
+    """
+    settings = cfg.profile.get("preferences", {}).get("prepare") or {}
+    per_week = int(settings.get("per_week") or 0)
+    if per_week <= 0:
+        return []
+    since = (datetime.now(timezone.utc) - timedelta(days=7)).replace(microsecond=0).isoformat()
+    this_week = store.db.execute(
+        "SELECT COUNT(DISTINCT job_id) FROM events WHERE kind = 'status:ready' AND at >= ?",
+        (since,),
+    ).fetchone()[0]
+    room = per_week - this_week
+    if room <= 0:
+        return []
+
+    from .apply import prepare_packet
+
+    prepared = []
+    rows = store.best_scores(min_score=int(settings.get("min_score", 80)), include_applied=False,
+                             limit=room * 3)
+    for row in rows:
+        if len(prepared) >= room:
+            break
+        job = store.get_job(row["id"])
+        try:
+            prepared.append(prepare_packet(cfg, store, job))
+        except Exception as exc:  # noqa: BLE001 - one bad posting must not end the daily run
+            log.warning("could not prepare %s at %s: %s", job.title, job.company, exc)
+    return prepared
+
+
+def message(summary: dict[str, Any], prepared: list[dict[str, Any]] = ()) -> tuple[str, str] | None:
     """The one line worth interrupting someone for, or nothing."""
     fresh, overdue = summary["fresh"], summary["overdue"]
-    if not fresh and not overdue:
+    if not fresh and not overdue and not prepared:
         return None
     parts = []
+    if prepared:
+        first = prepared[0]
+        parts.append(f"{len(prepared)} ready to send — {first['job'].title[:42]} at "
+                     f"{first['job'].company} ({first['score'].score}/100)")
     if fresh:
         best = fresh[0]
         parts.append(f"{len(fresh)} new worth applying to — best: "
@@ -98,8 +141,16 @@ def message(summary: dict[str, Any]) -> tuple[str, str] | None:
     return (" · ".join(parts), subtitle)
 
 
-def write_digest(summary: dict[str, Any], path: Path) -> Path:
+def write_digest(summary: dict[str, Any], path: Path, prepared: list[dict[str, Any]] = ()) -> Path:
     lines = [f"# Daily digest — {now()[:16].replace('T', ' ')}", ""]
+    if prepared:
+        lines.append(f"## {len(prepared)} ready to send")
+        for done in prepared:
+            todo = (f" — write the {done['letter_todo']} [[WRITE]] part(s) of the letter first"
+                    if done["letter_todo"] else "")
+            lines.append(f"- **{done['score'].score}** {done['job'].title} — {done['job'].company}"
+                         f"{todo}  \n  `{done['page']}`")
+        lines.append("")
     if summary["fresh"]:
         lines.append(f"## {len(summary['fresh'])} new above threshold")
         for row in summary["fresh"][:10]:
@@ -111,7 +162,7 @@ def write_digest(summary: dict[str, Any], path: Path) -> Path:
         for age, app, why in summary["overdue"][:10]:
             lines.append(f"- {app['company']} — {app['title']} · {why} for {age} days")
         lines.append("")
-    if not summary["fresh"] and not summary["overdue"]:
+    if not summary["fresh"] and not summary["overdue"] and not prepared:
         lines.append("Nothing new and nothing overdue.")
     lines.append(f"\n{summary['waiting']} postings above threshold are still untouched.")
     path.parent.mkdir(parents=True, exist_ok=True)

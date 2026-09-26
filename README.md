@@ -137,7 +137,8 @@ reply, where good postings actually come from.
 | **Enrich** | `jsa enrich` | Fetches full descriptions only for postings whose title already looks plausible |
 | **Score** | `jsa score` | Deterministic 0–100 fit per positioning track, with hard gates and an explainable breakdown |
 | **Shortlist** | `jsa top` / `jsa show` | Ranked list; per-job breakdown of exactly why it scored what it scored |
-| **Apply** | `jsa apply <id>` | One command: CV, draft cover letter, packet, and a local page that fills the employer's form |
+| **Apply** | `jsa apply <id>` | One command: your CV for that role, a cover letter built on your own model, packet, and a local page that fills the employer's form |
+| | `jsa autoprepare` | Let `jsa daily` prepare the best few on its own each week — you still read each one and press send |
 | **Decide** | `jsa next` | The single next thing to do — one posting, not a list |
 | **Tailor** | `jsa brief` → `jsa docs` | Or the long way: a brief for the model, then documents from a hand-written overlay |
 | **Package** | (part of `jsa docs`) | One folder per application: documents, standard form answers, submission checklist |
@@ -191,6 +192,29 @@ selects is checked against the profile, character for character. A bullet that
 is not in the profile is dropped and reported, never printed. The ATS keyword
 check works the same way: missing keywords are listed so you can see the gap,
 never silently stuffed into the document.
+
+### Your own CVs and your own letter
+
+If you have CVs you wrote yourself — one per positioning, one for a company you
+are courting — attach them and they are sent as they are:
+
+```bash
+jsa cv add ~/CVs/CV_HR_Advisory.pdf --track hr_advisory
+jsa cv add ~/CVs/CV_Revolut.pdf --company Revolut     # wins over the track
+jsa cv                                                  # what is attached for what
+```
+
+A cover letter is built from `letter.json` in your workspace: your own letter,
+taken apart into the sentences that are true on any posting — an anchor, the
+evidence (each tagged with what it is about, so the posting picks which to
+use) and the close. `profile.example/letter.json` shows the shape. The two
+paragraphs no engine should write — why this company, and the honest gap — are
+left as `[[WRITE: …]]` parts with hints, and the packet and the helper page say
+so until they are written.
+
+`jsa autoprepare --min-score 80 --per-week 5` has the daily run build packets
+for the best new postings, at most five a week, and notify you. Nothing is
+ever submitted: a form is a signature, and yours.
 
 ---
 
