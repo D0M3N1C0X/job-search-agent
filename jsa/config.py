@@ -1,20 +1,21 @@
 """Where the workspace lives and how it is loaded.
 
-The engine is public; the profile is not. `JSA_HOME` points at a profile
-directory (default `./profile`), and if that does not exist the bundled
-synthetic `profile.example` is used instead — so a fresh clone runs, with
-demo data, before anyone has typed a personal detail.
+The engine is public; the profile is not. The workspace is `--home`, else
+`JSA_HOME`, else the default: `./profile` in a clone of the repository, or
+`~/.jsa` when the package was installed with pip or pipx. If there is no
+profile there yet, the bundled synthetic example is used instead — so a fresh
+install runs, with demo data, before anyone has typed a personal detail.
 """
 
 from __future__ import annotations
 
 import json
 import os
+import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from .util import read_json
 
 
 class ConfigError(Exception):
@@ -67,10 +68,10 @@ def validate(profile: dict[str, Any], tracks: list[dict[str, Any]], path: Path) 
                 f"profile.json has no '{key}' section ({description}): {path}",
                 "Run `jsa setup` to write a complete profile.",
             )
-    for field in ("name", "email"):
-        if not profile["identity"].get(field):
+    for name in ("name", "email"):
+        if not profile["identity"].get(name):
             raise ConfigError(
-                f"profile.json is missing identity.{field}: {path}",
+                f"profile.json is missing identity.{name}: {path}",
                 "Every generated CV needs it. Run `jsa setup` or add it by hand.",
             )
     if not tracks:
@@ -90,7 +91,27 @@ def validate(profile: dict[str, Any], tracks: list[dict[str, Any]], path: Path) 
         warnings.append("no target countries — nothing will be rejected on location")
     return warnings
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+PACKAGE_DIR = Path(__file__).resolve().parent
+REPO_ROOT = PACKAGE_DIR.parent
+
+# A clone keeps the example profile beside the package. An installed package
+# carries it inside as jsa/example/, and lives in a site-packages directory that
+# must never receive anyone's profile, database or demo.
+CHECKOUT = (REPO_ROOT / "profile.example" / "profile.json").is_file()
+EXAMPLE_DIR = REPO_ROOT / "profile.example" if CHECKOUT else PACKAGE_DIR / "example"
+DEFAULT_HOME = REPO_ROOT / "profile" if CHECKOUT else Path.home() / ".jsa"
+SCRATCH_DIR = REPO_ROOT if CHECKOUT else (
+    Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache") / "job-search-agent")
+DEMO_HOME = SCRATCH_DIR / ".demo" if CHECKOUT else SCRATCH_DIR / "demo"
+
+# How to spell the command in advice printed to the person. `python3 -m jsa`
+# works in a clone without installing anything; an installed package is `jsa`,
+# and its interpreter is not necessarily the `python3` on PATH.
+COMMAND = "python3 -m jsa" if CHECKOUT else "jsa"
+
+# What a workspace is made of. Anything else in the example directory — a
+# jobs.db left by a run on the example, its output — is not copied onwards.
+PROFILE_FILES = ("profile.json", "tracks.json", "watchlist.json", "answers.json")
 
 
 @dataclass(slots=True)
@@ -126,17 +147,44 @@ class Config:
         raise KeyError(f"unknown track: {track_id} (have: {[t['id'] for t in self.tracks]})")
 
 
-def resolve_home(explicit: str | os.PathLike[str] | None = None) -> tuple[Path, bool]:
-    """Return (profile directory, is_demo)."""
+def workspace(explicit: str | os.PathLike[str] | None = None) -> Path:
+    """Where the profile lives, whether or not it exists yet.
+
+    `jsa setup`, `init` and `import` write here, and every other command reads
+    from here, so the two can never disagree about which directory is yours.
+    """
     if explicit:
-        return Path(explicit).expanduser().resolve(), False
+        return Path(explicit).expanduser().resolve()
     env = os.environ.get("JSA_HOME")
     if env:
-        return Path(env).expanduser().resolve(), False
-    local = REPO_ROOT / "profile"
-    if (local / "profile.json").exists():
-        return local, False
-    return REPO_ROOT / "profile.example", True
+        return Path(env).expanduser().resolve()
+    return DEFAULT_HOME
+
+
+def example_home() -> Path:
+    """Where commands run before there is a profile.
+
+    In a clone that is profile.example/ itself; the jobs.db a run leaves there
+    is git-ignored. An installed package copies the example into a cache
+    directory first, because site-packages may be read-only and is no place
+    for a database either way.
+    """
+    if CHECKOUT:
+        return EXAMPLE_DIR
+    target = SCRATCH_DIR / "example"
+    target.mkdir(parents=True, exist_ok=True)
+    for name in (*PROFILE_FILES, "tracks.library.json"):
+        if not (target / name).exists() and (EXAMPLE_DIR / name).exists():
+            shutil.copy(EXAMPLE_DIR / name, target / name)
+    return target
+
+
+def resolve_home(explicit: str | os.PathLike[str] | None = None) -> tuple[Path, bool]:
+    """Return (profile directory, is_demo)."""
+    home = workspace(explicit)
+    if explicit or os.environ.get("JSA_HOME") or (home / "profile.json").exists():
+        return home, False
+    return example_home(), True
 
 
 def load(explicit: str | os.PathLike[str] | None = None) -> Config:

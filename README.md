@@ -13,7 +13,8 @@ rules you can read, generate a tailored CV and cover letter, and measure which
 positioning actually gets replies.
 
 **Zero dependencies.** Python 3.10+ and the standard library. No `pip install`,
-no LaTeX, no headless browser, no API keys.
+no LaTeX, no headless browser, no API keys. Runs on macOS and Linux; Windows
+works on a best-effort basis.
 
 ```bash
 git clone https://github.com/D0M3N1C0X/job-search-agent && cd job-search-agent
@@ -65,8 +66,18 @@ already up. Add `--login` to keep the server running from login, or
 `jsa uninstall` to remove all of it. `jsa where` says what is installed, where
 your data lives, and whether the dashboard is reachable.
 
-If you would rather use packaging, `pip install -e .` or `pipx install .` gives
-you the same `jsa` command. There are no runtime dependencies either way.
+If you would rather not keep a clone at all, install it as a package:
+
+```bash
+pipx install git+https://github.com/D0M3N1C0X/job-search-agent
+jsa demo
+```
+
+An installed copy keeps your workspace in `~/.jsa` instead of `./profile`, and
+the demo and scratch files in `~/.cache/job-search-agent`; nothing is written
+into the package itself. From a clone, `pip install -e .` gives you the same
+`jsa` command with the workspace staying in `./profile`. There are no runtime
+dependencies either way.
 
 ### Two launchers, if you prefer files
 
@@ -205,6 +216,20 @@ inside them is parsed for content and never executed or followed.
 
 ---
 
+## Security
+
+Everything the pipeline fetches is written by strangers, so it is handled as
+hostile wherever it is shown: the dashboard escapes it, cannot be broken out of,
+and runs under a Content-Security-Policy; only http(s) links survive; and
+nothing from a posting ever reaches a shell. `jsa serve` answers this machine
+only, and accepts a change only from the page it served — a web page open in
+another tab cannot write to it.
+
+[SECURITY.md](SECURITY.md) has the full picture, what is out of scope, and how
+to report a problem privately.
+
+---
+
 ## Install and set up
 
 ```bash
@@ -247,7 +272,10 @@ would rather start from a file, `jsa init` copies the example instead.
 and your database are not. `profile.example/` holds a synthetic persona so a
 fresh clone runs end to end before anyone types a personal detail.
 
-To point at a workspace somewhere else, set `JSA_HOME=/path/to/profile`.
+The workspace is `./profile` in a clone and `~/.jsa` when installed as a
+package. To keep it somewhere else, set `JSA_HOME=/path/to/profile` or pass
+`--home`; `jsa setup`, `init` and `import` write to the same place every other
+command reads from, and `jsa where` tells you which one that is.
 
 ---
 
@@ -299,8 +327,9 @@ tested offline against captured payloads.
 python3 -m unittest discover -s tests -t .
 ```
 
-78 tests, no network, no fixtures on disk, runs in under a second. CI runs them
-on Python 3.10 through 3.13.
+No network, no fixtures on disk, runs in under a second. CI runs the suite on
+Linux (Python 3.10 through 3.13) and macOS, alongside ruff and CodeQL. What
+changed in each release is in [CHANGELOG.md](CHANGELOG.md).
 
 ---
 

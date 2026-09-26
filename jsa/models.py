@@ -9,7 +9,7 @@ import unicodedata
 from dataclasses import dataclass, field, asdict
 from typing import Any
 
-from .util import html_to_text, now
+from .util import html_to_text, now, safe_url
 
 # Application lifecycle. Order matters: it drives the funnel chart.
 STATUSES = [
@@ -77,6 +77,7 @@ class Job:
             self.description = html_to_text(self.description)
         self.title = (self.title or "").strip()
         self.company = (self.company or "").strip()
+        self.url = safe_url(self.url)
         if not self.id:
             self.id = self.fingerprint()
         stamp = now()

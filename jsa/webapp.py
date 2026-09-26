@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import html
 import json
+import secrets
 from typing import Any
 
 from .i18n import LANGUAGES, bundle
@@ -266,7 +267,12 @@ function renderFooter() {
     `${T.f_scoring}${DATA.scorer_version} · ${T.f_offline}`;
 }
 const $ = (s, r=document) => r.querySelector(s);
-const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// Posting URLs are written by strangers; a javascript: link would run here.
+const safeUrl = u => /^https?:\/\//i.test(u || '') ? u : '';
+// Writes carry the token the server put in this page. A page on another origin
+// cannot read it, and cannot set the header without a preflight that fails.
+const WRITE = {'Content-Type': 'application/json', 'X-JSA-Token': DATA.token || ''};
 const DIMS = ['title','skills','domain','location','seniority'];
 let sortKey = 'score', sortAsc = false, selected = null;
 
@@ -357,7 +363,7 @@ function renderToday() {
 
   $('#deck').innerHTML = picks.map(j => {
     const r = plainReason(j);
-    return `<article class="pick" data-id="${j.id}">
+    return `<article class="pick" data-id="${esc(j.id)}">
       <div class="big c-${j.verdict}">${j.score}</div>
       <div>
         <h3>${esc(j.title)}</h3>
@@ -366,7 +372,7 @@ function renderToday() {
         <p class="why">${esc(r.why)}</p>
         ${r.gaps.length ? `<p class="gap"><b>${T.catch}</b> ${esc(r.gaps.join('; '))}.</p>` : ''}
         <div class="acts">
-          <a class="btn pri" href="${esc(j.url)}" target="_blank" rel="noopener">${T.btn_read}</a>
+          ${safeUrl(j.url) ? `<a class="btn pri" href="${esc(safeUrl(j.url))}" target="_blank" rel="noopener noreferrer">${T.btn_read}</a>` : ''}
           ${DATA.interactive ? `<button class="btn" data-act="shortlisted">${T.btn_keep}</button>
                                 <button class="btn" data-act="withdrawn">${T.btn_skip}</button>` : ''}
           <button class="btn" data-act="detail">${T.btn_why}</button>
@@ -383,7 +389,7 @@ function renderToday() {
       card.classList.add('gone');
       try {
         const res = await fetch('api/job/' + id, {
-          method: 'POST', headers: {'Content-Type': 'application/json'},
+          method: 'POST', headers: WRITE,
           body: JSON.stringify({status: btn.dataset.act}),
         });
         if (!res.ok) throw new Error(await res.text());
@@ -432,10 +438,10 @@ function renderTable() {
   const rows = visible();
   $('#count').textContent = `${rows.length} ${T.of} ${DATA.jobs.length}`;
   $('#tbody').innerHTML = rows.map(j => `
-    <tr data-id="${j.id}" class="${selected === j.id ? 'sel' : ''}">
+    <tr data-id="${esc(j.id)}" class="${selected === j.id ? 'sel' : ''}">
       <td><span class="chip c-${j.verdict}">${j.score}</span></td>
       <td><div class="role">${esc(j.title)}</div><div class="sub">${esc(j.company)}</div></td>
-      <td class="hide">${esc(j.location || '–')}${j.remote !== 'unknown' ? ` <span class="sub">${j.remote}</span>` : ''}</td>
+      <td class="hide">${esc(j.location || '–')}${j.remote !== 'unknown' ? ` <span class="sub">${esc(j.remote)}</span>` : ''}</td>
       <td class="hide"><span class="tag">${esc(j.track)}</span></td>
       <td class="hide"><span class="tag">${esc(j.source)}</span></td>
       <td>${j.status ? `<span class="tag st">${esc(j.status)}</span>` : ''}${j.notes ? ' <span class="notedot" title="has a note">&#9679;</span>' : ''}</td>
@@ -459,7 +465,7 @@ function renderBoard() {
   $('#board').innerHTML = cols.map(s => {
     const items = DATA.jobs.filter(j => j.status === s);
     return `<div class="col"><h3>${s}<span>${items.length}</span></h3>
-      ${items.map(j => `<div class="jc" data-id="${j.id}"><b>${esc(j.title)}</b>
+      ${items.map(j => `<div class="jc" data-id="${esc(j.id)}"><b>${esc(j.title)}</b>
         <span>${esc(j.company)} · ${esc(j.location || '–')}</span></div>`).join('')
       || '<div class="empty">—</div>'}</div>`;
   }).join('');
@@ -488,7 +494,8 @@ function openJob(id) {
   const pen = b.penalties ? `<div class="gate">${T.d_penalty} ${b.penalties.points} — ${esc((b.penalties.matched||[]).join(', '))}</div>` : '';
 
   $('#dtitle').textContent = j.title;
-  $('#dco').innerHTML = `${esc(j.company)} · ${esc(j.location || '–')} · <a href="${esc(j.url)}" target="_blank" rel="noopener">${T.open_posting}</a>`;
+  $('#dco').innerHTML = `${esc(j.company)} · ${esc(j.location || '–')}${safeUrl(j.url)
+    ? ` · <a href="${esc(safeUrl(j.url))}" target="_blank" rel="noopener noreferrer">${T.open_posting}</a>` : ''}`;
   $('#dbody').innerHTML = `
     <div class="dsec"><h3>${fmt('fit_head', {score: j.score, verdict: j.verdict})}</h3>${bars}${gates}${pen}
       <dl class="meta">
@@ -510,8 +517,8 @@ function openJob(id) {
            ${j.notes ? `<div class="desc" style="margin-top:9px">${esc(j.notes)}</div>` : ''}`}
     </div>
     <div class="dsec"><h3>${T.next_step}</h3>
-      <code class="cmd">python3 -m jsa brief ${j.id.slice(0,8)}</code>
-      <code class="cmd">python3 -m jsa docs ${j.id.slice(0,8)} --overlay &lt;overlay.json&gt;</code>
+      <code class="cmd">${esc(DATA.command || 'jsa')} brief ${esc(j.id.slice(0,8))}</code>
+      <code class="cmd">${esc(DATA.command || 'jsa')} docs ${esc(j.id.slice(0,8))} --overlay &lt;overlay.json&gt;</code>
       <button class="btn" id="copy" style="margin-top:9px">Copy job id</button></div>
     ${j.description ? `<div class="dsec"><h3>${T.posting}</h3><div class="desc">${esc(j.description)}</div></div>` : ''}`;
 
@@ -536,7 +543,7 @@ async function save(j) {
   $('#save').disabled = true;
   try {
     const res = await fetch('api/job/' + j.id, {
-      method: 'POST', headers: {'Content-Type': 'application/json'},
+      method: 'POST', headers: WRITE,
       body: JSON.stringify({status: status || null, notes}),
     });
     if (!res.ok) throw new Error(await res.text());
@@ -590,7 +597,7 @@ if (DATA.interactive) {
     runBtn.disabled = true;
     runBtn.innerHTML = '<span class="spin"></span>' + T.starting;
     try {
-      const res = await fetch('api/run', {method: 'POST'});
+      const res = await fetch('api/run', {method: 'POST', headers: WRITE});
       if (res.status === 409) { toast(T.t_in_progress); }
       else if (!res.ok) throw new Error(await res.text());
       paintRun(await res.json());
@@ -620,8 +627,40 @@ def _options(values: list[str], label: str, key: str) -> str:
     return f'<option value="" data-i18n="{key}">{html.escape(label)}</option>{opts}'
 
 
-def render_page(data: dict[str, Any], charts: dict[str, str]) -> str:
+def script_json(value: Any) -> str:
+    """JSON that is safe to place inside a <script> element.
+
+    `json.dumps` leaves "</script>" alone, and the HTML parser ends the element
+    there whatever the JavaScript thinks: a posting titled
+    `</script><script>...` would run in the dashboard. Escaping <, > and & as
+    JSON unicode escapes keeps the value identical once parsed. U+2028/9 are
+    line terminators to older JavaScript engines.
+    """
+    text = json.dumps(value, ensure_ascii=False)
+    for char, escaped in (("<", "\\u003c"), (">", "\\u003e"), ("&", "\\u0026"),
+                          ("\u2028", "\\u2028"), ("\u2029", "\\u2029")):
+        text = text.replace(char, escaped)
+    return text
+
+
+def content_security_policy(nonce: str) -> str:
+    """What the page may do: run its own two scripts, talk to its own server.
+
+    With scripts pinned to a nonce, a `javascript:` link or an injected
+    <script> is refused by the browser even if an escaping bug lets one through.
+    """
+    return ("default-src 'none'; "
+            f"script-src 'nonce-{nonce}'; "
+            "style-src 'unsafe-inline'; "
+            "img-src data:; "
+            "connect-src 'self'; "
+            "base-uri 'none'; "
+            "form-action 'none'")
+
+
+def render_page(data: dict[str, Any], charts: dict[str, str], *, nonce: str | None = None) -> str:
     """Full HTML document. `charts` holds pre-rendered inline SVG."""
+    nonce = nonce or secrets.token_urlsafe(16)
     jobs = data["jobs"]
     counts, stats = data["counts"], data["stats"]
     kpis = [
@@ -654,6 +693,7 @@ def render_page(data: dict[str, Any], charts: dict[str, str]) -> str:
 
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="{content_security_policy(nonce)}">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Job pipeline · job-search-agent</title>
 <style>{CSS}</style></head><body>
@@ -752,7 +792,7 @@ def render_page(data: dict[str, Any], charts: dict[str, str]) -> str:
 </aside>
 <div class="toast" id="toast"></div>
 
-<script>window.__JSA__ = {json.dumps(data, ensure_ascii=False)};
-window.__I18N__ = {json.dumps(bundle(), ensure_ascii=False)};</script>
-<script>{JS}</script>
+<script nonce="{nonce}">window.__JSA__ = {script_json(data)};
+window.__I18N__ = {script_json(bundle())};</script>
+<script nonce="{nonce}">{JS}</script>
 </body></html>"""

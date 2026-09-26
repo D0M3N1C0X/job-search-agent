@@ -55,7 +55,16 @@ python3 -m unittest discover -s tests -t .
 ```
 
 The test suite runs offline in about a second and must stay that way. CI runs
-it on Python 3.10 through 3.13.
+it on Linux (Python 3.10 through 3.13) and macOS, and lints with ruff:
+
+```bash
+pipx run ruff check .                    # CI pins the version; nothing to install
+```
+
+Anything that renders text from a posting, an email or a company page is
+covered by `tests/test_security.py`. If you add a place where that text is
+shown, written to a file or passed to a process, add a test there that feeds it
+something hostile.
 
 **Every source adapter separates fetching from parsing.** `greenhouse()` does
 the request; `parse_greenhouse()` turns a payload into `Job` objects. Tests
@@ -65,6 +74,17 @@ adding a fixture, not a network call.
 **Tests are named after the behaviour they protect**, not the function they
 call. `test_remote_does_not_rescue_a_role_in_an_excluded_country` says what
 breaks if it fails.
+
+## Releasing
+
+1. Set the version in `pyproject.toml` and `jsa/__init__.py`.
+2. In `CHANGELOG.md`, move what is under *Unreleased* into a new
+   `## [x.y.z] — YYYY-MM-DD` section and add its link at the bottom.
+3. Commit, then `git tag vx.y.z && git push origin vx.y.z`.
+
+The release workflow refuses to publish if the tag, the two version strings and
+the changelog disagree, or if the tests fail on the tagged commit; otherwise it
+creates the GitHub release with that section as its notes.
 
 ## Style
 

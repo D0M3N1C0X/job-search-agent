@@ -7,16 +7,21 @@ truth — the alternative, letting the browser remember things, produces a
 second version of the truth that nobody reconciles.
 
 Standard library only (`http.server`), bound to the loopback interface, and
-requests from anywhere but this machine are refused. It is a personal tool, not
-a service: do not expose it to a network.
+requests from anywhere but this machine are refused. Writes also need the token
+embedded in the page the server rendered, so a web page open in another tab
+cannot reach through the browser and change anything. It is a personal tool,
+not a service: do not expose it to a network.
 """
 
 from __future__ import annotations
 
+import hmac
 import json
+import secrets
 import subprocess
 import sys
 import threading
+import urllib.parse
 import webbrowser
 from collections import deque
 from functools import partial
@@ -52,14 +57,17 @@ class Run:
     def running(self) -> bool:
         return self.proc is not None and self.proc.poll() is None
 
-    def start(self, args: list[str]) -> bool:
+    def start(self, home: Path, args: list[str]) -> bool:
+        # --home is not optional: without it the child resolves its own
+        # workspace, and a dashboard showing the demo would run against
+        # ./profile and write into a database nobody is looking at.
         with self.lock:
             if self.running:
                 return False
             self.lines.clear()
             self.returncode = None
             self.proc = subprocess.Popen(
-                [sys.executable, "-u", "-m", "jsa", "run", *args],
+                [sys.executable, "-u", "-m", "jsa", "--home", str(home), "run", *args],
                 cwd=REPO_ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                 text=True, bufsize=1,
             )
@@ -89,8 +97,9 @@ class Handler(BaseHTTPRequestHandler):
     server_version = "jsa"
     sys_version = ""
 
-    def __init__(self, *args: Any, cfg: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: Any, cfg: Any, token: str, **kwargs: Any) -> None:
         self.cfg = cfg
+        self.token = token
         super().__init__(*args, **kwargs)
 
     # ------------------------------------------------------------ plumbing
@@ -109,6 +118,25 @@ class Handler(BaseHTTPRequestHandler):
             return False
         host = (self.headers.get("Host") or "").rsplit(":", 1)[0].strip("[]")
         return host in ALLOWED_HOSTS or host == ""
+
+    def _may_write(self) -> bool:
+        """Only the page this server rendered may change anything.
+
+        The loopback and Host checks do not stop cross-site request forgery:
+        any page in another tab can POST to 127.0.0.1, the browser sends
+        `Host: 127.0.0.1`, and a text/plain body needs no preflight. The token
+        exists only inside the served page, which another origin cannot read,
+        and a custom header cannot be sent cross-origin without a preflight
+        this server never approves. Origin, when the browser sends one, must
+        be this machine as well.
+        """
+        sent = self.headers.get("X-JSA-Token") or ""
+        if not hmac.compare_digest(sent.encode(), self.token.encode()):
+            return False
+        origin = self.headers.get("Origin")
+        if origin is None:
+            return True
+        return (urllib.parse.urlsplit(origin).hostname or "") in ALLOWED_HOSTS
 
     def _send(self, code: int, body: bytes, content_type: str) -> None:
         self.send_response(code)
@@ -137,6 +165,7 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/":
             with self._store() as store:
                 data = collect(store, interactive=True)
+                data["token"] = self.token
                 page = render_page(data, charts_for(funnel_stats(store)))
             self._send(200, page.encode("utf-8"), "text/html; charset=utf-8")
         elif path == "/api/data":
@@ -153,9 +182,12 @@ class Handler(BaseHTTPRequestHandler):
         if not self._local_only():
             self._json(403, {"error": "local requests only"})
             return
+        if not self._may_write():
+            self._json(403, {"error": "write refused: reload the dashboard and try again"})
+            return
         path = self.path.split("?")[0].rstrip("/")
         if path == "/api/run":
-            if RUN.start(["--source", "ats"]):
+            if RUN.start(self.cfg.home, ["--source", "ats"]):
                 self._json(202, RUN.state())
             else:
                 self._json(409, {"error": "a run is already in progress"})
@@ -164,14 +196,23 @@ class Handler(BaseHTTPRequestHandler):
             self._json(404, {"error": "not found"})
             return
 
-        length = int(self.headers.get("Content-Length") or 0)
+        try:
+            length = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            length = -1
+        if length < 0:
+            self._json(400, {"error": "bad Content-Length"})
+            return
         if length > MAX_BODY:
             self._json(413, {"error": "body too large"})
             return
         try:
             payload = json.loads(self.rfile.read(length) or b"{}")
-        except json.JSONDecodeError as exc:
+        except (json.JSONDecodeError, UnicodeDecodeError) as exc:
             self._json(400, {"error": f"invalid JSON: {exc}"})
+            return
+        if not isinstance(payload, dict):
+            self._json(400, {"error": "expected a JSON object"})
             return
 
         job_id = path.rsplit("/", 1)[-1]
@@ -210,7 +251,9 @@ def apply_update(store: Store, job_id: str, payload: dict[str, Any]) -> dict[str
 
 
 def serve(cfg: Any, *, host: str = "127.0.0.1", port: int = 8765, open_browser: bool = True) -> None:
-    handler = partial(Handler, cfg=cfg)
+    # A fresh token per server: a page left open from an earlier session has
+    # to be reloaded before it can write, which is the behaviour you want.
+    handler = partial(Handler, cfg=cfg, token=secrets.token_urlsafe(32))
     with ThreadingHTTPServer((host, port), handler) as httpd:
         url = f"http://{host}:{port}/"
         print(f"Dashboard on {url}")

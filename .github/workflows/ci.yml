@@ -6,13 +6,25 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Nothing here writes to the repository; the token gets read access only.
+permissions:
+  contents: read
+
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest]
         python-version: ["3.10", "3.11", "3.12", "3.13"]
+        # macOS is a supported platform: the Dock app, launchd and osascript
+        # paths live there, so the suite runs there too.
+        include:
+          - os: macos-latest
+            python-version: "3.11"
+          - os: macos-latest
+            python-version: "3.13"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -30,9 +42,48 @@ jobs:
           python -m jsa score
           python -m jsa top --min-score 0
           python -m jsa demo --no-serve --count 40
-          python -m jsa dashboard --out /tmp/dashboard.html
-          python -c "import pathlib,sys; h=pathlib.Path('/tmp/dashboard.html').read_text(); sys.exit(0 if 'window.__JSA__' in h and '<script src=' not in h else 'dashboard is not self-contained')"
-          test -s /tmp/dashboard.html
+          python -m jsa dashboard --out "$RUNNER_TEMP/dashboard.html"
+          python - "$RUNNER_TEMP/dashboard.html" <<'PY'
+          import pathlib, sys
+          page = pathlib.Path(sys.argv[1]).read_text()
+          problems = [why for ok, why in [
+              ("window.__JSA__" in page, "no embedded data"),
+              ("<script src=" not in page, "loads an external script"),
+              ("Content-Security-Policy" in page, "no Content-Security-Policy"),
+          ] if not ok]
+          sys.exit("dashboard: " + ", ".join(problems) if problems else 0)
+          PY
+      - name: An editable install works from another directory
+        run: |
+          python -m pip install --quiet -e .
+          cd "$RUNNER_TEMP" && jsa --version && jsa where
+      - name: An installed package runs, and writes nothing into site-packages
+        run: |
+          python -m pip wheel --quiet --no-deps --wheel-dir "$RUNNER_TEMP/dist" .
+          python -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install --quiet "$RUNNER_TEMP"/dist/*.whl
+          site=$("$RUNNER_TEMP/venv/bin/python" -c "import jsa, os; print(os.path.dirname(jsa.__file__))")
+          touch "$RUNNER_TEMP/marker"
+          export HOME="$RUNNER_TEMP/home" PATH="$RUNNER_TEMP/venv/bin:$PATH"
+          mkdir -p "$HOME" && cd "$HOME"
+          jsa --version
+          jsa demo --no-serve --count 20
+          jsa score && jsa top --min-score 0
+          jsa init && test -f "$HOME/.jsa/profile.json"
+          jsa doctor --offline
+          written=$(find "$site" -newer "$RUNNER_TEMP/marker" -type f -not -path "*__pycache__*")
+          test -z "$written" || { echo "wrote into site-packages: $written"; exit 1; }
       - name: Check no personal profile was committed
         run: |
           test ! -d profile || (echo "profile/ must stay untracked" && exit 1)
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      # CI-only and pinned; the project itself still has no dependencies.
+      - name: ruff
+        run: pipx run ruff==0.16.9 check --output-format=github .

@@ -21,6 +21,9 @@ PAGE_W, PAGE_H = 11906, 16838
 MARGIN = 1080
 RIGHT_TAB = PAGE_W - 2 * MARGIN
 
+# A ten-page CV's document.xml is a few hundred kilobytes.
+MAX_DOCUMENT_XML = 32 * 1024 * 1024
+
 CONTENT_TYPES = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
 <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
@@ -139,7 +142,7 @@ class Document:
         tabs = f'<w:tabs><w:tab w:val="right" w:pos="{RIGHT_TAB}"/></w:tabs>'
         runs = self._run(left, bold=True)
         if right:
-            runs += f"<w:r><w:tab/></w:r>" + self._run(right, bold=False, color="444444")
+            runs += "<w:r><w:tab/></w:r>" + self._run(right, bold=False, color="444444")
         self._p("RoleLine", runs, extra_ppr=tabs)
 
     def meta(self, text: str) -> None:
@@ -201,6 +204,10 @@ def extract_text(path: str | Path) -> str:
     import re
 
     with zipfile.ZipFile(path) as z:
+        # The declared size bounds what zipfile will inflate, so checking it
+        # first is enough to refuse a zip bomb before it expands.
+        if z.getinfo("word/document.xml").file_size > MAX_DOCUMENT_XML:
+            raise ValueError("word/document.xml is larger than any CV")
         xml = z.read("word/document.xml").decode("utf-8")
     xml = xml.replace("</w:p>", "\n").replace("<w:tab/>", "\t").replace("<w:br/>", "\n")
     text = re.sub(r"<[^>]+>", "", xml)

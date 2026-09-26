@@ -13,7 +13,6 @@ import sqlite3
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
 
 from . import MINIMUM_PYTHON, __version__
 from .config import ConfigError, load, resolve_home
@@ -151,10 +150,15 @@ def run_checks(*, home: str | Path | None = None, port: int = 8765,
         report.add("Network", WARN, "not checked (--offline)")
 
     # ---- how you reach it -----------------------------------------------
-    from .install import APP_PATH, on_path, shim_path
+    from .config import CHECKOUT
+    from .install import APP_PATH, installed_command, on_path, shim_path
 
-    shim = shim_path()
-    if shim.exists():
+    if not CHECKOUT:
+        command, reachable = installed_command()
+        report.add("jsa command", OK if reachable else WARN, str(command),
+                   "" if reachable else
+                   f"Add {command.parent} to your PATH (with pipx: `pipx ensurepath`).")
+    elif (shim := shim_path()).exists():
         report.add("jsa command", OK if on_path(shim.parent) else WARN, str(shim),
                    "" if on_path(shim.parent)
                    else f"Add {shim.parent} to your PATH, or run commands from the repository.")

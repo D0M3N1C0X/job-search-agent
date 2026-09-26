@@ -15,6 +15,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .config import COMMAND
 from .models import Job
 from .util import slugify, today
 
@@ -63,7 +64,7 @@ def build_packet(
         "- [ ] Read the cover letter aloud once",
         "- [ ] Check the company name and role title in both documents",
         "- [ ] Attach both files in the format the form asks for",
-        "- [ ] Log it: `python3 -m jsa status " + job.id[:8] + " submitted`",
+        f"- [ ] Log it: `{COMMAND} status {job.id[:8]} submitted`",
         "",
     ]
     if ats_report is not None:
