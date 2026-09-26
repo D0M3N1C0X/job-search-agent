@@ -6,13 +6,25 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Nothing here writes to the repository; the token gets read access only.
+permissions:
+  contents: read
+
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest]
         python-version: ["3.10", "3.11", "3.12", "3.13"]
+        # macOS is a supported platform: the Dock app, launchd and osascript
+        # paths live there, so the suite runs there too.
+        include:
+          - os: macos-latest
+            python-version: "3.11"
+          - os: macos-latest
+            python-version: "3.13"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -30,9 +42,32 @@ jobs:
           python -m jsa score
           python -m jsa top --min-score 0
           python -m jsa demo --no-serve --count 40
-          python -m jsa dashboard --out /tmp/dashboard.html
-          python -c "import pathlib,sys; h=pathlib.Path('/tmp/dashboard.html').read_text(); sys.exit(0 if 'window.__JSA__' in h and '<script src=' not in h else 'dashboard is not self-contained')"
-          test -s /tmp/dashboard.html
+          python -m jsa dashboard --out "$RUNNER_TEMP/dashboard.html"
+          python - "$RUNNER_TEMP/dashboard.html" <<'PY'
+          import pathlib, sys
+          page = pathlib.Path(sys.argv[1]).read_text()
+          problems = [why for ok, why in [
+              ("window.__JSA__" in page, "no embedded data"),
+              ("<script src=" not in page, "loads an external script"),
+              ("Content-Security-Policy" in page, "no Content-Security-Policy"),
+          ] if not ok]
+          sys.exit("dashboard: " + ", ".join(problems) if problems else 0)
+          PY
+      - name: The documented install works from another directory
+        run: |
+          python -m pip install --quiet -e .
+          cd "$RUNNER_TEMP" && jsa --version && jsa where
       - name: Check no personal profile was committed
         run: |
           test ! -d profile || (echo "profile/ must stay untracked" && exit 1)
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      # CI-only and pinned; the project itself still has no dependencies.
+      - name: ruff
+        run: pipx run ruff==0.16.9 check --output-format=github .

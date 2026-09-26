@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Any
 
 from .models import Job, Score
-from .util import slugify, today
+from .util import today
 
 # How the draft opens, per track. Kept short on purpose: a generic opening is
 # worse than a plain one, and the human is going to rewrite this line anyway.

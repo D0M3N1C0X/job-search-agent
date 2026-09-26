@@ -175,8 +175,9 @@ def http_get(
     last_error: Exception | None = None
     for attempt in range(1, retries + 1):
         try:
-            req = urllib.request.Request(url, headers=req_headers)
-            with urllib.request.urlopen(req, timeout=timeout, context=_SSL) as resp:
+            # The scheme was checked at the top: http(s) only.
+            req = urllib.request.Request(url, headers=req_headers)  # noqa: S310
+            with urllib.request.urlopen(req, timeout=timeout, context=_SSL) as resp:  # noqa: S310
                 raw = _read_capped(resp, url)
                 charset = resp.headers.get_content_charset() or "utf-8"
                 try:

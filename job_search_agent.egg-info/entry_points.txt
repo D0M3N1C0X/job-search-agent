@@ -1,0 +1,2 @@
+[console_scripts]
+jsa = jsa.__main__:main

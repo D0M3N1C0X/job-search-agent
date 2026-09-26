@@ -542,7 +542,7 @@ def cmd_next(args: argparse.Namespace, cfg: config.Config, store: Store) -> int:
             print(f"\n  open {folder / 'apply.html'}")
         else:
             print(f"\n  jsa apply {app['job_id'][:8]}")
-        print(f"\n  Or skip it: jsa next --skip-ready")
+        print("\n  Or skip it: jsa next --skip-ready")
         return 0
 
     rows = store.best_scores(min_score=args.min_score, limit=1, include_applied=False)
@@ -670,7 +670,7 @@ def cmd_status(args: argparse.Namespace, cfg: config.Config,
     if args.status == "submitted":
         days = cfg.profile.get("preferences", {}).get("follow_up_days", 10)
         follow_up = f"in {days} days"
-    application = store.set_status(
+    store.set_status(
         job.id, args.status, channel=args.channel, notes=args.note,
         next_action_at=args.next_action,
     )
@@ -710,9 +710,9 @@ def cmd_due(args: argparse.Namespace, cfg: config.Config,
               "then `jsa status <id> shortlisted`.")
         return 0
     by_age = lambda item: item[0]  # noqa: E731
-    for age, row, why in sorted(overdue, key=by_age, reverse=True):
+    for _age, row, why in sorted(overdue, key=by_age, reverse=True):
         print(f"{colour('!', YELLOW)} {row['company'][:24]:<26}{row['title'][:38]:<40}{why}")
-    for age, row, why in sorted(waiting, key=by_age, reverse=True):
+    for _age, row, why in sorted(waiting, key=by_age, reverse=True):
         print(f"  {row['company'][:24]:<26}{row['title'][:38]:<40}{colour(why, DIM)}")
     if not overdue:
         print(f"\n{len(waiting)} open, nothing overdue.")
@@ -836,7 +836,7 @@ def cmd_install(args: argparse.Namespace) -> int:
         print(f"  {colour('jsa', GREEN)} now works from any directory — try `jsa where`.")
     else:
         print(colour(f"  {result['shim'].parent} is not on your PATH.", YELLOW))
-        print(f"  Add this line to ~/.zshrc, then open a new terminal:")
+        print("  Add this line to ~/.zshrc, then open a new terminal:")
         print(f"    export PATH=\"{result['shim'].parent}:$PATH\"")
 
     if result["app"]:
@@ -905,7 +905,7 @@ def cmd_where(args: argparse.Namespace) -> int:
     print(f"  database       {cfg.db_path}")
     print(f"  documents      {cfg.output_dir}")
     if not state["server_running"]:
-        print(f"\nStart it with: python3 -m jsa serve")
+        print("\nStart it with: python3 -m jsa serve")
     return 0
 
 
