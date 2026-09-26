@@ -55,7 +55,11 @@ from 1.0.0 work as they are.
 - Job descriptions keep their accented letters: only a handful of HTML
   entities were decoded, so a Greenhouse posting read "M&uuml;nchen" and
   "Krak&oacute;w" on screen, and keyword matching saw "m and uuml nchen".
-  Entities are also decoded once rather than twice.
+  Entities are also decoded once rather than twice. Postings stored by 1.0.0
+  are cleaned in place by running `jsa reindex` once (then
+  `jsa score --rescore`).
+- A stored description lost any text between `<` and `>` every time it was
+  read back from the database.
 - `jsa export` wrote titles and companies from feeds into cells a spreadsheet
   would run as formulas.
 - Location matching covers every European country and the cities postings

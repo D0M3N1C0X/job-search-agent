@@ -116,7 +116,11 @@ class Job:
         except (TypeError, json.JSONDecodeError):
             data["raw"] = {}
         allowed = {f for f in cls.__dataclass_fields__}
-        return cls(**{k: (v if v is not None else "") for k, v in data.items() if k in allowed})
+        job = cls(**{k: (v if v is not None else "") for k, v in data.items() if k in allowed})
+        # What is stored is already text. __post_init__ would take any "<...>"
+        # in it for a tag and strip it, every time the job is read back.
+        job.description = data.get("description") or ""
+        return job
 
 
 @dataclass(slots=True)
