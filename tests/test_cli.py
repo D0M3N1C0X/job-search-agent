@@ -180,6 +180,34 @@ class TestFetchSaysWhenABoardGoesQuiet(CliCase):
         self.assertNotIn("suddenly empty", out)
 
 
+class TestReindexCleansWhatOlderVersionsStored(CliCase):
+    """Descriptions stored while only a dozen entities were decoded still read
+    "M&uuml;nchen". reindex fixes them in place, without a refetch."""
+
+    STORED = "Team in M&uuml;nchen &ndash; &#x27;hybrid&#x27;, salary <50k>, &notice as written"
+
+    def stored(self):
+        job = self.seed(n=1)[0]
+        self.store.db.execute("UPDATE jobs SET description = ? WHERE id = ?", (self.STORED, job.id))
+        self.store.commit()
+        return job
+
+    def description(self, job):
+        return self.store.db.execute("SELECT description FROM jobs WHERE id = ?", (job.id,)).fetchone()[0]
+
+    def test_leftover_entities_are_decoded_and_nothing_else_changes(self):
+        job = self.stored()
+        out = self.run_cmd(cli.cmd_reindex)
+        self.assertEqual(self.description(job),
+                         "Team in München – 'hybrid', salary <50k>, &notice as written")
+        self.assertIn("1 description(s)", out)
+
+    def test_running_it_twice_changes_nothing_the_second_time(self):
+        self.stored()
+        self.run_cmd(cli.cmd_reindex)
+        self.assertIn("in 0 description(s)", self.run_cmd(cli.cmd_reindex))
+
+
 class TestShim(unittest.TestCase):
     """`python3 -m jsa` only works inside the repository, which is the whole
     reason `jsa install` writes a command onto PATH."""
