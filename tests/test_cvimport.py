@@ -211,7 +211,57 @@ def minimal_pdf(text: str, compress: bool) -> bytes:
     return out + b"trailer<</Root 1 0 R>>\n%%EOF"
 
 
+def placed_pdf(content: bytes) -> bytes:
+    """A PDF whose font has /Widths: every glyph 500/1000 em, the space 250."""
+    stream = zlib.compress(content)
+    cmap = (b"/CIDInit /ProcSet findresource begin begincmap 1 begincodespacerange <00> <FF> "
+            b"endcodespacerange 1 beginbfrange <20> <7E> <0020> endbfrange endcmap end")
+    widths = b" ".join(b"250" if c == 32 else b"500" for c in range(32, 127))
+    objs = [
+        b"<</Type/Catalog/Pages 2 0 R>>",
+        b"<</Type/Pages/Kids[3 0 R]/Count 1>>",
+        b"<</Type/Page/Parent 2 0 R/Contents 4 0 R/Resources<</Font<</F1 5 0 R>>>>>>",
+        b"<</Filter /FlateDecode /Length " + str(len(stream)).encode() + b">>stream\n"
+        + stream + b"\nendstream",
+        b"<</Type/Font/Subtype/TrueType/BaseFont/X/FirstChar 32/LastChar 126/Widths["
+        + widths + b"]/ToUnicode 6 0 R>>",
+        b"<</Length " + str(len(cmap)).encode() + b">>stream\n" + cmap + b"\nendstream",
+    ]
+    out = b"%PDF-1.4\n"
+    for i, body in enumerate(objs, 1):
+        out += str(i).encode() + b" 0 obj\n" + body + b"\nendobj\n"
+    return out + b"trailer<</Root 1 0 R>>\n%%EOF"
+
+
 class TestPdfText(unittest.TestCase):
+    def read_placed(self, content: bytes) -> str:
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "t.pdf"
+            path.write_bytes(placed_pdf(content))
+            return extract(path)
+
+    def test_glyphs_placed_one_by_one_still_make_words(self):
+        # Chrome's "Save as PDF" draws runs of glyphs at explicit positions.
+        # Only the widths say that "Op" + "erations" is one word: 2 glyphs of
+        # 5 points end exactly where the next run starts.
+        content = (b"BT /F1 10 Tf 1 0 0 1 0 700 Tm (Op) Tj 10 0 Td (erations) Tj "
+                   b"40 0 Td ( ) Tj 2.5 0 Td (lead) Tj ET")
+        self.assertEqual(self.read_placed(content), "Operations lead")
+
+    def test_a_gap_wider_than_a_glyph_step_is_a_word_break(self):
+        content = b"BT /F1 10 Tf 1 0 0 1 0 700 Tm (Sales) Tj 60 0 Td (Apr 2026) Tj ET"
+        self.assertEqual(self.read_placed(content), "Sales Apr 2026")
+
+    def test_a_new_text_block_on_the_same_baseline_is_the_same_line(self):
+        # BT resets the origin, so "72 700 Td" after BT is an absolute position.
+        content = (b"BT /F1 10 Tf 72 700 Td (Role) Tj ET "
+                   b"BT /F1 10 Tf 400 700 Td (2026) Tj ET "
+                   b"BT /F1 10 Tf 72 686 Td (Next line) Tj ET")
+        self.assertEqual(self.read_placed(content), "Role 2026\nNext line")
+
+    def test_ligatures_are_spelled_out(self):
+        self.assertEqual(pdftext._LIGATURES and "workﬂow".translate(pdftext._LIGATURES), "workflow")
+
     def read(self, compress: bool) -> str:
         with TemporaryDirectory() as tmp:
             path = Path(tmp) / "t.pdf"
