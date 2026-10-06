@@ -773,6 +773,130 @@
         "devops",
         "full stack"
       ]
+    },
+    {
+      "id": "strategy_ops",
+      "label": "Strategy & Operations",
+      "summary_key": "strategy_ops",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "projects",
+        "education",
+        "additional",
+        "languages"
+      ],
+      "skill_groups": [
+        "operations",
+        "programme",
+        "technical"
+      ],
+      "cover_angle": "High-volume operations experience, the analysis to find where a process breaks, and the habit of building the tool that fixes it.",
+      "titles": {
+        "strong": [
+          "operations analyst",
+          "operations excellence",
+          "operational excellence",
+          "business operations",
+          "strategy and operations",
+          "strategy & operations",
+          "process improvement",
+          "process excellence",
+          "support operations",
+          "customer support operations",
+          "revenue operations",
+          "revops",
+          "project manager",
+          "program manager",
+          "programme manager",
+          "operations associate"
+        ],
+        "good": [
+          "operations specialist",
+          "operations manager",
+          "project coordinator",
+          "program coordinator",
+          "programme coordinator",
+          "business analyst",
+          "trust and safety",
+          "service delivery"
+        ],
+        "weak": [
+          "operations",
+          "project",
+          "process",
+          "program",
+          "programme"
+        ]
+      },
+      "must_have_any": [
+        "process improvement",
+        "workflow",
+        "automation",
+        "automate",
+        "sop",
+        "kpi",
+        "sla",
+        "root cause",
+        "efficiency",
+        "bottleneck",
+        "stakeholder",
+        "dashboard",
+        "excel",
+        "sql",
+        "python",
+        "metrics",
+        "operations"
+      ],
+      "must_have_target": 3,
+      "nice_to_have": [
+        "ai",
+        "chatbot",
+        "help center",
+        "customer support",
+        "scale",
+        "scalable",
+        "cross functional",
+        "cross-functional",
+        "forecasting",
+        "reporting",
+        "no code",
+        "spreadsheet",
+        "vendor",
+        "providers",
+        "project management",
+        "data"
+      ],
+      "nice_to_have_target": 4,
+      "domain": [
+        "operations",
+        "support",
+        "process",
+        "efficiency",
+        "customer",
+        "internal tools",
+        "workflow"
+      ],
+      "domain_target": 3,
+      "anti": [
+        "aml",
+        "anti money laundering",
+        "cold calling",
+        "courier",
+        "devops",
+        "door to door",
+        "driver",
+        "financial crimes",
+        "fincrime",
+        "forklift",
+        "software engineer",
+        "statutory audit",
+        "tax manager",
+        "treasury",
+        "warehouse"
+      ],
+      "projects_heading": "Selected operations & program case studies"
     }
   ]
 }
