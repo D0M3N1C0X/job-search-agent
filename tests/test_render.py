@@ -108,3 +108,38 @@ class TestCoverLetter(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestProjectOrder(unittest.TestCase):
+    """An overlay chooses which projects appear and leads with the relevant one."""
+
+    def render(self, overlay):
+        with TemporaryDirectory() as tmp:
+            return extract_text(build_cv(PROFILE, ANALYTICS, overlay=overlay,
+                                         path=Path(tmp) / "cv.docx"))
+
+    def test_default_keeps_every_project_in_profile_order(self):
+        text = self.render(Overlay())
+        for project in PROFILE["projects"]["items"]:
+            self.assertIn(project["name"], text)
+
+    def test_order_is_respected_and_unlisted_projects_are_left_out(self):
+        profile = json.loads(json.dumps(PROFILE))
+        profile["projects"]["items"] = [
+            {"name": "first-project", "stack": "Python", "url": "",
+             "bullets": [{"text": "First project bullet.", "tracks": ["*"]}]},
+            {"name": "second-project", "stack": "SQL", "url": "",
+             "bullets": [{"text": "Second project bullet.", "tracks": ["*"]}]},
+            {"name": "third-project", "stack": "Excel", "url": "",
+             "bullets": [{"text": "Third project bullet.", "tracks": ["*"]}]},
+        ]
+        with TemporaryDirectory() as tmp:
+            text = extract_text(build_cv(
+                profile, ANALYTICS, path=Path(tmp) / "cv.docx",
+                overlay=Overlay(project_order=["third-project", "first-project"])))
+        self.assertLess(text.index("third-project"), text.index("first-project"))
+        self.assertNotIn("second-project", text)
+
+    def test_an_unknown_project_name_is_ignored_rather_than_fatal(self):
+        text = self.render(Overlay(project_order=["does-not-exist"]))
+        self.assertIn("Professional experience", text)

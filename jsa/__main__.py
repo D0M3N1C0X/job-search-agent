@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import csv
 import functools
+import time
 import json
 import shutil
 import sys
@@ -24,6 +25,10 @@ from .util import (FetchError, days_between, decode_entities, log, now, read_jso
                    setup_logging, spreadsheet_safe, today, write_json)
 
 GREEN, YELLOW, RED, DIM, BOLD, OFF = "\033[32m", "\033[33m", "\033[31m", "\033[2m", "\033[1m", "\033[0m"
+
+
+# Longest a bulk write may hold SQLite's single write lock before yielding it.
+WRITE_SLICE = 0.5
 
 
 def with_workspace(fn):
@@ -288,13 +293,19 @@ def cmd_score(args: argparse.Namespace, cfg: config.Config,
             "SELECT 1 FROM scores WHERE job_id = ?", (j.id,)).fetchone()
     ]
     verdicts = {"pass": 0, "review": 0, "reject": 0}
-    for index, job in enumerate(jobs, 1):
+    # Commit on a clock, not a count. SQLite allows one writer at a time, so a
+    # long batch shuts out everyone else: the dashboard saving a status, a
+    # `jsa apply`, the daily run. Every 500 jobs used to mean several seconds of
+    # lock, which grew past the busy timeout once a fourth track was added.
+    last = time.monotonic()
+    for job in jobs:
         scores = score_all(job, cfg.profile, cfg.tracks)
         for score in scores:
             store.save_score(score, commit=False)
         verdicts[scores[0].verdict] += 1
-        if index % 500 == 0:
+        if time.monotonic() - last > WRITE_SLICE:
             store.commit()
+            last = time.monotonic()
     store.commit()
     print(f"Scored {len(jobs)} job(s): "
           f"{colour(str(verdicts['pass']) + ' pass', GREEN)} · "
@@ -322,6 +333,7 @@ def cmd_reindex(args: argparse.Namespace, cfg: config.Config,
             store.db.execute("UPDATE jobs SET description = ? WHERE id = ?", (text, row["id"]))
             cleaned += 1
     changed = 0
+    last = time.monotonic()
     for job in store.jobs():
         country = ats_sources.guess_country(job.location)
         remote = ats_sources.guess_remote(job.location, job.title, job.description)
@@ -331,6 +343,9 @@ def cmd_reindex(args: argparse.Namespace, cfg: config.Config,
                 (country, remote, job.id),
             )
             changed += 1
+        if time.monotonic() - last > WRITE_SLICE:   # see cmd_score
+            store.commit()
+            last = time.monotonic()
     store.commit()
     print(f"Updated location fields on {changed} job(s) and decoded leftover HTML entities in "
           f"{cleaned} description(s). Run `{config.COMMAND} score --rescore` next.")

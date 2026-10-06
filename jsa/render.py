@@ -41,6 +41,10 @@ class Overlay:
     skill_groups: list[str] = field(default_factory=list)
     sections: list[str] = field(default_factory=list)
     extra_skills: list[str] = field(default_factory=list)
+    # Which portfolio projects to show, in this order. Empty means all, in
+    # profile order. A role that values automation should lead with the
+    # automation project, not with whichever was written first.
+    project_order: list[str] = field(default_factory=list)
     max_bullets_per_role: int = MAX_BULLETS_PER_ROLE
     rejected: list[str] = field(default_factory=list)
 
@@ -135,10 +139,17 @@ def build_cv(
             projects = profile.get("projects", {})
             if not projects.get("items"):
                 continue
-            doc.section("People analytics projects")
+            items = projects["items"]
+            if overlay.project_order:
+                by_name = {p["name"]: p for p in items}
+                unknown = [n for n in overlay.project_order if n not in by_name]
+                if unknown:
+                    log.warning("overlay: unknown project(s) ignored: %s", ", ".join(unknown))
+                items = [by_name[n] for n in overlay.project_order if n in by_name]
+            doc.section(track.get("projects_heading", "People analytics projects"))
             if projects.get("note"):
                 doc.meta(projects["note"])
-            for project in projects["items"]:
+            for project in items:
                 selected = overlay.select.get(project["name"])
                 bullets = selected if selected else _pick_bullets(
                     project.get("bullets", []), track_id, overlay.max_bullets_per_role
