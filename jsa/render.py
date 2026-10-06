@@ -12,10 +12,12 @@ Two rules run through this module:
 from __future__ import annotations
 
 import re
+import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from .cvhtml import HtmlDocument, print_pdf
 from .docx import Document, extract_text
 from .models import canonical
 from .pdftext import extract as pdf_text
@@ -23,6 +25,8 @@ from .util import log, slugify
 
 MAX_BULLETS_PER_ROLE = 4
 MAX_TOTAL_BULLETS = 16
+# One per page object in a PDF; /Type /Pages is the tree that holds them.
+_PAGE = re.compile(rb"/Type\s*/Page(?![A-Za-z])")
 
 
 def _pick_bullets(pool: list[dict[str, Any]], track_id: str, limit: int) -> list[str]:
@@ -83,7 +87,9 @@ def build_cv(
     track_id = track["id"]
     identity = profile["identity"]
 
-    doc = Document(
+    # One layout, two writers: .html is the typeset page that prints to PDF.
+    writer = HtmlDocument if Path(path).suffix.lower() in (".html", ".htm") else Document
+    doc = writer(
         title=f"CV — {identity['name']}",
         author=identity["name"],
     )
@@ -197,6 +203,19 @@ def build_cv(
     return doc.save(path)
 
 
+def build_cv_pdf(
+    profile: dict[str, Any],
+    track: dict[str, Any],
+    *,
+    overlay: Overlay | None = None,
+    path: str | Path,
+) -> Path | None:
+    """The same CV, typeset and printed to PDF. None when no browser can print it."""
+    with tempfile.TemporaryDirectory(prefix="jsa-cv-") as tmp:
+        page = build_cv(profile, track, overlay=overlay, path=Path(tmp) / "cv.html")
+        return print_pdf(page, path)
+
+
 # ------------------------------------------------------------ cover letter
 
 GREETINGS = {
@@ -289,12 +308,14 @@ class AtsReport:
     covered: list[str]
     missing: list[str]
     problems: list[str]
+    pages: int | None = None  # counted, for a PDF; a .docx only has an estimate
 
     def render(self) -> str:
+        length = (f"{self.pages} page{'s' if self.pages != 1 else ''}" if self.pages
+                  else f"~{self.est_pages:.1f} pages estimated — confirm in Word before sending")
         lines = [
             f"ATS check: {'PASS' if self.ok else 'REVIEW'}",
-            f"  length      {self.words} words, {self.bullets} bullets "
-            f"(~{self.est_pages:.1f} pages estimated — confirm in Word before sending)",
+            f"  length      {self.words} words, {self.bullets} bullets ({length})",
             f"  contact     {'email + phone found' if self.contact_ok else 'MISSING email or phone'}",
             f"  reading     {'name in first lines' if self.name_first else 'name not at the top'}",
             f"  keywords    {len(self.covered)}/{len(self.covered) + len(self.missing)} "
@@ -315,7 +336,9 @@ def ats_check(cv_path: str | Path, profile: dict[str, Any], job_text: str = "",
     is information, not something to paper over.
     """
     # Their own CV may be a PDF; read it the way an ATS would.
-    text = pdf_text(cv_path) if Path(cv_path).suffix.lower() == ".pdf" else extract_text(cv_path)
+    is_pdf = Path(cv_path).suffix.lower() == ".pdf"
+    text = pdf_text(cv_path) if is_pdf else extract_text(cv_path)
+    pages = len(_PAGE.findall(Path(cv_path).read_bytes())) or None if is_pdf else None
     lower = canonical(text)
     identity = profile["identity"]
     words = len(text.split())
@@ -326,7 +349,9 @@ def ats_check(cv_path: str | Path, profile: dict[str, Any], job_text: str = "",
     )
     name_first = canonical(identity["name"]) in canonical("\n".join(text.split("\n")[:3]))
     bullets = sum(1 for line in text.split("\n") if line.startswith("•"))
-    if words > 1050:
+    if pages and pages > 2:
+        problems.append(f"{pages} pages — drop bullets until it fits on two")
+    elif words > 1050:
         problems.append(
             "likely over two pages — drop two or three bullets, or shorten the summary")
     if words < 250:
@@ -346,7 +371,7 @@ def ats_check(cv_path: str | Path, profile: dict[str, Any], job_text: str = "",
     ok = contact_ok and name_first and not problems
     return AtsReport(
         ok=ok, words=words, bullets=bullets, est_pages=round(words / 520, 1), contact_ok=contact_ok,
-        name_first=name_first, covered=covered, missing=missing, problems=problems,
+        name_first=name_first, covered=covered, missing=missing, problems=problems, pages=pages,
     )
 
 

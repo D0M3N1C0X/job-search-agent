@@ -524,6 +524,8 @@ def cmd_apply(args: argparse.Namespace, cfg: config.Config, store: Store) -> int
     print(f"{best.score}/100 · {best.track} · {job.location or 'location n/a'}\n")
     if done["own_cv"] is not None:
         print(f"CV      your own: {done['own_cv'].name}")
+    elif done["cv_pdf"] is None:
+        print(colour("CV      .docx only — no Chrome, Edge or Chromium found to print the PDF", YELLOW))
     print(report.render())
     if done["letter_drafted"]:
         print(colour(f"\n{done['letter_note']}", YELLOW))

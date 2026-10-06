@@ -37,12 +37,13 @@ def build_packet(
     ats_report: Any = None,
     notes: str = "",
     letter_todo: int = 0,
+    extra: tuple[Path, ...] = (),
 ) -> Path:
     """Create `output/<company>_<role>/` with documents, answers and a checklist."""
     folder = cfg.output_dir / f"{slugify(job.company)}_{slugify(job.title, 32)}"
     folder.mkdir(parents=True, exist_ok=True)
 
-    for source in (cv_path, cover_path):
+    for source in (cv_path, cover_path, *extra):
         if source and Path(source).exists() and Path(source).parent != folder:
             target = folder / Path(source).name
             target.write_bytes(Path(source).read_bytes())

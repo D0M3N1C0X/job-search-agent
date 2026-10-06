@@ -437,7 +437,7 @@ def prepare_packet(cfg: Any, store: Any, job: Job, *, track_id: str | None = Non
     """
     from . import documents
     from .packet import build_packet
-    from .render import Overlay, ats_check, build_cover, build_cv, output_name
+    from .render import Overlay, ats_check, build_cover, build_cv, build_cv_pdf, output_name
     from .score import score_all
 
     best = score_all(job, cfg.profile, cfg.tracks)[0]
@@ -447,12 +447,17 @@ def prepare_packet(cfg: Any, store: Any, job: Job, *, track_id: str | None = Non
 
     # Their own CV for this company or this track, unchanged; else the built one.
     own_cv = None if generated_cv else documents.pick(cfg.home, job, track["id"])
+    cv_pdf = None
     if own_cv is not None:
         cv_path = own_cv
     else:
         cv_path = cfg.output_dir / output_name("CV", job.company, job.title)
         build_cv(cfg.profile, track, overlay=Overlay.from_dict(overlay_data), path=cv_path)
-    report = ats_check(cv_path, cfg.profile, job.description, job.company)
+        # The typeset PDF is what to send; the .docx stays for last-minute edits.
+        cv_pdf = build_cv_pdf(cfg.profile, track, overlay=Overlay.from_dict(overlay_data),
+                              path=cv_path.with_suffix(".pdf"))
+    # Check the file that will be sent, read back the way an ATS reads it.
+    report = ats_check(cv_pdf or cv_path, cfg.profile, job.description, job.company)
 
     letter = overlay_data.get("cover_letter")
     drafted = not letter
@@ -474,16 +479,18 @@ def prepare_packet(cfg: Any, store: Any, job: Job, *, track_id: str | None = Non
     build_cover(cfg.profile, letter, path=cover_path)
 
     folder = build_packet(cfg, job, cv_path=cv_path, cover_path=cover_path, track=track,
-                          ats_report=report, notes=overlay_data.get("notes", ""), letter_todo=todo)
+                          ats_report=report, notes=overlay_data.get("notes", ""), letter_todo=todo,
+                          extra=(cv_pdf,) if cv_pdf else ())
     answers_file = cfg.home / "answers.json"
     answers = read_json(answers_file) if answers_file.exists() else {}
     page = build_apply_page(job, cfg.profile, answers, folder,
-                            [folder / cv_path.name, folder / cover_path.name], report,
+                            [*([folder / cv_pdf.name] if cv_pdf else []),
+                             folder / cv_path.name, folder / cover_path.name], report,
                             letter_todo=todo)
     store.set_status(job.id, "ready", track=track["id"],
                      cv_path=str(cv_path), cover_path=str(cover_path))
     return {
         "job": job, "score": best, "track": track, "report": report, "answers": answers,
-        "folder": folder, "page": page, "own_cv": own_cv, "letter_drafted": drafted,
+        "folder": folder, "page": page, "own_cv": own_cv, "cv_pdf": cv_pdf, "letter_drafted": drafted,
         "letter_note": letter.get("_draft_note", ""), "letter_todo": todo,
     }
