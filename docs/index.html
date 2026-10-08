@@ -1,99 +1,261 @@
 <!doctype html>
 <html lang="it"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>job-search-agent — La ricerca di lavoro come una pipeline</title>
-<meta name="description" content="I portali bloccano chi li raschia. Questo legge invece le API che le aziende pubblicano da sole, assegna a ogni offerta un punteggio secondo regole leggibi">
-<meta property="og:title" content="job-search-agent — La ricerca di lavoro come una pipeline">
-<meta property="og:description" content="I portali bloccano chi li raschia. Questo legge invece le API che le aziende pubblicano da sole, assegna a ogni offerta un punteggio secondo regole leggibi">
+<title>job-search-agent — Lavoro all&#x27;estero, con i conti fatti</title>
+<meta name="description" content="Offerte di lavoro da 265 aziende europee e, per ogni paese, quanto vale davvero lo stipendio rispetto all&#x27;Italia. Open source.">
+<meta property="og:title" content="job-search-agent — Lavoro all&#x27;estero, con i conti fatti">
+<meta property="og:description" content="Offerte di lavoro da 265 aziende europee e, per ogni paese, quanto vale davvero lo stipendio rispetto all&#x27;Italia. Open source.">
 <meta property="og:image" content="https://raw.githubusercontent.com/D0M3N1C0X/job-search-agent/main/docs/img/social-preview.png">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#F6F7FA">
+<link rel="alternate" hreflang="en" href="index.en.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:light dark;--bg:#0f1115;--panel:#171a21;--panel2:#1c2029;--ink:#e8eaee;
- --ink2:#a2a9b6;--ink3:#767d8b;--line:#262b35;--accent:#5b9cff;--accent2:#1f6feb}
+:root{color-scheme:light;--ink:#0B1220;--body:#3A4558;--muted:#5B6474;--soft:#F6F7FA;--card:#FFFFFF;
+ --line:#E2E5EC;--coral:#FF6B4A;--coral-ink:#C2401F;--night:#0B1220;--night2:#16203A;--night3:#1E2A47;
+ --night-ink:#B8C1D3;--night-muted:#8A94A8}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);
- font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
- -webkit-font-smoothing:antialiased;
- background-image:radial-gradient(900px 500px at 82% -12%,rgba(31,111,235,.22),transparent 62%),
-  radial-gradient(640px 420px at 2% 104%,rgba(26,127,75,.14),transparent 60%)}
-.wrap{max-width:900px;margin:0 auto;padding:0 22px 72px}
-header{display:flex;align-items:center;gap:14px;padding:26px 0 8px;flex-wrap:wrap}
-.mark{width:40px;height:40px;border-radius:11px;background:var(--accent2);display:flex;
- flex-direction:column;justify-content:center;gap:4px;padding:0 9px;flex:none}
-.mark i{display:block;height:5px;border-radius:3px;background:#fff}
-.mark i:nth-child(1){width:22px}.mark i:nth-child(2){width:15px}.mark i:nth-child(3){width:9px}
-.name{font-weight:600;letter-spacing:-.01em}
-.spacer{flex:1}
-select,a.ghost{background:var(--panel2);border:1px solid var(--line);color:var(--ink2);
- border-radius:9px;padding:7px 12px;font:inherit;font-size:13.5px;text-decoration:none}
-a.ghost:hover,select:hover{border-color:var(--accent);color:var(--accent)}
-h1{font-size:clamp(30px,5vw,46px);line-height:1.1;letter-spacing:-.03em;margin:26px 0 14px}
-.lede{font-size:clamp(16px,2.2vw,19px);color:var(--ink2);max-width:60ch;margin:0 0 26px}
-.cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent2);color:#fff;
- text-decoration:none;font-weight:600;padding:14px 24px;border-radius:12px;font-size:16px}
-.cta:hover{filter:brightness(1.1)}
-.ctanote{color:var(--ink3);font-size:13.5px;margin:10px 0 0}
-h2{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);
- margin:46px 0 16px;font-weight:600}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:18px 20px}
-.card b{display:block;font-size:15.5px;margin-bottom:6px;letter-spacing:-.01em}
-.card p{margin:0;color:var(--ink2);font-size:14.5px;line-height:1.6}
-ol{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:12px}
-ol li{counter-increment:s;background:var(--panel);border:1px solid var(--line);border-radius:13px;
- padding:16px 20px 16px 58px;position:relative}
-ol li::before{content:counter(s);position:absolute;left:18px;top:17px;width:24px;height:24px;
- border-radius:50%;background:var(--panel2);border:1px solid var(--line);color:var(--ink3);
- display:grid;place-items:center;font-size:12px;font-weight:700}
-ol b{display:block;font-size:15px;margin-bottom:3px}
-ol code{display:inline-block;margin:2px 0 6px}
-ol p{margin:0;color:var(--ink2);font-size:14.5px}
-code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
-code{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;
- font-size:13.5px;color:var(--accent)}
-pre{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:18px 20px;
- overflow-x:auto;font-size:14px;color:var(--ink);margin:0}
-.note{color:var(--ink3);font-size:13.5px;margin:10px 0 0}
-.honest{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);
- border-radius:0 13px 13px 0;padding:18px 22px;color:var(--ink2);font-size:14.5px}
-footer{color:var(--ink3);font-size:13px;margin-top:52px;padding-top:20px;border-top:1px solid var(--line)}
-a{color:var(--accent)}
-@media(max-width:640px){header{padding-top:18px}.wrap{padding-bottom:48px}}
-</style></head><body><div class="wrap">
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--soft);color:var(--ink);
+ font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+ -webkit-font-smoothing:antialiased;font-feature-settings:"cv11","ss01";line-height:1.5}
+a{color:inherit}
+.wrap{max-width:1200px;margin:0 auto;padding:0 clamp(20px,5vw,48px)}
+.pill{display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:999px;font-size:14px;
+ font-weight:600;text-decoration:none;color:var(--body);border:0;background:transparent;font-family:inherit}
+.pill:hover{color:var(--ink);background:#EBEEF3}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:54px;padding:0 26px;border-radius:999px;
+ font-size:16px;font-weight:700;text-decoration:none;transition:transform .15s ease,filter .15s ease}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.04)}
+.btn-coral{background:var(--coral);color:var(--ink)}
+.btn-light{background:var(--card);color:var(--ink);border:1px solid #DCE1EA}
+.btn-night{background:var(--night);color:#fff}
+:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 
-<header>
-  <div class="mark"><i></i><i></i><i></i></div>
-  <div class="name">job-search-agent</div>
-  <div class="spacer"></div>
-  <select id="lang" aria-label="Language" data-other="index.en.html"><option value='en'>English</option><option value='it' selected>Italiano</option></select>
-  <a class="ghost" href="https://github.com/D0M3N1C0X/job-search-agent">Il codice su GitHub</a>
+header.top{display:flex;align-items:center;justify-content:space-between;height:76px;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;font-weight:800;font-size:17px;letter-spacing:-.02em}
+.brand i{width:10px;height:10px;border-radius:50%;background:var(--coral)}
+nav.links{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.lang{height:40px;border-radius:999px;border:1px solid #DCE1EA;background:var(--card);padding:0 12px;
+ font-family:inherit;font-size:13px;font-weight:600;color:var(--body)}
+
+.hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:48px;align-items:center;
+ padding-top:64px;padding-bottom:104px}
+.hero h1{margin:0;font-size:clamp(42px,6.2vw,80px);line-height:1;letter-spacing:-.05em;font-weight:900}
+.lede{margin:24px 0 0;font-size:clamp(17px,1.6vw,20px);line-height:1.55;color:var(--body);max-width:520px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+
+.calc{background:var(--night);color:#fff;border-radius:36px;padding:clamp(24px,3.4vw,36px);display:flex;flex-direction:column;
+ gap:22px;box-shadow:0 40px 80px -40px rgba(11,18,32,.55)}
+.calc .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.calc .tag{display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:999px;background:var(--night3);
+ color:#C9D1E0;font-size:14px;font-weight:600}
+.calc select{appearance:none;-webkit-appearance:none;height:40px;border:0;border-radius:999px;background:var(--coral);
+ color:var(--ink);font-family:inherit;font-size:14px;font-weight:700;padding:0 38px 0 16px;cursor:pointer;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%230B1220' stroke-width='2'/%3E%3C/svg%3E");
+ background-repeat:no-repeat;background-position:right 14px center}
+.big{font-size:clamp(88px,12vw,156px);line-height:.88;font-weight:900;letter-spacing:-.065em;color:var(--coral);
+ font-variant-numeric:tabular-nums}
+.big.neg{color:#C9D1E0}
+.calc p{margin:0;font-size:18px;line-height:1.5;color:#C9D1E0}
+.figures{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;border-top:1px solid var(--night3);padding-top:20px}
+.figures div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.figures span{font-size:12px;color:var(--night-muted)}
+.figures b{font-size:clamp(15px,1.6vw,18px);font-variant-numeric:tabular-nums}
+.source{font-size:12px;color:var(--night-muted)}
+
+.band{background:var(--night);color:#fff}
+.italian{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:48px;align-items:end;
+ padding-top:104px;padding-bottom:104px}
+.huge{font-size:clamp(116px,16vw,220px);line-height:.85;font-weight:900;letter-spacing:-.07em;color:var(--coral)}
+.italian .lead{display:block;font-size:22px;font-weight:600;margin-top:10px}
+.italian p{margin:0 0 16px;font-size:18px;line-height:1.6;color:var(--night-ink)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;background:var(--night2);
+ font-size:14px;font-weight:600}
+.chip b{color:var(--coral);margin-left:6px}
+.night-note{display:block;margin-top:14px;font-size:13px;color:var(--night-muted)}
+
+section.countries{padding-top:104px;padding-bottom:104px}
+h2{margin:0;font-size:clamp(34px,4.6vw,60px);line-height:1.02;letter-spacing:-.045em;font-weight:900;max-width:760px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr));gap:14px;margin-top:40px}
+.tile{background:var(--card);border-radius:26px;padding:22px 24px;display:flex;flex-direction:column;gap:4px;
+ border:0;text-align:left;font-family:inherit;color:var(--ink);cursor:pointer;transition:transform .15s ease}
+.tile:hover{transform:translateY(-2px)}
+.tile span{font-size:15px;color:var(--body)}
+.tile b{font-size:clamp(40px,4vw,52px);font-weight:900;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+.tile.neg b{color:var(--muted)}
+.tile[aria-pressed="true"]{background:var(--coral)}
+.tile[aria-pressed="true"] span,.tile[aria-pressed="true"] b{color:var(--ink)}
+.note{margin:20px 0 0;font-size:13px;line-height:1.5;color:var(--muted);max-width:820px}
+
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:56px;align-items:center;
+ padding-top:104px;padding-bottom:104px}
+.how ol{list-style:none;margin:32px 0 0;padding:0;display:flex;flex-direction:column;gap:24px}
+.how li{display:flex;gap:18px}
+.how li>span{font-size:34px;font-weight:900;color:var(--coral);min-width:44px;line-height:1}
+.how li strong{display:block;font-size:19px;margin-bottom:4px}
+.how li p{margin:0;color:var(--night-ink);font-size:16px;line-height:1.5}
+.phone{justify-self:center;width:min(100%,330px);border-radius:46px;background:#060A14;padding:12px;
+ box-shadow:0 50px 90px -40px rgba(0,0,0,.7),inset 0 0 0 1px #1E2A47}
+.screen{border-radius:36px;background:var(--night);padding:28px 18px 22px;display:flex;flex-direction:column;gap:14px}
+.screen h3{margin:0;font-size:26px;letter-spacing:-.03em}
+.screen .sub{font-size:13px;color:var(--night-muted);margin-top:-10px}
+.hilite{background:var(--coral);color:var(--ink);border-radius:24px;padding:18px;display:flex;justify-content:space-between;
+ align-items:center}
+.hilite span{font-weight:600;font-size:15px}
+.hilite b{font-size:34px;font-weight:900;letter-spacing:-.04em}
+.list{background:var(--night2);border-radius:22px;display:flex;flex-direction:column}
+.list div{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;font-size:15px}
+.list div+div{border-top:1px solid var(--night3)}
+.list b{font-variant-numeric:tabular-nums}
+.list .neg{color:var(--night-muted)}
+
+.trust{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:40px;padding-top:104px}
+.trust h3{margin:0 0 10px;font-size:21px;letter-spacing:-.02em}
+.trust p{margin:0;font-size:16px;line-height:1.6;color:var(--body)}
+.soon{margin-top:56px;display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 18px;border-radius:999px;
+ background:var(--card);font-size:15px;font-weight:600}
+.soon i{width:8px;height:8px;border-radius:50%;background:var(--coral)}
+
+.final{padding-top:104px;padding-bottom:88px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:22px}
+.final h2{font-size:clamp(40px,6vw,84px);max-width:900px}
+.final p{margin:0;font-size:18px;color:var(--body)}
+.start{max-width:640px;width:100%;text-align:left;margin-top:24px}
+.start h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 10px}
+pre{margin:0;background:var(--night);color:#E8ECF4;border-radius:20px;padding:20px 22px;overflow-x:auto;
+ font:14px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace}
+footer{border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:28px;padding-bottom:44px;
+ font-size:13px;color:var(--muted)}
+@media (max-width:640px){nav.links .pill.section{display:none}header.top{height:64px;flex-wrap:nowrap}nav.links{flex-wrap:nowrap}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style></head><body>
+
+<header class="wrap top">
+  <a class="brand" href="#top"><i></i>job-search-agent</a>
+  <nav class="links" aria-label="Paesi">
+    <a class="pill section" href="#paesi">Paesi</a>
+    <a class="pill section" href="#italiano">Con l'italiano</a>
+    <a class="pill" href="https://github.com/D0M3N1C0X/job-search-agent">Codice</a>
+    <select id="lang" class="lang" aria-label="Lingua / Language" data-other="index.en.html"><option value="it" selected>Italiano</option><option value="en">English</option></select>
+  </nav>
 </header>
 
-<h1>La ricerca di lavoro come una pipeline</h1>
-<p class="lede">I portali bloccano chi li raschia. Questo legge invece le API che le aziende pubblicano da sole, assegna a ogni offerta un punteggio secondo regole leggibili, scrive CV e lettera di presentazione, e misura quale posizionamento ottiene davvero risposte.</p>
-<a class="cta" href="demo/">Apri la demo →</a>
-<p class="ctanote">Dashboard vera, dati inventati. Niente da installare.</p>
+<main id="top">
+<section class="wrap hero">
+  <div>
+    <h1 id="headline">Quanto vale il tuo stipendio a Berlino?</h1>
+    <p class="lede">Prima di candidarti, sappi dove stai andando. Offerte vere da 265 aziende europee e, per ogni paese, i conti fatti con i dati ufficiali.</p>
+    <div class="ctas">
+      <a class="btn btn-coral" href="demo/">Apri la demo</a>
+      <a class="btn btn-light" href="#paesi">Confronta i paesi</a>
+    </div>
+  </div>
+  <div class="calc" id="calc" aria-live="polite">
+    <div class="row">
+      <span class="tag">Da Italia</span>
+      <label class="tag" for="country" style="background:none;padding:0 4px">a</label>
+      <select id="country" aria-label="Scegli il paese"><option value="AT">Austria</option><option value="BE">Belgio</option><option value="BG">Bulgaria</option><option value="CZ">Cechia</option><option value="HR">Croazia</option><option value="EE">Estonia</option><option value="FR">Francia</option><option value="DE" selected>Germania</option><option value="LV">Lettonia</option><option value="LT">Lituania</option><option value="LU">Lussemburgo</option><option value="NL">Paesi Bassi</option><option value="PL">Polonia</option><option value="PT">Portogallo</option><option value="RO">Romania</option><option value="SK">Slovacchia</option><option value="SI">Slovenia</option><option value="ES">Spagna</option><option value="CH">Svizzera</option><option value="HU">Ungheria</option></select>
+    </div>
+    <span class="big" id="big">+39%</span>
+    <p>di potere d&#x27;acquisto per lo stipendio netto medio, già tolti i prezzi.</p>
+    <div class="figures">
+      <div><span>Netto Italia</span><b>24.593 €</b></div>
+      <div><span id="net-there-label">Netto DE</span><b id="net-there">37.908 €</b></div>
+      <div><span>Prezzi</span><b id="prices">+11%</b></div>
+    </div>
+    <span class="source">Eurostat 2023 · dati nazionali · lavoratore single con retribuzione media</span>
+  </div>
+</section>
 
-<h2>Cos'è</h2>
-<div class="grid"><div class='card'><b>Sette portali ATS, senza chiavi</b><p>Greenhouse, Lever, Ashby, SmartRecruiters, Recruitee, Workable e Personio servono lo stesso JSON che usano le loro pagine lavora-con-noi. Nessun login, nessuno scraping, niente che si rompa in silenzio la settimana dopo.</p></div><div class='card'><b>Un punteggio con cui puoi discutere</b><p>Il fit è una funzione pura di offerta, profilo e binario di posizionamento: la stessa offerta dà sempre lo stesso numero, e la scomposizione dice quali parole hanno fatto punti. Nessun modello che decide in privato.</p></div><div class='card'><b>Documenti che non possono inventare</b><p>CV e lettere in .docx. L'adattamento può riordinare e selezionare, ma ogni riga viene confrontata carattere per carattere con il tuo profilo: non può comparire nulla che tu non abbia scritto.</p></div><div class='card'><b>Zero dipendenze</b><p>Python 3.10 e la libreria standard. Nessun pip install, niente LaTeX, nessun browser headless. Funzionerà ancora fra tre anni su un portatile aziendale bloccato.</p></div></div>
+<section class="band" id="italiano">
+  <div class="wrap italian">
+    <div>
+      <span class="huge">254</span>
+      <span class="lead">offerte in Europa citano l&#x27;italiano.</span>
+    </div>
+    <div>
+      <p>È la lingua che ti distingue. Le cerchiamo nelle bacheche di 265 aziende verificate, e te le mettiamo davanti per prime.</p>
+      <div class="chips"><span class="chip">Satispay<b>52</b></span><span class="chip">Deliveroo<b>17</b></span><span class="chip">Celonis<b>15</b></span><span class="chip">Enpal<b>15</b></span><span class="chip">AlixPartners<b>10</b></span><span class="chip">Doctolib<b>10</b></span></div>
+      <span class="night-note">Offerte che citano l&#x27;italiano per azienda, catalogo del 8 ottobre 2026.</span>
+    </div>
+  </div>
+</section>
 
-<h2>Come si usa</h2>
-<ol><li><b>Importa il tuo CV</b><code>jsa import ~/cv.pdf</code><p>Legge .docx, .pdf o testo e compila il profilo. Oppure rispondi a delle domande con jsa setup.</p></li><li><b>Avvia la pipeline</b><code>jsa run</code><p>Scarica, deduplica, assegna i punteggi e apre la lista. Circa cinque minuti su una watchlist di aziende.</p></li><li><b>Lavora la lista</b><code>jsa serve</code><p>La dashboard si apre sulle poche offerte che valgono la tua prossima ora, con il motivo in parole e il rovescio detto onestamente.</p></li></ol>
+<section class="wrap countries" id="paesi">
+  <h2>Ogni paese, a parità di prezzi.</h2>
+  <div class="tiles"><button type="button" class="tile" data-code="CH" aria-pressed="false"><span>Svizzera</span><b>+78%</b></button><button type="button" class="tile" data-code="NL" aria-pressed="false"><span>Paesi Bassi</span><b>+49%</b></button><button type="button" class="tile" data-code="DE" aria-pressed="true"><span>Germania</span><b>+39%</b></button><button type="button" class="tile" data-code="LU" aria-pressed="false"><span>Lussemburgo</span><b>+29%</b></button><button type="button" class="tile" data-code="AT" aria-pressed="false"><span>Austria</span><b>+28%</b></button><button type="button" class="tile" data-code="BE" aria-pressed="false"><span>Belgio</span><b>+19%</b></button><button type="button" class="tile" data-code="FR" aria-pressed="false"><span>Francia</span><b>+17%</b></button><button type="button" class="tile" data-code="ES" aria-pressed="false"><span>Spagna</span><b>+4%</b></button><button type="button" class="tile neg" data-code="CZ" aria-pressed="false"><span>Cechia</span><b>−14%</b></button><button type="button" class="tile neg" data-code="PL" aria-pressed="false"><span>Polonia</span><b>−18%</b></button><button type="button" class="tile neg" data-code="SI" aria-pressed="false"><span>Slovenia</span><b>−25%</b></button><button type="button" class="tile neg" data-code="EE" aria-pressed="false"><span>Estonia</span><b>−25%</b></button><button type="button" class="tile neg" data-code="LT" aria-pressed="false"><span>Lituania</span><b>−25%</b></button><button type="button" class="tile neg" data-code="HU" aria-pressed="false"><span>Ungheria</span><b>−26%</b></button><button type="button" class="tile neg" data-code="RO" aria-pressed="false"><span>Romania</span><b>−27%</b></button><button type="button" class="tile neg" data-code="PT" aria-pressed="false"><span>Portogallo</span><b>−28%</b></button><button type="button" class="tile neg" data-code="BG" aria-pressed="false"><span>Bulgaria</span><b>−31%</b></button><button type="button" class="tile neg" data-code="HR" aria-pressed="false"><span>Croazia</span><b>−31%</b></button><button type="button" class="tile neg" data-code="LV" aria-pressed="false"><span>Lettonia</span><b>−31%</b></button><button type="button" class="tile neg" data-code="SK" aria-pressed="false"><span>Slovacchia</span><b>−36%</b></button></div>
+  <p class="note">Potere d&#x27;acquisto dello stipendio netto medio rispetto all&#x27;Italia, 2023. Fonte: Eurostat. Lo stipendio non è tutto: Cechia ha la disoccupazione più bassa, il 2,8%.</p>
+</section>
 
-<h2>Per iniziare</h2>
-<pre>git clone https://github.com/D0M3N1C0X/job-search-agent
+<section class="band">
+  <div class="wrap how">
+    <div class="phone" aria-hidden="true">
+      <div class="screen">
+        <h3>Paesi</h3>
+        <span class="sub">rispetto all'Italia</span>
+        <div class="hilite"><span>Svizzera</span><b>+78%</b></div>
+        <div class="list"><div><span>Paesi Bassi</span><b class="">+49%</b></div><div><span>Germania</span><b class="">+39%</b></div><div><span>Lussemburgo</span><b class="">+29%</b></div><div><span>Austria</span><b class="">+28%</b></div></div>
+      </div>
+    </div>
+    <div>
+      <h2>Dal CV alla candidatura. Senza moduli.</h2>
+      <ol><li><span>1</span><div><strong>Importa il CV</strong><p>PDF o Word: il profilo si compila da solo e lo controlli tu.</p></div></li><li><span>2</span><div><strong>Scegli paesi e ruoli</strong><p>Le offerte arrivano con un punteggio spiegato, voce per voce.</p></div></li><li><span>3</span><div><strong>Prepara la candidatura</strong><p>CV in PDF su misura per ogni offerta, senza una riga inventata.</p></div></li></ol>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="trust"><div><h3>Niente invenzioni nel CV</h3><p>Ogni riga del CV che prepariamo esiste già nel tuo profilo. Un controllo automatico scarta tutto il resto.</p></div><div><h3>I tuoi dati restano tuoi</h3><p>Oggi lo strumento gira sul tuo computer: CV e candidature non lasciano la tua macchina.</p></div><div><h3>Codice aperto</h3><p>Il motore è pubblico su GitHub: puoi leggere come calcoliamo ogni punteggio e da dove viene ogni numero.</p></div></div>
+  <span class="soon"><i></i>In arrivo: la versione online, senza installare nulla.</span>
+</section>
+
+<section class="wrap final">
+  <h2>Prima i numeri. Poi la valigia.</h2>
+  <p>Gratis e open source. Gira su macOS, Windows e Linux.</p>
+  <div class="ctas" style="justify-content:center">
+    <a class="btn btn-coral" href="demo/">Apri la demo</a>
+    <a class="btn btn-night" href="https://github.com/D0M3N1C0X/job-search-agent">GitHub</a>
+  </div>
+  <div class="start"><h3>Per iniziare</h3><pre>git clone https://github.com/D0M3N1C0X/job-search-agent
 cd job-search-agent
-python3 -m jsa demo</pre>
-<p class="note">macOS, Linux e Windows. `jsa install` la mette anche nel Dock.</p>
+python3 -m jsa demo</pre></div>
+</section>
+</main>
 
-<h2>Cosa non fa</h2>
-<div class="honest">Non invia le candidature. Gli ATS non espongono endpoint pubblici per farlo, e un modulo è una firma: lo strumento prepara il pacchetto — documenti, risposte standard, lista di controllo — e l'invio lo fai tu.</div>
+<footer><div class="wrap">
+  <span>Licenza MIT · costruito da Domenico Perroni · <a href="https://github.com/D0M3N1C0X/job-search-agent">github.com/D0M3N1C0X/job-search-agent</a></span>
+  <span>Paesi: Eurostat · Offerte: bacheche pubbliche delle aziende</span>
+</div></footer>
 
-<footer>Licenza MIT · costruito da Domenico Perroni · <a href="https://github.com/D0M3N1C0X/job-search-agent">github.com/D0M3N1C0X/job-search-agent</a></footer>
-</div>
 <script>
-  const sel = document.getElementById('lang');
-  sel.onchange = e => { location.href = e.target.value === 'it' ? 'index.html' : 'index.en.html'; };
+const DATA = {"CH": {"vs": "+78%", "neg": false, "net": "82.060 €", "prices": "+88%", "city": "Zurigo"}, "NL": {"vs": "+49%", "neg": false, "net": "45.156 €", "prices": "+23%", "city": "Amsterdam"}, "DE": {"vs": "+39%", "neg": false, "net": "37.908 €", "prices": "+11%", "city": "Berlino"}, "LU": {"vs": "+29%", "neg": false, "net": "48.798 €", "prices": "+54%", "city": "Lussemburgo"}, "AT": {"vs": "+28%", "neg": false, "net": "38.376 €", "prices": "+22%", "city": "Vienna"}, "BE": {"vs": "+19%", "neg": false, "net": "35.439 €", "prices": "+21%", "city": "Bruxelles"}, "FR": {"vs": "+17%", "neg": false, "net": "31.574 €", "prices": "+10%", "city": "Parigi"}, "ES": {"vs": "+4%", "neg": false, "net": "23.597 €", "prices": "−8%", "city": "Madrid"}, "CZ": {"vs": "−14%", "neg": true, "net": "17.266 €", "prices": "−18%", "city": "Praga"}, "PL": {"vs": "−18%", "neg": true, "net": "14.487 €", "prices": "−28%", "city": "Varsavia"}, "SI": {"vs": "−25%", "neg": true, "net": "17.114 €", "prices": "−7%", "city": "Lubiana"}, "EE": {"vs": "−25%", "neg": true, "net": "18.142 €", "prices": "−2%", "city": "Tallinn"}, "LT": {"vs": "−25%", "neg": true, "net": "14.783 €", "prices": "−20%", "city": "Vilnius"}, "HU": {"vs": "−26%", "neg": true, "net": "12.720 €", "prices": "−30%", "city": "Budapest"}, "RO": {"vs": "−27%", "neg": true, "net": "10.525 €", "prices": "−41%", "city": "Bucarest"}, "PT": {"vs": "−28%", "neg": true, "net": "15.301 €", "prices": "−13%", "city": "Lisbona"}, "BG": {"vs": "−31%", "neg": true, "net": "9.890 €", "prices": "−42%", "city": "Sofia"}, "HR": {"vs": "−31%", "neg": true, "net": "12.601 €", "prices": "−25%", "city": "Zagabria"}, "LV": {"vs": "−31%", "neg": true, "net": "13.418 €", "prices": "−21%", "city": "Riga"}, "SK": {"vs": "−36%", "neg": true, "net": "13.028 €", "prices": "−17%", "city": "Bratislava"}}, L = {"net_there": "Netto {cc}", "h1": "Quanto vale il tuo stipendio a {city}?"};
+const sel = document.getElementById('country');
+const tiles = [...document.querySelectorAll('.tile')];
+function show(code) {
+  const c = DATA[code];
+  if (!c) return;
+  const big = document.getElementById('big');
+  big.textContent = c.vs;
+  big.classList.toggle('neg', c.neg);
+  document.getElementById('net-there-label').textContent = L.net_there.replace('{cc}', code);
+  document.getElementById('net-there').textContent = c.net;
+  document.getElementById('prices').textContent = c.prices;
+  if (c.city) document.getElementById('headline').textContent = L.h1.replace('{city}', c.city);
+  sel.value = code;
+  tiles.forEach(t => t.setAttribute('aria-pressed', String(t.dataset.code === code)));
+}
+sel.addEventListener('change', e => show(e.target.value));
+tiles.forEach(t => t.addEventListener('click', () => {
+  show(t.dataset.code);
+  document.getElementById('calc').scrollIntoView({behavior: 'smooth', block: 'center'});
+}));
+document.getElementById('lang').addEventListener('change', e => {
+  location.href = e.target.value === 'it' ? 'index.html' : 'index.en.html';
+});
 </script>
 </body></html>
