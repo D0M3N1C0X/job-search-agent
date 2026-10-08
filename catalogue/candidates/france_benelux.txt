@@ -1,0 +1,376 @@
+# France, Belgium, Netherlands, Luxembourg
+## FR
+Doctolib
+Qonto
+Alan
+Back Market
+Backmarket
+Blablacar
+Mirakl
+Contentsquare
+Dataiku
+Ledger
+Swile
+Payfit
+Spendesk
+Ornikar
+Ankorstore
+Vinted France
+Pennylane
+Lydia
+Sumeria
+Shift Technology
+Algolia
+Deezer
+Criteo
+Ubisoft
+Vestiaire Collective
+Manomano
+Leboncoin
+Adevinta France
+Meero
+Sorare
+Mistral AI
+Hugging Face
+Owkin
+Aircall
+Agicap
+Libeo
+Malt
+Welcome To The Jungle
+Jobteaser
+Side
+Staffme
+Yousign
+Docusign France
+Sendinblue
+Brevo
+Mailjet
+Talend
+Ovhcloud
+Scaleway
+Iliad
+Free
+Bouygues Telecom
+Orange
+Sncf Connect
+Getaround
+Heetch
+Cityscoot
+Zity
+Dott
+Tier Dott
+Bolt France
+Cajoo
+Frichti
+La Belle Vie
+Deliveroo France
+Uber France
+Lunchr
+Wakam
+Luko
+Leocare
+Acheel
+Seyna
+Axa
+Bnp Paribas
+Societe Generale
+Credit Agricole
+Natixis
+Amundi
+Allianz France
+Generali France
+Cnp Assurances
+Lvmh
+Kering
+Chanel
+Hermes
+L Oreal
+Loreal
+Sanofi
+Danone
+Pernod Ricard France
+Michelin
+Renault
+Stellantis
+Airbus
+Thales
+Safran
+Dassault Systemes
+Capgemini
+Sopra Steria
+Atos
+Worldline
+Ingenico
+Lyra
+Lemonway
+Treezor
+Swan
+Mangopay
+Hipay
+Payplug
+Alma
+Younited
+Moneytrackin
+Finary
+Yomoni
+Nalo
+Trade Republic France
+Botify
+Mention
+Brigad
+Malt France
+Comet
+Lucca
+Indy
+Shine
+Memo Bank
+October
+Wizbii
+Openclassrooms
+360learning
+Didask
+Lingueo
+Babbel France
+Ynsect
+Innovafeed
+Phenix
+Too Good To Go France
+Hivency
+Vinted
+Selency
+Bergamotte
+Typology
+Asphalte
+Sezane
+Jimmy Fairly
+Le Slip Francais
+Decathlon
+Leroy Merlin
+Carrefour
+Auchan
+Fnac Darty
+Cdiscount
+Veepee France
+Showroomprive
+Teleperformance France
+Webhelp France
+Majorel France
+Sitel France
+Concentrix France
+Euro Disney
+Disneyland Paris
+Club Med
+Accor
+Pierre Et Vacances
+Amadeus France
+## BE
+Collibra
+Odoo
+Showpad
+Teamleader
+Deliverect
+Lighthouse
+Silverfin
+Sortlist
+Itsme
+Payconiq
+Bancontact Payconiq
+Unifiedpost
+Isabel Group
+Keytrade
+Ing Belgium
+Kbc
+Belfius
+Bnp Paribas Fortis
+Euroclear
+Swift
+Ageas
+Ab Inbev Belgium
+Ucb
+Solvay
+Umicore
+Proximus
+Telenet
+Orange Belgium
+Colruyt
+Delhaize
+Ahold Delhaize
+Bpost
+Dhl Belgium
+Fedex Europe
+Toyota Motor Europe
+Sabena Aerospace
+Brussels Airlines
+Eurocontrol
+Nato
+European Commission
+European Parliament
+Fluvius
+Engie
+Luminus
+Ethias
+Ag Insurance
+Foodpanda
+Takeaway
+Hello Bank
+Lansweeper
+Robovision
+Engagor
+Guardsquare
+Peppered
+Aproplan
+Combell
+Twikey
+Cake
+Accountable
+Officient
+Skribble
+## NL
+Adyen
+Booking.com
+Mollie
+Messagebird
+Bird
+Bunq
+Picnic
+Takeaway.com
+Just Eat Takeaway
+Elastic
+Mews
+Miro Netherlands
+Catawiki
+Bol.com
+Coolblue
+Wetransfer
+Backbase
+Mambu Netherlands
+Ohpen
+Tiqets
+Framer
+Lightyear
+Bux
+Bitvavo
+Knab
+Revolut Netherlands
+N26 Netherlands
+Klarna Netherlands
+Ing
+Abn Amro
+Rabobank
+Nn Group
+Aegon
+Asr
+Achmea
+Philips
+Asml
+Nxp
+Shell
+Unilever
+Heineken
+Ahold Delhaize Netherlands
+Randstad Netherlands
+Wolters Kluwer
+Relx
+Elsevier
+Prosus
+Naspers
+Tomtom
+Ultimaker
+Lightyear Netherlands
+Felyx
+Swapfiets
+Fastned
+Vandebron
+Greenchoice
+Eneco
+Essent
+Vattenfall
+Tennet
+Gitlab Netherlands
+Databricks
+Snowflake
+Stripe Netherlands
+Uber Netherlands
+Netflix
+Tesla
+Nike
+Asics
+Patagonia
+Tommy Hilfiger
+Pvh
+Calvin Klein
+Gstar Raw
+Scotch And Soda
+Suitsupply
+Rituals
+Hunkemoller
+Otrium
+Vinted Netherlands
+Studocu
+Effectory
+Recruitee
+Homerun
+Typeform Netherlands
+Channable
+Productboard
+Sendcloud
+Parcel Perform
+Trengo
+Lepaya
+Goodhabitz
+Studyportals
+Futurewhiz (Squla) | squla
+Mobiquity
+Weave
+Wefarm
+Fairphone
+Tony S Chocolonely
+Tonys Chocolonely
+Swapfiets Netherlands
+Polarsteps
+Travix
+Bookingexperts
+Peakon
+Payvision
+Payu
+Ebay Classifieds
+Marktplaats
+Adevinta Netherlands
+Funda
+Pararius
+Housinganywhere
+Spotahome Netherlands
+Holland Casino
+Teleperformance Netherlands
+Transcom Netherlands
+Concentrix Netherlands
+## LU
+Amazon Luxembourg
+Paypal Europe
+Rakuten Europe
+Skype
+Ferrero
+Arcelormittal
+Ses
+Rtl Group
+Bgl Bnp Paribas
+Spuerkeess
+Bil
+Clearstream
+Deutsche Bank Luxembourg
+Ubs Luxembourg
+Jp Morgan Luxembourg
+State Street
+Northern Trust
+Brown Brothers Harriman
+Kneip
+Fundsquare
+Investcorp
+Cargolux
+Luxair
+Post Luxembourg
+Goodyear
+Husky
+Ikano
+Lux Future Lab

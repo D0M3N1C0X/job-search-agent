@@ -1,0 +1,354 @@
+# Poland and Central-Eastern Europe: shared service centres hire for Italian
+## PL
+Allegro
+Booksy
+Docplanner
+Brainly
+Zowie
+Livechat
+Text
+Packhelp
+Ramp Network
+Ramp
+Revolut Poland
+Synerise
+Ringier Axel Springer Polska
+Olx Group
+Olx
+Otodom
+Pracuj
+Grupa Pracuj
+Nethone
+Codility
+Spacelift
+Uxpin
+Survicate
+Tidio
+Growbots
+Callpage
+Sales Manago
+Salesmanago
+Infermedica
+Silent Eight
+Displate
+Eobuwie
+Modivo
+Lpp
+Ccc
+Inpost
+Zabka
+Cdp
+Cd Projekt
+Techland
+11 Bit Studios
+People Can Fly
+Ten Square Games
+Huuuge
+Huuuge Games
+Bloober Team
+Vivid Games
+Netguru
+Stx Next
+10clouds
+Miquido
+Vstorm
+Polcode
+Goodylabs
+Divante
+Comarch
+Asseco
+Sii
+Sii Poland
+Capgemini Poland
+Accenture Poland
+Ibm Poland
+Hsbc Poland
+Ubs Poland
+Credit Suisse Poland
+State Street Poland
+Goldman Sachs Poland
+Citi Poland
+Bny Mellon Poland
+Shell Business Operations Krakow
+Shell
+Bp
+Aon
+Motorola Solutions
+Cisco
+Google Poland
+Microsoft Poland
+Amazon Poland
+Samsung
+Lufthansa Global Business Services
+Lufthansa
+Heineken Global Shared Services
+Philip Morris
+Jti
+British American Tobacco
+Bat
+Procter And Gamble
+Unilever Poland
+Mars Poland
+Mondelez
+Coca Cola Hbc
+Electrolux
+Ikea
+Ikea Business Services
+H&M
+Zalando Poland
+Allianz Poland
+Generali Poland
+Pzu
+Pko Bank Polski
+Mbank
+Ing Bank Slaski
+Santander Bank Polska
+Pekao
+Alior
+Millennium
+Revolut
+Zen
+Zen.com
+Paynow
+Przelewy24
+Tpay
+Blik
+Twisto
+Skycash
+Vivus
+Kruk
+Intrum
+Wonga
+Provident
+Inpost Group
+Dhl Poland
+Ups
+Fedex
+Kuehne Nagel Poland
+Dsv
+Raben
+Ceva Logistics
+Geodis
+Teleperformance Poland
+Transcom Poland
+Sitel Poland
+Foundever Poland
+Webhelp Poland
+Majorel Poland
+Concentrix Poland
+Taskus Poland
+Telus International Poland
+Conduent Poland
+Sykes Poland
+Arvato Poland
+Genpact
+Genpact Poland
+Infosys
+Infosys Bpm
+Wipro
+Tcs
+Tata Consultancy Services
+Hcl
+Hcltech
+Cognizant
+Epam
+Epam Systems
+Luxoft
+Globallogic
+Ciklum
+Softserve
+N Ix
+Intellias
+Dataart
+Endava
+Grid Dynamics
+Exadel
+Itransition
+Eleks
+Euvic
+Software Mind
+Billennium
+Ework
+Hays Poland
+Michael Page Poland
+Randstad Poland
+Adecco Poland
+Manpowergroup Poland
+Antal
+Grafton
+Gi Group
+Hrk
+Devire
+## CZ
+Kiwi.com
+Rohlik
+Productboard
+Pipedrive Czech
+Mews
+Avast
+Gen Digital
+Jetbrains Czech
+Socialbakers
+Emplifi
+Apify
+Rossum
+Kentico
+Seznam
+Alza
+Mall Group
+Notino
+Twisto Czech
+Dateio
+Mews Systems
+Gooddata
+Smartlook
+Behavio
+Liftago
+Bolt Czech
+Skoda
+Skoda Auto
+Ceska Sporitelna
+Komercni Banka
+Csob
+Moneta
+Air Bank
+Home Credit
+Ppf
+Dhl Prague
+Accenture Czech
+Ibm Czech
+Honeywell
+Thermo Fisher Scientific
+Deloitte Czech
+Ey Czech
+Kpmg Czech
+Pwc Czech
+Teleperformance Czech
+Concentrix Czech
+Sitel Czech
+## RO
+Uipath
+Bitdefender
+Elefant
+Emag
+Fashion Days
+Vola
+Clever Taxi
+Bolt Romania
+Glovo Romania
+Tazz
+Ing Romania
+Bcr
+Brd
+Banca Transilvania
+Raiffeisen Romania
+Unicredit Romania
+Endava Romania
+Luxoft Romania
+Ubisoft Bucharest
+Electronic Arts
+Ea
+Amazon Romania
+Oracle
+Ibm Romania
+Genpact Romania
+Wipro Romania
+Accenture Romania
+Teleperformance Romania
+Webhelp Romania
+Majorel Romania
+Concentrix Romania
+Telus International Romania
+Conduent Romania
+Stefanini
+Atos Romania
+## HU
+Prezi
+Logmein
+Goto
+Ustream
+Bitrise
+Shapr3d
+Starschema
+Docler
+Wizz Air
+Otp Bank
+Mol Group
+Richter Gedeon
+Telekom Hungary
+Bt Hungary
+Ericsson Hungary
+Nokia Hungary
+Morgan Stanley Budapest
+Blackrock Budapest
+Citi Budapest
+Ge Healthcare
+Diageo Budapest
+Lensa
+## BG
+Payhawk
+Telerik
+Progress
+Gtmhub
+Quantive
+Dronamics
+Enhancv
+Shelly
+Allterco
+Bulpros
+Musala Soft
+Scalefocus
+Vmware Bulgaria
+Sap Bulgaria
+Coca Cola Hellenic Bulgaria
+Telus International Bulgaria
+Sutherland
+Sutherland Global
+Concentrix Bulgaria
+Teleperformance Bulgaria
+Sitel Bulgaria
+Foundever Bulgaria
+Atos Bulgaria
+Hp Bulgaria
+Paysafe
+Skrill
+## SK HR SI BALTICS
+Eset
+Sygic
+Pixel Federation
+Slido
+Kontentino
+Infobip
+Rimac
+Rimac Automobili
+Photomath
+Nanobit
+Microblink
+Bellabeat
+Agrivi
+Gideon Brothers
+Bolt Estonia
+Wise
+Transferwise
+Pipedrive Estonia
+Veriff
+Monese
+Glia
+Skeleton Technologies
+Starship
+Starship Technologies
+Lightyear Estonia
+Vinted
+Nord Security
+Nordvpn
+Tesonet
+Oxylabs
+Revolut Lithuania
+Paysera
+Kilo Health
+Trafi
+Printful
+Lokalise
+Mintos
+Twino
+Airbaltic

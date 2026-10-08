@@ -1,0 +1,347 @@
+# Germany, Austria, Switzerland. Names only; tools/catalogue.py finds the board.
+## DE
+Delivery Hero
+Zalando
+N26
+Trade Republic
+Scalable Capital
+Solaris
+Raisin
+Celonis
+Personio
+Contentful
+GetYourGuide
+HelloFresh
+Auto1
+FlixBus
+Flix
+SumUp
+Mambu
+Wefox
+Taxfix
+Babbel
+Blinkist
+Omio
+Trivago
+Check24
+Doctolib
+Enpal
+1Komma5
+Sennder
+Forto
+Pitch
+Miro
+Adjust
+Quantum Systems
+Helsing
+Isar Aerospace
+Lilium
+Volocopter
+Tier Mobility
+Gorillas
+Flink
+Wolt
+Getir
+Ottonova
+Clark
+Finleap
+Penta
+Qonto
+Moss
+Pliant
+Payhawk
+Billie
+Mondu
+Upvest
+Lemon Markets
+Trade Republic Bank
+Bitpanda
+Nuri
+Vivid Money
+Tomorrow Bank
+Kontist
+Grover
+Westwing
+Home24
+Mytheresa
+About You
+Otto Group
+Zeiss
+Siemens Healthineers
+Bosch
+Continental
+Infineon
+SAP
+Software AG
+Teamviewer
+Commercetools
+Staffbase
+Leapsome
+Factorial
+Workpath
+Mobimeo
+Free Now
+Bolt
+Uber
+Lieferando
+Just Eat Takeaway
+DeepL
+Aleph Alpha
+Parloa
+Langfuse
+n8n
+Make
+Rasa
+Smartly
+Hey Car
+Mobile.de
+Immobilienscout24
+Scout24
+Idealo
+Statista
+Stepstone
+The Stepstone Group
+Xing
+New Work
+Kununu
+Zenjob
+Coachhub
+Ada Health
+Kry
+Doctorly
+Avi Medical
+Climedo
+Planetly
+Plan A
+Ecosia
+Ecoligo
+Thermondo
+Zolar
+Sono Motors
+Choco
+Vay
+Circula
+Candis
+Agicap
+Spendesk
+Pleo
+Sclable
+Taxdoo
+Hive
+Jobmatch
+Instagrid
+Tado
+Netatmo
+Konux
+Blickfeld
+Neura Robotics
+Wandelbots
+Agile Robots
+Magazino
+Navvis
+Tacto
+Alasco
+Buildingminds
+Exporo
+Evana
+Homeday
+McMakler
+Wunderflats
+Housinganywhere
+Spotahome
+Limehome
+Numa
+Holidu
+Hometogo
+Tourlane
+Raus
+Comtravo
+Perk
+Navan
+Fintecture
+Unzer
+Ratepay
+Computop
+Adyen
+Klarna
+Riverty
+Arvato
+Bertelsmann
+Axel Springer
+Prosiebensat1
+RTL Deutschland
+Burda
+Gruner Jahr
+Spiegel
+Zeit Online
+Rocket Internet
+Project A
+Earlybird
+HV Capital
+Cherry Ventures
+Point Nine
+Atlantic Food Labs
+Infarm
+Formo
+Planet A Foods
+Mushlabs
+Everphone
+Rebuy
+Backmarket
+Refurbed
+Zencargo
+Cargoboard
+Instafreight
+Ontruck
+Quicargo
+Volocopter GmbH
+Jimdo
+Ionos
+Strato
+Hetzner
+Netcup
+Wire
+Tutanota
+Proton
+Nextcloud
+Jetbrains
+Gitlab
+Mobilezone
+Dkb
+Comdirect
+Consorsbank
+Ing Deutschland
+Deutsche Bank
+Commerzbank
+Allianz
+Munich Re
+Hannover Re
+Ergo
+Generali Deutschland
+Wefox Group
+Getsafe
+Element Insurance
+Friday Versicherung
+Coya
+Heidelpay
+Paypal
+Mollie
+Stripe
+Checkout.com
+Rapyd
+## AT
+Bitpanda
+GoStudent
+Refurbed
+Runtastic
+Tractive
+Dynatrace
+Frequentis
+Anyline
+Storyblok
+Bitmovin
+Byrd
+Hokify
+Willhaben
+Shpock
+Kununu
+Durchblicker
+Mostly AI
+Bikemap
+Prewave
+Kiwi.com
+Adverity
+Celum
+Emarsys
+Tricentis
+Cloudflight
+Fabasoft
+Raiffeisen Bank International
+Erste Group
+Bawag
+Vienna Insurance Group
+Uniqa
+Red Bull
+Swarovski
+Kapsch
+Andritz
+## CH
+Swissquote
+Yokoy
+Beekeeper
+Scandit
+Nexthink
+Sophia Genetics
+Ava
+On Running
+On
+Climeworks
+Wingtra
+Anybotics
+Frontify
+Sherpany
+Smallpdf
+Getyourguide
+Digitec Galaxus
+Galaxus
+Tutti
+Homegate
+Smg Swiss Marketplace Group
+Ricardo
+Nomoko
+Advanon
+Neon
+Yapeal
+Radicant
+Lykke
+Sygnum
+Seba Bank
+Taurus
+Bitcoin Suisse
+Temenos
+Avaloq
+Leonteq
+Ubs
+Julius Baer
+Vontobel
+Lombard Odier
+Pictet
+Partners Group
+Swiss Re
+Zurich Insurance
+Helvetia
+Baloise
+Swiss Life
+Nestle
+Roche
+Novartis
+Logitech
+Sonova
+Schindler
+Abb
+Richemont
+Kuehne Nagel
+Dufry
+Avolta
+Sika
+Lindt
+Givaudan
+Firmenich
+Dsm Firmenich
+Mobiliar
+Swisscom
+Sunrise
+Salt
+Migros
+Coop
+Ikea Switzerland
+Philip Morris International
+Japan Tobacco International
+Vitol
+Trafigura
+Glencore
+Mercuria
+Gunvor
+Cargill
+Msc
+Mediterranean Shipping Company

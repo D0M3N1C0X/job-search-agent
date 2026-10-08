@@ -29,6 +29,9 @@ GREEN, YELLOW, RED, DIM, BOLD, OFF = "\033[32m", "\033[33m", "\033[31m", "\033[2
 
 # Longest a bulk write may hold SQLite's single write lock before yielding it.
 WRITE_SLICE = 0.5
+# Boards fetched at once. Each is a different company's server; eight keeps
+# a run of hundreds of boards to minutes without leaning on any one of them.
+FETCH_WORKERS = 8
 
 
 def with_workspace(fn):
@@ -201,45 +204,73 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
     totals = {"new": 0, "seen": 0, "failed": 0, "quiet": 0}
 
     if wanted in ("all", "ats"):
-        entries = cfg.watchlist
+        entries = cfg.boards()
         if args.company:
             needle = args.company.lower()
             entries = [e for e in entries if needle in e["company"].lower()]
-        for entry in entries:
-            # What this board listed on its last successful fetch, else what
-            # `jsa probe` counted when it was added. Keyed by board, not by
-            # company name: Workable, for one, names jobs after its own account.
-            listed_key = f"listed:{entry['provider']}:{entry['handle']}"
-            last = store.get_meta(listed_key)
-            known = int(last) if last.isdigit() else entry.get("open_roles", 0)
+        if getattr(args, "no_catalogue", False):
+            entries = [e for e in entries if not e.get("catalogue")]
+        shared = {"boards": 0, "listed": 0, "new": 0, "failed": 0}
+
+        def fetch(entry: dict) -> tuple[dict, list | None, Exception | None]:
             try:
-                jobs = ats_sources.fetch_company(entry, cache_dir=cfg.cache_dir, cache_ttl=args.cache_ttl)
+                return entry, ats_sources.fetch_company(
+                    entry, cache_dir=cfg.cache_dir, cache_ttl=args.cache_ttl), None
             except Exception as exc:  # noqa: BLE001 - one bad board must not end the run
-                totals["failed"] += 1
-                # FetchError reads "<url> -> <reason>"; the company and board are
-                # already on the line, and a truncated URL used to hide the reason.
-                reason = str(exc).split(" -> ", 1)[-1]
-                print(f"{entry['company']:<32} {entry['provider']:<16} "
-                      + colour(f"failed — {type(exc).__name__}: {reason}"[:100], RED))
-                continue
-            counts = {"new": 0, "seen": 0}
-            for job in jobs:
-                counts[store.upsert_job(job)] += 1
-            store.mark_closed(jobs, entry["provider"])
-            store.set_meta(listed_key, str(len(jobs)))
-            totals["new"] += counts["new"]
-            totals["seen"] += counts["seen"]
-            if not jobs and known:
-                # A board that changed shape answers 200 with nothing in it,
-                # which looks exactly like a company that stopped hiring. Said
-                # once, on the run it happens: the count is now recorded as 0.
-                totals["quiet"] += 1
-                print(f"{entry['company']:<32} {entry['provider']:<16}   0 listed  "
-                      + colour(f"had {known} open — check it: "
-                               f"`{config.COMMAND} probe {entry['handle']}`", YELLOW))
-                continue
-            marker = colour(f"+{counts['new']}", GREEN) if counts["new"] else colour("+0", DIM)
-            print(f"{entry['company']:<32} {entry['provider']:<16} {len(jobs):>3} listed  {marker}")
+                return entry, None, exc
+
+        # Boards are fetched in parallel and written here, one at a time:
+        # SQLite has a single writer, the network has no such limit.
+        from concurrent.futures import ThreadPoolExecutor
+
+        with ThreadPoolExecutor(max_workers=FETCH_WORKERS) as pool:
+            for entry, jobs, exc in pool.map(fetch, entries):
+                quietly = bool(entry.get("catalogue"))
+                if exc is not None:
+                    totals["failed"] += 1
+                    if quietly:
+                        shared["failed"] += 1
+                        continue
+                    # FetchError reads "<url> -> <reason>"; the company and board are
+                    # already on the line, and a truncated URL used to hide the reason.
+                    reason = str(exc).split(" -> ", 1)[-1]
+                    print(f"{entry['company']:<32} {entry['provider']:<16} "
+                          + colour(f"failed — {type(exc).__name__}: {reason}"[:100], RED))
+                    continue
+                # What this board listed on its last successful fetch, else what
+                # `jsa probe` counted when it was added. Keyed by board, not by
+                # company name: Workable, for one, names jobs after its own account.
+                listed_key = f"listed:{entry['provider']}:{entry['handle']}"
+                last = store.get_meta(listed_key)
+                known = int(last) if last.isdigit() else entry.get("open_roles", 0)
+                counts = {"new": 0, "seen": 0}
+                for job in jobs:
+                    counts[store.upsert_job(job)] += 1
+                store.mark_closed(jobs, entry["provider"])
+                store.set_meta(listed_key, str(len(jobs)))
+                totals["new"] += counts["new"]
+                totals["seen"] += counts["seen"]
+                if quietly:
+                    shared["boards"] += 1
+                    shared["listed"] += len(jobs)
+                    shared["new"] += counts["new"]
+                    continue
+                if not jobs and known:
+                    # A board that changed shape answers 200 with nothing in it,
+                    # which looks exactly like a company that stopped hiring. Said
+                    # once, on the run it happens: the count is now recorded as 0.
+                    totals["quiet"] += 1
+                    print(f"{entry['company']:<32} {entry['provider']:<16}   0 listed  "
+                          + colour(f"had {known} open — check it: "
+                                   f"`{config.COMMAND} probe {entry['handle']}`", YELLOW))
+                    continue
+                marker = colour(f"+{counts['new']}", GREEN) if counts["new"] else colour("+0", DIM)
+                print(f"{entry['company']:<32} {entry['provider']:<16} {len(jobs):>3} listed  {marker}")
+        if shared["boards"] or shared["failed"]:
+            failed = colour(f"  ({shared['failed']} did not answer)", YELLOW) if shared["failed"] else ""
+            print(f"{'Shared catalogue':<32} {str(shared['boards']) + ' boards':<16} "
+                  f"{shared['listed']:>3} listed  "
+                  f"{colour('+' + str(shared['new']), GREEN if shared['new'] else DIM)}{failed}")
 
     if wanted in ("all", "linkedin"):
         queries = cfg.profile.get("search", {}).get("linkedin_queries", [])
@@ -1122,7 +1153,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("fetch", help="pull jobs from every configured source")
     p.add_argument("--source", choices=["all", "ats", "linkedin", "mailbox"], default="all")
-    p.add_argument("--company", help="only this watchlist company")
+    p.add_argument("--company", help="only boards whose company name contains this")
+    p.add_argument("--no-catalogue", action="store_true",
+                   help="only your own watchlist, not the shared employer catalogue")
     p.add_argument("--pages", type=int, default=2, help="LinkedIn pages per query")
     p.add_argument("--fast", action="store_true", help="skip LinkedIn description fetches")
     p.add_argument("--cache-ttl", type=int, default=900)

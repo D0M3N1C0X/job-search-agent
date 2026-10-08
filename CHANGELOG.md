@@ -9,6 +9,27 @@ you set up by hand (profile, tracks, database) needs attention.
 
 ### Added
 
+- A shared employer catalogue, used with no setup: `catalogue/companies.json`
+  lists 265 European employers whose job boards were verified to answer, with
+  where they hire and how many roles mention Italian. `jsa fetch` adds every
+  board that hires in a country your profile accepts; your own watchlist comes
+  first. `preferences.catalogue: false` or `jsa fetch --no-catalogue` turns it
+  off. Built by `tools/catalogue.py`, which keeps a board only when it has
+  roles in Europe and its declared name matches the company.
+- Boards are fetched eight at a time: about 270 boards take under a minute.
+- Country facts for moving abroad (`relocation/`): net pay, price levels,
+  purchasing power against Italy and unemployment for 21 countries, read from
+  Eurostat by `tools/relocation.py`, with a register of every rejected value.
+- `jsa apply` adds a typeset CV PDF when Chrome, Edge or Chromium is installed.
+
+### Fixed
+
+- US state abbreviations no longer read as European countries: "Wilmington, DE"
+  was Germany and "Birmingham, AL" Britain.
+- HTTPS to sites using recent root certificates (ec.europa.eu) on older macOS:
+  the keychain's roots are read on the first verification failure.
+- PDFs printed by browsers are read as words, not single letters.
+
 - Your own CVs, attached unchanged: `jsa cv add <file> --track <id>` or
   `--company <name>`. A CV written for the company wins, then the one for the
   winning track; the generated CV is used only when neither exists

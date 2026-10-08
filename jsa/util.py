@@ -8,6 +8,7 @@ import logging
 import os
 import re
 import ssl
+import sys
 import time
 import unicodedata
 import urllib.error
@@ -70,6 +71,32 @@ def _ssl_context() -> ssl.SSLContext:
 
 
 _SSL = _ssl_context()
+_SYSTEM_ROOTS_LOADED = False
+_MAC_ROOTS = "/System/Library/Keychains/SystemRootCertificates.keychain"
+
+
+def _add_system_roots() -> bool:
+    """Add the macOS keychain's root certificates to the context, once.
+
+    The PEM bundle in /etc/ssl lags the keychain on older macOS: a site using
+    a root issued since (GlobalSign R46, for ec.europa.eu) fails here while
+    curl, which reads the keychain, succeeds. Read lazily, on the first
+    failure, so no command pays for it otherwise. True if anything was added.
+    """
+    global _SYSTEM_ROOTS_LOADED
+    if _SYSTEM_ROOTS_LOADED or sys.platform != "darwin" or not Path(_MAC_ROOTS).exists():
+        return False
+    _SYSTEM_ROOTS_LOADED = True
+    import subprocess
+
+    try:
+        pem = subprocess.run(["security", "find-certificate", "-a", "-p", _MAC_ROOTS],
+                             capture_output=True, text=True, timeout=10, check=True).stdout
+        _SSL.load_verify_locations(cadata=pem)
+    except (OSError, subprocess.SubprocessError, ssl.SSLError, ValueError) as exc:
+        log.debug("could not read the macOS root certificates: %s", exc)
+        return False
+    return True
 
 
 def now() -> str:
@@ -215,6 +242,8 @@ def http_get(
                 raise FetchError(f"{url} -> HTTP {exc.code}", status=exc.code) from exc
         except (urllib.error.URLError, TimeoutError, OSError) as exc:
             last_error = exc
+            if "CERTIFICATE_VERIFY_FAILED" in str(exc) and _add_system_roots():
+                continue  # retry at once with the keychain's roots; not a server problem
             if attempt == retries:
                 raise FetchError(f"{url} -> {exc}") from exc
         log.debug("retry %s/%s for %s in %.1fs", attempt, retries, url, delay)

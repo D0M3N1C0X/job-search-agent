@@ -1,0 +1,305 @@
+# Employers hiring across several European countries, plus the original watchlist
+## EU
+AlixPartners
+Canva
+Culture Amp
+Datadog
+Docplanner
+Gitlab
+Hubspot
+Fin (Intercom) | intercom
+Personio
+Remote
+Deel
+Oyster
+Papaya Global
+Rippling
+Workday
+Notion
+Figma
+Airtable
+Monday.com
+Asana
+Atlassian
+Canonical
+Automattic
+Mozilla
+Wikimedia
+Duolingo
+Spotify
+Klarna
+Wise
+Revolut
+Monzo
+Starling Bank
+Curve
+Checkout.com
+Paysafe
+Worldpay
+Nexi
+Satispay
+Scalapay
+Soldo
+Moneyfarm
+Young Platform
+Conio
+Prima
+Prima Assicurazioni
+Yolo
+Casavo
+Bending Spoons
+Jet Hr
+Jethr
+Musixmatch
+Translated
+Docebo
+Vivino
+Subito
+Immobiliare
+Facile.it
+Supermercato24
+Everli
+Cortilia
+Milkman
+Tannico
+Velasca
+Treatwell
+Fresha
+Mindbody
+Lastminute.com
+Volagratis
+Musement
+Tui
+Expedia
+Airbnb
+Tripadvisor
+Hostelworld Group
+Sixt
+Europcar
+Hertz
+Avis Budget
+Flixmobility
+Blablacar Europe
+Ryanair
+Easyjet
+Wizz Air Europe
+Vueling
+Iberia
+Lufthansa Group
+Air France Klm
+Ita Airways
+Msc Cruises
+Costa Crociere
+Carnival
+Royal Caribbean
+Norwegian Cruise Line
+Booking Holdings
+Ferrero Group
+Barilla
+Lavazza
+Luxottica
+Essilorluxottica
+Prada
+Gucci
+Valentino
+Armani
+Moncler
+Ferragamo
+Bulgari
+Ferrari
+Lamborghini
+Ducati
+Pirelli
+Brembo
+Leonardo
+Fincantieri
+Eni
+Enel
+Snam
+Terna
+Unicredit
+Intesa Sanpaolo
+Mediobanca
+Generali
+Poste Italiane
+Telecom Italia
+Fastweb
+Wind Tre
+Iliad Italia
+Mediaset
+Sky
+Netflix Europe
+Amazon Web Services
+Google Cloud
+Microsoft Europe
+Salesforce Europe
+Oracle Europe
+Sap Europe
+Servicenow
+Adobe
+Autodesk
+Cisco Europe
+Dell
+Hp
+Intel
+Nvidia
+Amd
+Qualcomm
+Arm
+Palantir
+Snowflake Europe
+Databricks Europe
+Mongodb
+Confluent
+Hashicorp
+Cloudflare Europe
+Fastly
+Akamai
+Twilio
+Zendesk Europe
+Freshworks
+Okta
+Crowdstrike
+Palo Alto Networks
+Sentinelone
+Darktrace
+Onetrust
+Workiva
+Coupa
+Celonis Europe
+Uipath Europe
+Signavio
+Leanix
+Contentful Europe
+Storyblok Europe
+Commercetools Europe
+Vtex
+Shopify
+Bigcommerce
+Wix
+Squarespace
+Webflow
+Hotjar
+Typeform Europe
+Surveymonkey
+Qualtrics
+Medallia
+Glint
+Peakon Europe
+Lattice
+Culture Amp Europe
+Leapsome Europe
+Workvivo
+Staffbase Europe
+Beekeeper Europe
+Personio Europe
+Hibob
+Bob
+Factorial Europe
+Kenjo
+Sesame Hr
+Payfit Europe
+Deel Europe
+Remote Europe
+Velocity Global
+G-P (Globalization Partners) | globalizationpartners
+G P
+Multiplier
+Safeguard Global
+Adp
+Ukg
+Sd Worx
+Zalaris
+Alight
+Ceridian
+Dayforce
+Mercer
+Wtw
+Willis Towers Watson
+Korn Ferry
+Hays Europe
+Page Group
+Robert Half
+Egon Zehnder
+Spencer Stuart
+Heidrick And Struggles
+Mckinsey
+Boston Consulting Group
+Bcg
+Bain
+Oliver Wyman
+Roland Berger
+Kearney
+Simon Kucher
+Ey
+Kpmg
+Deloitte
+Pwc
+Bdo
+Grant Thornton
+Mazars
+Forvis Mazars
+Accenture
+Capgemini Invent
+Protiviti
+Fti Consulting
+Alvarez And Marsal
+Teneo
+Gartner
+Forrester
+Idc
+Euromonitor
+Ipsos
+Kantar Europe
+Nielseniq
+Gfk
+Yougov
+Statista Europe
+Bloomberg
+Refinitiv
+Lseg
+Moodys
+S&P Global
+Fitch
+Msci
+Morningstar
+Blackrock
+Vanguard
+Fidelity International
+Schroders
+Pimco
+Allianz Global Investors
+Axa Investment Managers
+Jp Morgan
+Goldman Sachs
+Morgan Stanley
+Citi
+Bank Of America
+Barclays
+Hsbc
+Deutsche Bank Europe
+Ubs Europe
+Visa
+Mastercard
+American Express
+Paypal Europe Sarl
+Stripe Europe
+Adyen Europe
+Klarna Europe
+Affirm
+Block
+Square
+Sumup Europe
+Zettle
+Lightspeed
+Toast
+Glovo Europe
+Deliveroo Europe
+Uber Europe
+Bolt Europe
+Free Now Europe
+Lime Europe
+Voi Europe
+Tier Europe
+Dott Europe
+Cabify Europe

@@ -106,6 +106,17 @@ class TestAtsParsers(unittest.TestCase):
     def test_country_and_remote_guessing(self):
         self.assertEqual(ats.guess_country("Kraków, Poland"), "PL")
         self.assertEqual(ats.guess_country("Nowhere"), "")
+
+    def test_us_states_that_share_a_european_code(self):
+        # Delaware is not Germany and Alabama is not Albania or Britain.
+        self.assertEqual(ats.guess_country("Wilmington, DE"), "US")
+        self.assertEqual(ats.guess_country("Birmingham, AL"), "US")
+        self.assertEqual(ats.guess_country("Indianapolis, IN"), "US")
+        self.assertEqual(ats.guess_country("Paris, TX"), "US")
+        # ...while the European reading still wins where it is the right one.
+        self.assertEqual(ats.guess_country("Berlin, DE"), "DE")
+        self.assertEqual(ats.guess_country("Birmingham, United Kingdom"), "GB")
+        self.assertEqual(ats.guess_country("Tirana, AL"), "AL")
         self.assertEqual(ats.guess_remote("Hybrid - Milan"), "hybrid")
         self.assertEqual(ats.guess_remote("Fully remote"), "remote")
 
