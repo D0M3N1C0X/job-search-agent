@@ -113,7 +113,11 @@ _add("SM", "san marino")
 # Outside Europe: enough to place a posting so the location gate can reject it.
 _add("US", "united states", "usa", "u.s.", "new york", "chicago", "san francisco", "seattle",
      "boston", "austin", "denver", "atlanta", "los angeles", "miami", "washington", "dallas",
-     "houston", "philadelphia", "phoenix", "san diego", "framingham", "mountain view")
+     "houston", "philadelphia", "phoenix", "san diego", "framingham", "mountain view",
+     # Cities in states whose abbreviation is also a European country code:
+     # "Wilmington, DE" is Delaware, not Germany.
+     "wilmington", "dover", "newark", "huntsville", "montgomery", "indianapolis",
+     "fort wayne", "baltimore", "bethesda", "rockville", "bozeman", "missoula")
 _add("CA", "canada", "toronto", "vancouver", "montreal", "ottawa", "calgary")
 _add("MX", "mexico", "mexico city", "guadalajara")
 _add("BR", "brazil", "brasil", "sao paulo", "são paulo", "rio de janeiro", "belo horizonte")
@@ -161,6 +165,11 @@ _add("MY", "malaysia", "kuala lumpur", "bangsar", "penang")
 # Italian province abbreviation is not mistaken for a country.
 _ISO_CODES = set(_COUNTRY_HINTS.values())
 _ISO_SUFFIX = re.compile(r",\s*([A-Za-z]{2})\s*$")
+# US state abbreviations, written in capitals after a comma ("Austin, TX").
+# Several are also country codes (AL Albania, DE Germany, IN India, MT Malta,
+# ME Montenegro, MD Moldova), so a suffix alone cannot be trusted either way.
+_US_STATES = set("""AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS
+MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY""".split())
 
 
 # Letters NFKD will not take apart, because they are letters in their own right
@@ -193,9 +202,15 @@ _HINT_RE = re.compile(
 def guess_country(location: str) -> str:
     """Best-effort ISO country code for a free-text location."""
     match = _HINT_RE.search(_fold(location))
-    if match:
-        return _FOLDED_HINTS[match.group(1)]
     suffix = _ISO_SUFFIX.search(location or "")
+    state = suffix.group(1) if suffix and suffix.group(1).isupper() else ""
+    if match:
+        country = _FOLDED_HINTS[match.group(1)]
+        # "Birmingham, AL" and "Paris, TX": a European city name followed by
+        # a different US state is the American town of the same name.
+        if state in _US_STATES and state != country and country != "US":
+            return "US"
+        return country
     if suffix and suffix.group(1).upper() in _ISO_CODES:
         return suffix.group(1).upper()
     return ""

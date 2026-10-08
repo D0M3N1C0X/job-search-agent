@@ -1,0 +1,4326 @@
+{
+ "companies": [
+  {
+   "company": "11 Bit Studios",
+   "board_name": "11 bit studios",
+   "provider": "recruitee",
+   "handle": "11bitstudios",
+   "roles": 6,
+   "europe": 6,
+   "countries": {
+    "PL": 6
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PL"
+  },
+  {
+   "company": "360learning",
+   "board_name": "360Learning",
+   "provider": "lever",
+   "handle": "360learning",
+   "roles": 40,
+   "europe": 35,
+   "countries": {
+    "FR": 15,
+    "DE": 8,
+    "ES": 8,
+    "GB": 4
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Accor",
+   "board_name": "Accor",
+   "provider": "smartrecruiters",
+   "handle": "accor",
+   "roles": 570,
+   "europe": 299,
+   "countries": {
+    "FR": 215,
+    "DE": 17,
+    "NL": 15,
+    "ES": 12,
+    "CH": 10,
+    "PT": 6,
+    "IT": 6,
+    "AL": 5,
+    "RO": 4,
+    "CZ": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Adjust",
+   "board_name": "Adjust",
+   "provider": "recruitee",
+   "handle": "adjust",
+   "roles": 28,
+   "europe": 28,
+   "countries": {
+    "NL": 28
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Adyen",
+   "board_name": "Adyen",
+   "provider": "greenhouse",
+   "handle": "adyen",
+   "roles": 230,
+   "europe": 92,
+   "countries": {
+    "NL": 67,
+    "DE": 7,
+    "GB": 5,
+    "ES": 4,
+    "FR": 3,
+    "SE": 3,
+    "BE": 1,
+    "IT": 1,
+    "PL": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Affirm",
+   "board_name": "Affirm",
+   "provider": "greenhouse",
+   "handle": "affirm",
+   "roles": 186,
+   "europe": 27,
+   "countries": {
+    "PL": 14,
+    "ES": 13
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Ag Insurance",
+   "board_name": "Alpha FMC - Insurance Consulting",
+   "provider": "greenhouse",
+   "handle": "insurance",
+   "roles": 10,
+   "europe": 9,
+   "countries": {
+    "FR": 9
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "BE"
+  },
+  {
+   "company": "Ageas",
+   "board_name": "Jobs at",
+   "provider": "personio",
+   "handle": "ageas",
+   "roles": 3,
+   "europe": 3,
+   "countries": {
+    "BE": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "BE"
+  },
+  {
+   "company": "Agicap",
+   "board_name": "Agicap",
+   "provider": "lever",
+   "handle": "agicap",
+   "roles": 26,
+   "europe": 23,
+   "countries": {
+    "FR": 8,
+    "DE": 7,
+    "IT": 6,
+    "PT": 1,
+    "ES": 1
+   },
+   "italian": 6,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Airbnb",
+   "board_name": "Airbnb",
+   "provider": "greenhouse",
+   "handle": "airbnb",
+   "roles": 163,
+   "europe": 13,
+   "countries": {
+    "IE": 4,
+    "GB": 3,
+    "IT": 2,
+    "FR": 2,
+    "DE": 1,
+    "ES": 1
+   },
+   "italian": 3,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Aircall",
+   "board_name": "",
+   "provider": "lever",
+   "handle": "aircall",
+   "roles": 77,
+   "europe": 46,
+   "countries": {
+    "ES": 19,
+    "FR": 16,
+    "DE": 6,
+    "GB": 4,
+    "PT": 1
+   },
+   "italian": 4,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Airtable",
+   "board_name": "Airtable",
+   "provider": "greenhouse",
+   "handle": "airtable",
+   "roles": 4,
+   "europe": 1,
+   "countries": {
+    "GB": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Alan",
+   "board_name": "Alan Jobs",
+   "provider": "ashby",
+   "handle": "alan",
+   "roles": 118,
+   "europe": 98,
+   "countries": {
+    "FR": 83,
+    "BE": 11,
+    "ES": 4
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Alasco",
+   "board_name": "",
+   "provider": "personio",
+   "handle": "alasco",
+   "roles": 11,
+   "europe": 11,
+   "countries": {
+    "DE": 11
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Algolia",
+   "board_name": "Algolia",
+   "provider": "greenhouse",
+   "handle": "algolia",
+   "roles": 37,
+   "europe": 32,
+   "countries": {
+    "FR": 20,
+    "GB": 8,
+    "NL": 2,
+    "DE": 2
+   },
+   "italian": 4,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "AlixPartners",
+   "board_name": "AlixPartners",
+   "provider": "greenhouse",
+   "handle": "alixpartners",
+   "roles": 114,
+   "europe": 55,
+   "countries": {
+    "DE": 26,
+    "GB": 13,
+    "FR": 6,
+    "CH": 6,
+    "IT": 4
+   },
+   "italian": 10,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Amazon",
+   "board_name": "Jobs at",
+   "provider": "personio",
+   "handle": "amazon",
+   "roles": 3,
+   "europe": 2,
+   "countries": {
+    "GB": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PT"
+  },
+  {
+   "company": "Anybotics",
+   "board_name": "ANYbotics",
+   "provider": "lever",
+   "handle": "anybotics",
+   "roles": 23,
+   "europe": 17,
+   "countries": {
+    "CH": 16,
+    "ES": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CH"
+  },
+  {
+   "company": "Apify",
+   "board_name": "Apify Technologies s.r.o. Jobs",
+   "provider": "ashby",
+   "handle": "apify",
+   "roles": 10,
+   "europe": 10,
+   "countries": {
+    "CZ": 10
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CZ"
+  },
+  {
+   "company": "Asana",
+   "board_name": "Asana",
+   "provider": "greenhouse",
+   "handle": "asana",
+   "roles": 104,
+   "europe": 31,
+   "countries": {
+    "PL": 17,
+    "IE": 5,
+    "IS": 4,
+    "DE": 2,
+    "GB": 2,
+    "SE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Auto1",
+   "board_name": "AUTO1 Group",
+   "provider": "smartrecruiters",
+   "handle": "auto1",
+   "roles": 693,
+   "europe": 691,
+   "countries": {
+    "DE": 335,
+    "IT": 117,
+    "ES": 86,
+    "NL": 31,
+    "FR": 26,
+    "AT": 20,
+    "PL": 17,
+    "PT": 16,
+    "RO": 8,
+    "BE": 7
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Avi Medical",
+   "board_name": "Avi Medical",
+   "provider": "greenhouse",
+   "handle": "avimedical",
+   "roles": 40,
+   "europe": 38,
+   "countries": {
+    "DE": 38
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Babbel",
+   "board_name": "Babbel Jobs",
+   "provider": "ashby",
+   "handle": "babbel",
+   "roles": 11,
+   "europe": 10,
+   "countries": {
+    "DE": 10
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Backmarket",
+   "board_name": "Back Market Jobs",
+   "provider": "ashby",
+   "handle": "backmarket",
+   "roles": 34,
+   "europe": 31,
+   "countries": {
+    "FR": 28,
+    "ES": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Bird",
+   "board_name": "Bird",
+   "provider": "greenhouse",
+   "handle": "bird",
+   "roles": 30,
+   "europe": 1,
+   "countries": {
+    "IS": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Bitmovin",
+   "board_name": "Bitmovin",
+   "provider": "greenhouse",
+   "handle": "bitmovin",
+   "roles": 12,
+   "europe": 6,
+   "countries": {
+    "AT": 6
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "AT"
+  },
+  {
+   "company": "Bitpanda",
+   "board_name": "Bitpanda",
+   "provider": "greenhouse",
+   "handle": "bitpanda",
+   "roles": 23,
+   "europe": 23,
+   "countries": {
+    "AT": 17,
+    "ES": 4,
+    "DE": 1,
+    "RO": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Bitvavo",
+   "board_name": "Bitvavo Jobs",
+   "provider": "ashby",
+   "handle": "bitvavo",
+   "roles": 12,
+   "europe": 1,
+   "countries": {
+    "CY": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Blablacar",
+   "board_name": "BlaBlaCar",
+   "provider": "lever",
+   "handle": "blablacar",
+   "roles": 12,
+   "europe": 12,
+   "countries": {
+    "FR": 12
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Blickfeld",
+   "board_name": "Jobs at",
+   "provider": "personio",
+   "handle": "blickfeld",
+   "roles": 4,
+   "europe": 4,
+   "countries": {
+    "DE": 4
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Block",
+   "board_name": "Block",
+   "provider": "greenhouse",
+   "handle": "block",
+   "roles": 224,
+   "europe": 18,
+   "countries": {
+    "GB": 16,
+    "FR": 1,
+    "IE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Bol.com",
+   "board_name": "bol.com NL",
+   "provider": "greenhouse",
+   "handle": "bolcom",
+   "roles": 29,
+   "europe": 27,
+   "countries": {
+    "NL": 27
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Brevo",
+   "board_name": "Brevo",
+   "provider": "lever",
+   "handle": "brevo",
+   "roles": 25,
+   "europe": 15,
+   "countries": {
+    "FR": 15
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Bunq",
+   "board_name": "bunq",
+   "provider": "recruitee",
+   "handle": "bunq",
+   "roles": 20,
+   "europe": 14,
+   "countries": {
+    "NL": 12,
+    "BE": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Cabify",
+   "board_name": "Cabify",
+   "provider": "greenhouse",
+   "handle": "cabify",
+   "roles": 68,
+   "europe": 30,
+   "countries": {
+    "ES": 30
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Canonical",
+   "board_name": "Canonical",
+   "provider": "greenhouse",
+   "handle": "canonical",
+   "roles": 311,
+   "europe": 15,
+   "countries": {
+    "GB": 15
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Canva",
+   "board_name": "Canva",
+   "provider": "smartrecruiters",
+   "handle": "canva",
+   "roles": 124,
+   "europe": 28,
+   "countries": {
+    "GB": 7,
+    "DE": 6,
+    "IT": 3,
+    "ES": 3,
+    "NL": 3,
+    "FR": 2,
+    "PL": 2,
+    "CZ": 1,
+    "AT": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Catawiki",
+   "board_name": "Catawiki",
+   "provider": "greenhouse",
+   "handle": "catawiki",
+   "roles": 43,
+   "europe": 40,
+   "countries": {
+    "NL": 20,
+    "PT": 9,
+    "BE": 6,
+    "DE": 3,
+    "IT": 2
+   },
+   "italian": 2,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Celonis",
+   "board_name": "Celonis",
+   "provider": "greenhouse",
+   "handle": "celonis",
+   "roles": 230,
+   "europe": 127,
+   "countries": {
+    "DE": 46,
+    "ES": 31,
+    "GB": 17,
+    "NL": 10,
+    "SE": 8,
+    "DK": 5,
+    "FR": 5,
+    "CH": 3,
+    "IT": 2
+   },
+   "italian": 15,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Channable",
+   "board_name": "Channable",
+   "provider": "recruitee",
+   "handle": "channable",
+   "roles": 11,
+   "europe": 9,
+   "countries": {
+    "NL": 7,
+    "DE": 1,
+    "DK": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Climedo",
+   "board_name": "Jobs bei Climedo",
+   "provider": "personio",
+   "handle": "climedo",
+   "roles": 3,
+   "europe": 3,
+   "countries": {
+    "DE": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Climeworks",
+   "board_name": "Climeworks",
+   "provider": "recruitee",
+   "handle": "climeworks",
+   "roles": 5,
+   "europe": 5,
+   "countries": {
+    "CH": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CH"
+  },
+  {
+   "company": "Cloudflare",
+   "board_name": "Cloudflare",
+   "provider": "greenhouse",
+   "handle": "cloudflare",
+   "roles": 426,
+   "europe": 1,
+   "countries": {
+    "PT": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PT"
+  },
+  {
+   "company": "Collibra",
+   "board_name": "Collibra",
+   "provider": "greenhouse",
+   "handle": "collibra",
+   "roles": 30,
+   "europe": 7,
+   "countries": {
+    "BE": 3,
+    "GB": 2,
+    "CZ": 1,
+    "PL": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "BE"
+  },
+  {
+   "company": "Commercetools",
+   "board_name": "commercetools",
+   "provider": "greenhouse",
+   "handle": "commercetools",
+   "roles": 35,
+   "europe": 26,
+   "countries": {
+    "DE": 14,
+    "GB": 7,
+    "ES": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Contentful",
+   "board_name": "Contentful",
+   "provider": "greenhouse",
+   "handle": "contentful",
+   "roles": 19,
+   "europe": 12,
+   "countries": {
+    "GB": 11,
+    "DE": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Contentsquare",
+   "board_name": "Contentsquare",
+   "provider": "lever",
+   "handle": "contentsquare",
+   "roles": 24,
+   "europe": 15,
+   "countries": {
+    "GB": 5,
+    "PL": 3,
+    "FR": 3,
+    "ES": 2,
+    "DE": 1,
+    "NL": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Continental",
+   "board_name": "Continental",
+   "provider": "smartrecruiters",
+   "handle": "continental",
+   "roles": 593,
+   "europe": 305,
+   "countries": {
+    "DE": 142,
+    "AT": 71,
+    "RO": 36,
+    "PT": 21,
+    "SK": 9,
+    "LT": 7,
+    "CZ": 6,
+    "FR": 6,
+    "ES": 3,
+    "BE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Coolblue",
+   "board_name": "Coolblue",
+   "provider": "smartrecruiters",
+   "handle": "coolblue",
+   "roles": 485,
+   "europe": 485,
+   "countries": {
+    "NL": 299,
+    "DE": 111,
+    "BE": 75
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Coupa",
+   "board_name": "Coupa Software, Inc.",
+   "provider": "lever",
+   "handle": "coupa",
+   "roles": 33,
+   "europe": 8,
+   "countries": {
+    "CZ": 6,
+    "PL": 1,
+    "GB": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Culture Amp",
+   "board_name": "Culture Amp",
+   "provider": "greenhouse",
+   "handle": "cultureamp",
+   "roles": 34,
+   "europe": 10,
+   "countries": {
+    "GB": 5,
+    "DE": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Databricks",
+   "board_name": "Databricks",
+   "provider": "greenhouse",
+   "handle": "databricks",
+   "roles": 894,
+   "europe": 173,
+   "countries": {
+    "GB": 49,
+    "NL": 32,
+    "DE": 27,
+    "RS": 17,
+    "FR": 14,
+    "SE": 10,
+    "DK": 8,
+    "IT": 5,
+    "CH": 5,
+    "ES": 3
+   },
+   "italian": 6,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Datadog",
+   "board_name": "Datadog",
+   "provider": "greenhouse",
+   "handle": "datadog",
+   "roles": 439,
+   "europe": 110,
+   "countries": {
+    "FR": 45,
+    "NL": 18,
+    "IE": 14,
+    "GB": 13,
+    "PT": 6,
+    "ES": 4,
+    "DE": 3,
+    "DK": 2,
+    "IT": 2,
+    "SE": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Dataiku",
+   "board_name": "Dataiku",
+   "provider": "greenhouse",
+   "handle": "dataiku",
+   "roles": 19,
+   "europe": 9,
+   "countries": {
+    "FR": 5,
+    "GB": 3,
+    "DE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "DeepL",
+   "board_name": "DeepL Jobs",
+   "provider": "ashby",
+   "handle": "deepl",
+   "roles": 13,
+   "europe": 6,
+   "countries": {
+    "GB": 4,
+    "AT": 1,
+    "DE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Deliverect",
+   "board_name": "Deliverect",
+   "provider": "lever",
+   "handle": "deliverect",
+   "roles": 32,
+   "europe": 14,
+   "countries": {
+    "GB": 4,
+    "ES": 3,
+    "FR": 3,
+    "BE": 2,
+    "IT": 1,
+    "DE": 1
+   },
+   "italian": 3,
+   "verified": "2026-10-08",
+   "region": "BE"
+  },
+  {
+   "company": "Deliveroo",
+   "board_name": "Deliveroo ",
+   "provider": "greenhouse",
+   "handle": "deliveroo",
+   "roles": 195,
+   "europe": 170,
+   "countries": {
+    "GB": 129,
+    "IT": 21,
+    "FR": 11,
+    "BE": 4,
+    "IE": 4,
+    "DE": 1
+   },
+   "italian": 17,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Delivery Hero",
+   "board_name": "Delivery Hero",
+   "provider": "smartrecruiters",
+   "handle": "deliveryhero",
+   "roles": 980,
+   "europe": 330,
+   "countries": {
+    "ES": 84,
+    "GR": 39,
+    "IT": 28,
+    "DE": 27,
+    "HU": 26,
+    "RO": 26,
+    "BG": 17,
+    "PL": 17,
+    "SE": 12,
+    "CZ": 11
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Deutsche Bank",
+   "board_name": "",
+   "provider": "personio",
+   "handle": "deutschebank",
+   "roles": 3,
+   "europe": 2,
+   "countries": {
+    "GB": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Docebo",
+   "board_name": "Docebo Jobs",
+   "provider": "ashby",
+   "handle": "docebo",
+   "roles": 47,
+   "europe": 18,
+   "countries": {
+    "IT": 11,
+    "GB": 3,
+    "DE": 2,
+    "GR": 1,
+    "FR": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Docplanner",
+   "board_name": "Docplanner Jobs",
+   "provider": "ashby",
+   "handle": "docplanner",
+   "roles": 41,
+   "europe": 31,
+   "countries": {
+    "ES": 20,
+    "PL": 11
+   },
+   "italian": 8,
+   "verified": "2026-10-08",
+   "region": "PL"
+  },
+  {
+   "company": "Doctolib",
+   "board_name": "Doctolib",
+   "provider": "greenhouse",
+   "handle": "doctolib",
+   "roles": 150,
+   "europe": 148,
+   "countries": {
+    "FR": 76,
+    "DE": 66,
+    "IT": 6
+   },
+   "italian": 10,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Duolingo",
+   "board_name": "Duolingo",
+   "provider": "greenhouse",
+   "handle": "duolingo",
+   "roles": 58,
+   "europe": 2,
+   "countries": {
+    "GB": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Ebury",
+   "board_name": "Ebury",
+   "provider": "greenhouse",
+   "handle": "ebury",
+   "roles": 150,
+   "europe": 121,
+   "countries": {
+    "ES": 45,
+    "GB": 22,
+    "DE": 12,
+    "PT": 6,
+    "FR": 5,
+    "CH": 5,
+    "LT": 5,
+    "NL": 4,
+    "RO": 4,
+    "IT": 3
+   },
+   "italian": 4,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Effectory",
+   "board_name": "Effectory",
+   "provider": "recruitee",
+   "handle": "effectory",
+   "roles": 8,
+   "europe": 8,
+   "countries": {
+    "NL": 8
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Elastic",
+   "board_name": "Elastic",
+   "provider": "greenhouse",
+   "handle": "elastic",
+   "roles": 418,
+   "europe": 202,
+   "countries": {
+    "ES": 39,
+    "GR": 26,
+    "IE": 24,
+    "PT": 24,
+    "GB": 23,
+    "PL": 20,
+    "NO": 11,
+    "RO": 11,
+    "CH": 9,
+    "DE": 7
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Eleks",
+   "board_name": "Eleks",
+   "provider": "lever",
+   "handle": "eleks",
+   "roles": 21,
+   "europe": 9,
+   "countries": {
+    "PL": 6,
+    "DE": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PL"
+  },
+  {
+   "company": "Emag",
+   "board_name": "eMAG",
+   "provider": "greenhouse",
+   "handle": "emag",
+   "roles": 47,
+   "europe": 21,
+   "countries": {
+    "RO": 21
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "RO"
+  },
+  {
+   "company": "Emplifi",
+   "board_name": "Emplifi",
+   "provider": "greenhouse",
+   "handle": "emplifi",
+   "roles": 5,
+   "europe": 1,
+   "countries": {
+    "CZ": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CZ"
+  },
+  {
+   "company": "Endava",
+   "board_name": "Endava",
+   "provider": "smartrecruiters",
+   "handle": "endava",
+   "roles": 127,
+   "europe": 84,
+   "countries": {
+    "RO": 64,
+    "GB": 12,
+    "PL": 4,
+    "DE": 2,
+    "RS": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PL"
+  },
+  {
+   "company": "Enpal",
+   "board_name": "Enpal Jobs",
+   "provider": "ashby",
+   "handle": "enpal",
+   "roles": 145,
+   "europe": 106,
+   "countries": {
+    "DE": 82,
+    "IT": 20,
+    "AL": 4
+   },
+   "italian": 15,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Ethias",
+   "board_name": "Ethias",
+   "provider": "recruitee",
+   "handle": "ethias",
+   "roles": 29,
+   "europe": 29,
+   "countries": {
+    "BE": 29
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "BE"
+  },
+  {
+   "company": "Everphone",
+   "board_name": "Jobs bei",
+   "provider": "personio",
+   "handle": "everphone",
+   "roles": 7,
+   "europe": 7,
+   "countries": {
+    "DE": 7
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Fairphone",
+   "board_name": "Jobs at Fairphone",
+   "provider": "personio",
+   "handle": "fairphone",
+   "roles": 3,
+   "europe": 2,
+   "countries": {
+    "NL": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Farfetch",
+   "board_name": "Farfetch",
+   "provider": "lever",
+   "handle": "farfetch",
+   "roles": 50,
+   "europe": 46,
+   "countries": {
+    "PT": 34,
+    "GB": 12
+   },
+   "italian": 4,
+   "verified": "2026-10-08",
+   "region": "PT"
+  },
+  {
+   "company": "Fastly",
+   "board_name": "Fastly",
+   "provider": "greenhouse",
+   "handle": "fastly",
+   "roles": 49,
+   "europe": 6,
+   "countries": {
+    "GB": 4,
+    "DE": 1,
+    "FR": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Fastned",
+   "board_name": "Fastned",
+   "provider": "recruitee",
+   "handle": "fastned",
+   "roles": 39,
+   "europe": 39,
+   "countries": {
+    "NL": 18,
+    "DE": 6,
+    "FR": 6,
+    "DK": 5,
+    "ES": 2,
+    "GB": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Feedzai",
+   "board_name": "Feedzai",
+   "provider": "greenhouse",
+   "handle": "feedzai",
+   "roles": 26,
+   "europe": 18,
+   "countries": {
+    "PT": 16,
+    "GB": 1,
+    "DE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PT"
+  },
+  {
+   "company": "Fever",
+   "board_name": "Jobs at",
+   "provider": "personio",
+   "handle": "fever",
+   "roles": 3,
+   "europe": 2,
+   "countries": {
+    "GB": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Figma",
+   "board_name": "Figma",
+   "provider": "greenhouse",
+   "handle": "figma",
+   "roles": 150,
+   "europe": 32,
+   "countries": {
+    "GB": 19,
+    "DE": 8,
+    "FR": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Fin (Intercom)",
+   "board_name": "Fin",
+   "provider": "greenhouse",
+   "handle": "intercom",
+   "roles": 107,
+   "europe": 61,
+   "countries": {
+    "IE": 38,
+    "GB": 18,
+    "DE": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": ""
+  },
+  {
+   "company": "Finary",
+   "board_name": "Finary Jobs",
+   "provider": "ashby",
+   "handle": "finary",
+   "roles": 8,
+   "europe": 7,
+   "countries": {
+    "FR": 7
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Flink",
+   "board_name": "Flink Robotics Jobs",
+   "provider": "ashby",
+   "handle": "flink",
+   "roles": 7,
+   "europe": 7,
+   "countries": {
+    "CH": 7
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Flix",
+   "board_name": "Flix",
+   "provider": "greenhouse",
+   "handle": "flix",
+   "roles": 143,
+   "europe": 91,
+   "countries": {
+    "DE": 58,
+    "PT": 13,
+    "PL": 10,
+    "BG": 7,
+    "HR": 1,
+    "ES": 1,
+    "FR": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Forto",
+   "board_name": "Jobs",
+   "provider": "ashby",
+   "handle": "forto",
+   "roles": 10,
+   "europe": 9,
+   "countries": {
+    "DE": 8,
+    "PL": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Forvis Mazars",
+   "board_name": "Forvis Mazars",
+   "provider": "greenhouse",
+   "handle": "forvismazars",
+   "roles": 160,
+   "europe": 160,
+   "countries": {
+    "DE": 160
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Free Now",
+   "board_name": "Freenow by Lyft",
+   "provider": "greenhouse",
+   "handle": "freenow",
+   "roles": 21,
+   "europe": 21,
+   "countries": {
+    "DE": 12,
+    "ES": 4,
+    "GB": 2,
+    "IE": 2,
+    "GR": 1
+   },
+   "italian": 3,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Frequentis",
+   "board_name": "Frequentis",
+   "provider": "smartrecruiters",
+   "handle": "frequentis",
+   "roles": 8,
+   "europe": 8,
+   "countries": {
+    "RO": 8
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "AT"
+  },
+  {
+   "company": "Fresha",
+   "board_name": "",
+   "provider": "lever",
+   "handle": "fresha",
+   "roles": 153,
+   "europe": 95,
+   "countries": {
+    "GB": 40,
+    "PL": 11,
+    "XK": 8,
+    "IT": 8,
+    "ES": 7,
+    "FR": 4,
+    "NL": 3,
+    "PT": 3,
+    "DK": 2,
+    "GR": 2
+   },
+   "italian": 5,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Freshworks",
+   "board_name": "Freshworks",
+   "provider": "smartrecruiters",
+   "handle": "freshworks",
+   "roles": 126,
+   "europe": 22,
+   "countries": {
+    "GB": 16,
+    "DE": 4,
+    "FR": 2
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Frontify",
+   "board_name": "Frontify Jobs",
+   "provider": "ashby",
+   "handle": "frontify",
+   "roles": 15,
+   "europe": 5,
+   "countries": {
+    "GB": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CH"
+  },
+  {
+   "company": "Funda",
+   "board_name": "Funda",
+   "provider": "recruitee",
+   "handle": "funda",
+   "roles": 6,
+   "europe": 6,
+   "countries": {
+    "NL": 6
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Futurewhiz (Squla)",
+   "board_name": "Futurewhiz",
+   "provider": "recruitee",
+   "handle": "squla",
+   "roles": 5,
+   "europe": 5,
+   "countries": {
+    "NL": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": ""
+  },
+  {
+   "company": "G-P (Globalization Partners)",
+   "board_name": "G-P",
+   "provider": "greenhouse",
+   "handle": "globalizationpartners",
+   "roles": 44,
+   "europe": 14,
+   "countries": {
+    "IE": 6,
+    "GB": 3,
+    "IT": 2,
+    "PT": 1,
+    "RO": 1,
+    "ES": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": ""
+  },
+  {
+   "company": "Gameloft",
+   "board_name": "Gameloft",
+   "provider": "smartrecruiters",
+   "handle": "gameloft",
+   "roles": 54,
+   "europe": 19,
+   "countries": {
+    "ES": 9,
+    "RO": 6,
+    "BG": 2,
+    "FR": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Gen Digital",
+   "board_name": "Gen Digital Inc. Jobs",
+   "provider": "ashby",
+   "handle": "gen-digital",
+   "roles": 115,
+   "europe": 19,
+   "countries": {
+    "CZ": 16,
+    "GB": 2,
+    "IE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CZ"
+  },
+  {
+   "company": "GetYourGuide",
+   "board_name": "GetYourGuide",
+   "provider": "greenhouse",
+   "handle": "getyourguide",
+   "roles": 62,
+   "europe": 57,
+   "countries": {
+    "DE": 46,
+    "CH": 6,
+    "FR": 2,
+    "ES": 1,
+    "GB": 1,
+    "NL": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Gitlab",
+   "board_name": "GitLab",
+   "provider": "greenhouse",
+   "handle": "gitlab",
+   "roles": 216,
+   "europe": 48,
+   "countries": {
+    "GB": 19,
+    "DE": 7,
+    "PL": 6,
+    "FR": 5,
+    "IE": 5,
+    "NL": 2,
+    "AT": 2,
+    "SE": 1,
+    "CH": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Glia",
+   "board_name": "Glia Jobs",
+   "provider": "ashby",
+   "handle": "glia",
+   "roles": 20,
+   "europe": 4,
+   "countries": {
+    "EE": 2,
+    "PL": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "SK HR SI BALTICS"
+  },
+  {
+   "company": "Gooddata",
+   "board_name": "GoodData.AI Jobs",
+   "provider": "ashby",
+   "handle": "gooddata",
+   "roles": 5,
+   "europe": 5,
+   "countries": {
+    "CZ": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CZ"
+  },
+  {
+   "company": "GoStudent",
+   "board_name": "GoStudent",
+   "provider": "greenhouse",
+   "handle": "gostudent",
+   "roles": 26,
+   "europe": 25,
+   "countries": {
+    "AT": 11,
+    "ES": 6,
+    "DE": 5,
+    "IT": 3
+   },
+   "italian": 3,
+   "verified": "2026-10-08",
+   "region": "AT"
+  },
+  {
+   "company": "Grant Thornton",
+   "board_name": "",
+   "provider": "personio",
+   "handle": "grant-thornton",
+   "roles": 3,
+   "europe": 2,
+   "countries": {
+    "DE": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Greenchoice",
+   "board_name": "Greenchoice",
+   "provider": "recruitee",
+   "handle": "greenchoice",
+   "roles": 14,
+   "europe": 14,
+   "countries": {
+    "NL": 14
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Grover",
+   "board_name": "Grover",
+   "provider": "greenhouse",
+   "handle": "grover",
+   "roles": 3,
+   "europe": 3,
+   "countries": {
+    "DE": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Guardsquare",
+   "board_name": "Guardsquare",
+   "provider": "greenhouse",
+   "handle": "guardsquare",
+   "roles": 19,
+   "europe": 13,
+   "countries": {
+    "BE": 12,
+    "DE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "BE"
+  },
+  {
+   "company": "Hackajob",
+   "board_name": "hackajob",
+   "provider": "smartrecruiters",
+   "handle": "hackajob",
+   "roles": 4,
+   "europe": 4,
+   "countries": {
+    "RO": 2,
+    "GB": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PT"
+  },
+  {
+   "company": "Heetch",
+   "board_name": "Heetch",
+   "provider": "lever",
+   "handle": "heetch",
+   "roles": 17,
+   "europe": 8,
+   "countries": {
+    "FR": 5,
+    "BE": 2,
+    "ES": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "HelloFresh",
+   "board_name": "HelloFresh",
+   "provider": "greenhouse",
+   "handle": "hellofresh",
+   "roles": 415,
+   "europe": 191,
+   "countries": {
+    "DE": 94,
+    "PL": 30,
+    "GB": 28,
+    "NL": 14,
+    "FR": 9,
+    "IE": 5,
+    "DK": 4,
+    "CH": 4,
+    "NO": 1,
+    "SE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Helsing",
+   "board_name": "Helsing",
+   "provider": "greenhouse",
+   "handle": "helsing",
+   "roles": 164,
+   "europe": 149,
+   "countries": {
+    "DE": 117,
+    "GB": 20,
+    "ES": 10,
+    "FR": 1,
+    "SE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Holded",
+   "board_name": "Holded",
+   "provider": "recruitee",
+   "handle": "holded",
+   "roles": 12,
+   "europe": 12,
+   "countries": {
+    "ES": 12
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Holidu",
+   "board_name": "Holidu Jobs",
+   "provider": "ashby",
+   "handle": "holidu",
+   "roles": 10,
+   "europe": 10,
+   "countries": {
+    "DE": 8,
+    "ES": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Home24",
+   "board_name": "home24",
+   "provider": "smartrecruiters",
+   "handle": "home24",
+   "roles": 9,
+   "europe": 9,
+   "countries": {
+    "DE": 9
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Housinganywhere",
+   "board_name": "HousingAnywhere Group",
+   "provider": "greenhouse",
+   "handle": "housinganywhere",
+   "roles": 3,
+   "europe": 3,
+   "countries": {
+    "NL": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Hrk",
+   "board_name": "",
+   "provider": "personio",
+   "handle": "hrk",
+   "roles": 3,
+   "europe": 2,
+   "countries": {
+    "DE": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PL"
+  },
+  {
+   "company": "Huub",
+   "board_name": "HUUB",
+   "provider": "recruitee",
+   "handle": "huub",
+   "roles": 5,
+   "europe": 5,
+   "countries": {
+    "PT": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PT"
+  },
+  {
+   "company": "Huuuge",
+   "board_name": "Huuuge Games",
+   "provider": "recruitee",
+   "handle": "huuuge",
+   "roles": 7,
+   "europe": 7,
+   "countries": {
+    "PL": 7
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PL"
+  },
+  {
+   "company": "Inpost",
+   "board_name": "InPost",
+   "provider": "smartrecruiters",
+   "handle": "inpost",
+   "roles": 140,
+   "europe": 140,
+   "countries": {
+    "PL": 61,
+    "FR": 59,
+    "NL": 14,
+    "BE": 4,
+    "ES": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PL"
+  },
+  {
+   "company": "Ionos",
+   "board_name": "IONOS DE",
+   "provider": "greenhouse",
+   "handle": "ionos",
+   "roles": 36,
+   "europe": 33,
+   "countries": {
+    "DE": 33
+   },
+   "italian": 2,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Isar Aerospace",
+   "board_name": "Isar Aerospace SE",
+   "provider": "greenhouse",
+   "handle": "isaraerospace",
+   "roles": 109,
+   "europe": 108,
+   "countries": {
+    "DE": 94,
+    "SE": 8,
+    "NO": 6
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Itsme",
+   "board_name": "itsme®",
+   "provider": "recruitee",
+   "handle": "itsme",
+   "roles": 8,
+   "europe": 8,
+   "countries": {
+    "BE": 8
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "BE"
+  },
+  {
+   "company": "Jetbrains",
+   "board_name": "JetBrains",
+   "provider": "greenhouse",
+   "handle": "jetbrains",
+   "roles": 62,
+   "europe": 56,
+   "countries": {
+    "NL": 38,
+    "RS": 12,
+    "DE": 3,
+    "CY": 2,
+    "CZ": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Jobandtalent",
+   "board_name": "Job&Talent",
+   "provider": "lever",
+   "handle": "jobandtalent",
+   "roles": 29,
+   "europe": 15,
+   "countries": {
+    "ES": 14,
+    "SE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": ""
+  },
+  {
+   "company": "Jobteaser",
+   "board_name": "JobTeaser",
+   "provider": "smartrecruiters",
+   "handle": "jobteaser",
+   "roles": 8,
+   "europe": 8,
+   "countries": {
+    "FR": 6,
+    "DE": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Kiwi.com",
+   "board_name": "Kiwi.com Jobs",
+   "provider": "ashby",
+   "handle": "kiwi-com",
+   "roles": 5,
+   "europe": 5,
+   "countries": {
+    "CZ": 4,
+    "ES": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CZ"
+  },
+  {
+   "company": "Kolibri Games",
+   "board_name": "Kolibri Games",
+   "provider": "lever",
+   "handle": "kolibrigames",
+   "roles": 4,
+   "europe": 4,
+   "countries": {
+    "DE": 4
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Lansweeper",
+   "board_name": "Lansweeper",
+   "provider": "recruitee",
+   "handle": "lansweeper",
+   "roles": 23,
+   "europe": 13,
+   "countries": {
+    "BE": 7,
+    "GB": 4,
+    "ES": 2
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "BE"
+  },
+  {
+   "company": "Lastminute.com",
+   "board_name": "lastminute.com",
+   "provider": "smartrecruiters",
+   "handle": "lastminutecom",
+   "roles": 13,
+   "europe": 12,
+   "countries": {
+    "CH": 8,
+    "RO": 2,
+    "ES": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Lattice",
+   "board_name": "Lattice",
+   "provider": "greenhouse",
+   "handle": "lattice",
+   "roles": 14,
+   "europe": 1,
+   "countries": {
+    "GB": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Ledger",
+   "board_name": "Ledger Jobs",
+   "provider": "ashby",
+   "handle": "ledger",
+   "roles": 10,
+   "europe": 10,
+   "countries": {
+    "FR": 9,
+    "GB": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Lemon Markets",
+   "board_name": "lemon.markets Jobs",
+   "provider": "ashby",
+   "handle": "lemon-markets",
+   "roles": 15,
+   "europe": 15,
+   "countries": {
+    "DE": 15
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Lighthouse",
+   "board_name": "Lighthouse",
+   "provider": "greenhouse",
+   "handle": "lighthouse",
+   "roles": 37,
+   "europe": 20,
+   "countries": {
+    "ES": 12,
+    "BE": 7,
+    "GB": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "BE"
+  },
+  {
+   "company": "Lodgify",
+   "board_name": "Lodgify",
+   "provider": "lever",
+   "handle": "lodgify",
+   "roles": 11,
+   "europe": 9,
+   "countries": {
+    "ES": 9
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Lokalise",
+   "board_name": "Lokalise",
+   "provider": "greenhouse",
+   "handle": "lokalise",
+   "roles": 3,
+   "europe": 2,
+   "countries": {
+    "LV": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "SK HR SI BALTICS"
+  },
+  {
+   "company": "Luminus",
+   "board_name": "Luminus",
+   "provider": "recruitee",
+   "handle": "luminus",
+   "roles": 17,
+   "europe": 17,
+   "countries": {
+    "BE": 17
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "BE"
+  },
+  {
+   "company": "Lvmh",
+   "board_name": "LVMH Parfums & Kosmetik GmbH",
+   "provider": "recruitee",
+   "handle": "lvmh",
+   "roles": 31,
+   "europe": 31,
+   "countries": {
+    "DE": 31
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Magazino",
+   "board_name": "Jobs bei Magazino GmbH",
+   "provider": "personio",
+   "handle": "magazino",
+   "roles": 5,
+   "europe": 5,
+   "countries": {
+    "DE": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Make",
+   "board_name": "Make",
+   "provider": "greenhouse",
+   "handle": "make",
+   "roles": 7,
+   "europe": 7,
+   "countries": {
+    "CZ": 5,
+    "ES": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Malt",
+   "board_name": "Malt",
+   "provider": "lever",
+   "handle": "malt",
+   "roles": 31,
+   "europe": 31,
+   "countries": {
+    "FR": 20,
+    "GB": 6,
+    "DE": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Mazars",
+   "board_name": "MAZARS",
+   "provider": "smartrecruiters",
+   "handle": "mazars",
+   "roles": 209,
+   "europe": 198,
+   "countries": {
+    "FR": 198
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Mews Systems",
+   "board_name": "Mews",
+   "provider": "greenhouse",
+   "handle": "mewssystems",
+   "roles": 35,
+   "europe": 22,
+   "countries": {
+    "CZ": 13,
+    "GB": 2,
+    "DE": 2,
+    "NL": 2,
+    "FR": 1,
+    "ES": 1,
+    "IE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CZ"
+  },
+  {
+   "company": "Mindbody",
+   "board_name": "Mindbody",
+   "provider": "greenhouse",
+   "handle": "mindbody",
+   "roles": 22,
+   "europe": 2,
+   "countries": {
+    "GB": 2
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Mirakl",
+   "board_name": "Mirakl",
+   "provider": "greenhouse",
+   "handle": "mirakl",
+   "roles": 29,
+   "europe": 29,
+   "countries": {
+    "FR": 22,
+    "GB": 3,
+    "ES": 3,
+    "DE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Miro",
+   "board_name": "Miro Jobs",
+   "provider": "ashby",
+   "handle": "miro",
+   "roles": 24,
+   "europe": 5,
+   "countries": {
+    "NL": 3,
+    "DE": 1,
+    "GB": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Mobimeo",
+   "board_name": "Jobs bei Mobimeo GmbH",
+   "provider": "personio",
+   "handle": "mobimeo",
+   "roles": 3,
+   "europe": 3,
+   "countries": {
+    "DE": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Mollie",
+   "board_name": "Mollie Jobs",
+   "provider": "ashby",
+   "handle": "mollie",
+   "roles": 47,
+   "europe": 44,
+   "countries": {
+    "NL": 14,
+    "PT": 12,
+    "IT": 7,
+    "FR": 4,
+    "GB": 2,
+    "PL": 2,
+    "RO": 1,
+    "DK": 1,
+    "DE": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Mongodb",
+   "board_name": "MongoDB",
+   "provider": "greenhouse",
+   "handle": "mongodb",
+   "roles": 393,
+   "europe": 100,
+   "countries": {
+    "IE": 57,
+    "DE": 14,
+    "FR": 9,
+    "GB": 8,
+    "ES": 3,
+    "NL": 3,
+    "PL": 3,
+    "CH": 2,
+    "SE": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Monzo",
+   "board_name": "Monzo",
+   "provider": "greenhouse",
+   "handle": "monzo",
+   "roles": 67,
+   "europe": 65,
+   "countries": {
+    "GB": 50,
+    "ES": 10,
+    "IE": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Moss",
+   "board_name": "Moss Jobs",
+   "provider": "ashby",
+   "handle": "moss",
+   "roles": 32,
+   "europe": 32,
+   "countries": {
+    "DE": 24,
+    "NL": 3,
+    "GB": 2,
+    "PL": 2,
+    "EE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Mozilla",
+   "board_name": "Mozilla",
+   "provider": "greenhouse",
+   "handle": "mozilla",
+   "roles": 91,
+   "europe": 34,
+   "countries": {
+    "DE": 10,
+    "FR": 5,
+    "FI": 4,
+    "ES": 4,
+    "BE": 4,
+    "SE": 4,
+    "NL": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Musixmatch",
+   "board_name": "Musixmatch S.p.a",
+   "provider": "lever",
+   "handle": "musixmatch",
+   "roles": 3,
+   "europe": 2,
+   "countries": {
+    "IT": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "N Ix",
+   "board_name": "N-iX",
+   "provider": "greenhouse",
+   "handle": "nix",
+   "roles": 133,
+   "europe": 30,
+   "countries": {
+    "PL": 18,
+    "RO": 7,
+    "BG": 2,
+    "MD": 1,
+    "ES": 1,
+    "PT": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PL"
+  },
+  {
+   "company": "N26",
+   "board_name": "N26",
+   "provider": "greenhouse",
+   "handle": "n26",
+   "roles": 43,
+   "europe": 43,
+   "countries": {
+    "DE": 27,
+    "ES": 14,
+    "FR": 2
+   },
+   "italian": 5,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "n8n",
+   "board_name": "n8n Jobs",
+   "provider": "ashby",
+   "handle": "n8n",
+   "roles": 38,
+   "europe": 24,
+   "countries": {
+    "DE": 23,
+    "GB": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Navvis",
+   "board_name": "NavVis",
+   "provider": "greenhouse",
+   "handle": "navvis",
+   "roles": 31,
+   "europe": 25,
+   "countries": {
+    "DE": 25
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Neon",
+   "board_name": "Jobs bei NEON",
+   "provider": "personio",
+   "handle": "neon",
+   "roles": 20,
+   "europe": 20,
+   "countries": {
+    "DE": 20
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CH"
+  },
+  {
+   "company": "Netatmo",
+   "board_name": "Netatmo",
+   "provider": "smartrecruiters",
+   "handle": "netatmo",
+   "roles": 9,
+   "europe": 9,
+   "countries": {
+    "FR": 9
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Nexthink",
+   "board_name": "Nexthink",
+   "provider": "smartrecruiters",
+   "handle": "nexthink",
+   "roles": 72,
+   "europe": 32,
+   "countries": {
+    "ES": 13,
+    "GB": 8,
+    "CH": 5,
+    "FR": 3,
+    "DE": 1,
+    "NL": 1,
+    "SE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CH"
+  },
+  {
+   "company": "Nielseniq",
+   "board_name": "NielsenIQ",
+   "provider": "smartrecruiters",
+   "handle": "nielseniq",
+   "roles": 418,
+   "europe": 128,
+   "countries": {
+    "PL": 18,
+    "FR": 17,
+    "GB": 13,
+    "DE": 13,
+    "BG": 12,
+    "IT": 8,
+    "BE": 7,
+    "ES": 6,
+    "HU": 5,
+    "PT": 5
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Nord Security",
+   "board_name": "Nord Security Jobs",
+   "provider": "ashby",
+   "handle": "nord-security",
+   "roles": 136,
+   "europe": 135,
+   "countries": {
+    "LT": 88,
+    "PL": 44,
+    "NL": 2,
+    "FR": 1
+   },
+   "italian": 2,
+   "verified": "2026-10-08",
+   "region": "SK HR SI BALTICS"
+  },
+  {
+   "company": "Notion",
+   "board_name": "Notion Jobs",
+   "provider": "ashby",
+   "handle": "notion",
+   "roles": 135,
+   "europe": 30,
+   "countries": {
+    "IE": 16,
+    "FR": 6,
+    "GB": 5,
+    "DE": 3
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Ohpen",
+   "board_name": "Jobs at",
+   "provider": "personio",
+   "handle": "ohpen",
+   "roles": 17,
+   "europe": 15,
+   "countries": {
+    "SK": 6,
+    "NL": 5,
+    "ES": 2,
+    "GB": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Okta",
+   "board_name": "Okta",
+   "provider": "greenhouse",
+   "handle": "okta",
+   "roles": 363,
+   "europe": 28,
+   "countries": {
+    "GB": 10,
+    "IE": 10,
+    "ES": 3,
+    "DE": 3,
+    "FR": 1,
+    "PL": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "On Running",
+   "board_name": "On",
+   "provider": "greenhouse",
+   "handle": "onrunning",
+   "roles": 225,
+   "europe": 51,
+   "countries": {
+    "CH": 33,
+    "FR": 6,
+    "GB": 5,
+    "DE": 3,
+    "IT": 2,
+    "NL": 1,
+    "ES": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CH"
+  },
+  {
+   "company": "Onetrust",
+   "board_name": "OneTrust",
+   "provider": "greenhouse",
+   "handle": "onetrust",
+   "roles": 94,
+   "europe": 23,
+   "countries": {
+    "ES": 14,
+    "GB": 5,
+    "NL": 2,
+    "FR": 1,
+    "DE": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Ottonova",
+   "board_name": "Jobs bei ottonova Holding AG",
+   "provider": "personio",
+   "handle": "ottonova",
+   "roles": 9,
+   "europe": 9,
+   "countries": {
+    "DE": 9
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Owkin",
+   "board_name": "Owkin Jobs",
+   "provider": "ashby",
+   "handle": "owkin",
+   "roles": 4,
+   "europe": 2,
+   "countries": {
+    "FR": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Oxylabs",
+   "board_name": "Oxylabs",
+   "provider": "lever",
+   "handle": "oxylabs",
+   "roles": 64,
+   "europe": 61,
+   "countries": {
+    "LT": 53,
+    "PL": 8
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "SK HR SI BALTICS"
+  },
+  {
+   "company": "Oyster",
+   "board_name": "Oyster Jobs",
+   "provider": "ashby",
+   "handle": "oyster",
+   "roles": 22,
+   "europe": 5,
+   "countries": {
+    "ES": 4,
+    "NL": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Palantir",
+   "board_name": "Palantir Technologies",
+   "provider": "lever",
+   "handle": "palantir",
+   "roles": 315,
+   "europe": 56,
+   "countries": {
+    "GB": 43,
+    "FR": 3,
+    "LT": 2,
+    "NO": 2,
+    "ES": 2,
+    "PL": 1,
+    "NL": 1,
+    "DE": 1,
+    "SE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Parloa",
+   "board_name": "Parloa",
+   "provider": "greenhouse",
+   "handle": "parloa",
+   "roles": 51,
+   "europe": 29,
+   "countries": {
+    "DE": 24,
+    "GB": 3,
+    "FR": 1,
+    "IT": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Payconiq",
+   "board_name": "Payconiq",
+   "provider": "recruitee",
+   "handle": "payconiq",
+   "roles": 3,
+   "europe": 3,
+   "countries": {
+    "NL": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "BE"
+  },
+  {
+   "company": "Payhawk",
+   "board_name": "Jobs at",
+   "provider": "personio",
+   "handle": "payhawk",
+   "roles": 3,
+   "europe": 3,
+   "countries": {
+    "GB": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "BG"
+  },
+  {
+   "company": "Pennylane",
+   "board_name": "Pennylane SAS Jobs",
+   "provider": "ashby",
+   "handle": "pennylane",
+   "roles": 145,
+   "europe": 86,
+   "countries": {
+    "FR": 65,
+    "DE": 17,
+    "ES": 4
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "People Can Fly",
+   "board_name": "People Can Fly",
+   "provider": "smartrecruiters",
+   "handle": "peoplecanfly",
+   "roles": 10,
+   "europe": 3,
+   "countries": {
+    "PL": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PL"
+  },
+  {
+   "company": "Perk",
+   "board_name": "Perk Jobs",
+   "provider": "ashby",
+   "handle": "perk",
+   "roles": 128,
+   "europe": 103,
+   "countries": {
+    "ES": 52,
+    "GB": 38,
+    "DE": 9,
+    "NL": 2,
+    "PT": 1,
+    "CH": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Pipedrive",
+   "board_name": "Pipedrive",
+   "provider": "lever",
+   "handle": "pipedrive",
+   "roles": 8,
+   "europe": 8,
+   "countries": {
+    "DE": 2,
+    "GB": 2,
+    "EE": 2,
+    "PT": 1,
+    "IE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PT"
+  },
+  {
+   "company": "Pleo",
+   "board_name": "Pleo Jobs",
+   "provider": "ashby",
+   "handle": "pleo",
+   "roles": 32,
+   "europe": 32,
+   "countries": {
+    "GB": 15,
+    "PT": 8,
+    "ES": 4,
+    "NL": 2,
+    "DK": 2,
+    "DE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Pliant",
+   "board_name": "Pliant Jobs",
+   "provider": "ashby",
+   "handle": "pliant",
+   "roles": 39,
+   "europe": 20,
+   "countries": {
+    "DE": 14,
+    "GB": 6
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Polarsteps",
+   "board_name": "Polarsteps Jobs",
+   "provider": "ashby",
+   "handle": "polarsteps",
+   "roles": 3,
+   "europe": 3,
+   "countries": {
+    "NL": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Prewave",
+   "board_name": "Jobs at Prewave",
+   "provider": "personio",
+   "handle": "prewave",
+   "roles": 8,
+   "europe": 8,
+   "countries": {
+    "AT": 8
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "AT"
+  },
+  {
+   "company": "Prima Assicurazioni",
+   "board_name": "Offerte di lavoro a Prima Assicurazioni",
+   "provider": "personio",
+   "handle": "prima-assicurazioni",
+   "roles": 77,
+   "europe": 77,
+   "countries": {
+    "IT": 61,
+    "ES": 16
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Prosus",
+   "board_name": "Prosus Jobs",
+   "provider": "ashby",
+   "handle": "prosus",
+   "roles": 9,
+   "europe": 9,
+   "countries": {
+    "NL": 8,
+    "GB": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Proton",
+   "board_name": "Proton",
+   "provider": "greenhouse",
+   "handle": "proton",
+   "roles": 58,
+   "europe": 54,
+   "countries": {
+    "CH": 18,
+    "GB": 14,
+    "ES": 11,
+    "FR": 9,
+    "MK": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Qonto",
+   "board_name": "Qonto",
+   "provider": "lever",
+   "handle": "qonto",
+   "roles": 47,
+   "europe": 47,
+   "countries": {
+    "FR": 27,
+    "DE": 7,
+    "ES": 6,
+    "IT": 4,
+    "RS": 2,
+    "NL": 1
+   },
+   "italian": 2,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Qualtrics",
+   "board_name": "Qualtrics",
+   "provider": "greenhouse",
+   "handle": "qualtrics",
+   "roles": 46,
+   "europe": 6,
+   "countries": {
+    "PL": 3,
+    "DE": 2,
+    "IT": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Raisin",
+   "board_name": "Raisin",
+   "provider": "greenhouse",
+   "handle": "raisin",
+   "roles": 38,
+   "europe": 36,
+   "countries": {
+    "DE": 30,
+    "GB": 5,
+    "ES": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Ramp",
+   "board_name": "Ramp Jobs",
+   "provider": "ashby",
+   "handle": "ramp",
+   "roles": 161,
+   "europe": 12,
+   "countries": {
+    "GB": 12
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PL"
+  },
+  {
+   "company": "Randstad",
+   "board_name": "Jobs bei Randstad Austria",
+   "provider": "personio",
+   "handle": "randstad",
+   "roles": 6,
+   "europe": 2,
+   "countries": {
+    "AT": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PT"
+  },
+  {
+   "company": "Red Bull",
+   "board_name": "Red Bull",
+   "provider": "smartrecruiters",
+   "handle": "redbull",
+   "roles": 1191,
+   "europe": 350,
+   "countries": {
+    "AT": 106,
+    "DE": 64,
+    "IT": 32,
+    "PL": 27,
+    "GB": 26,
+    "ES": 25,
+    "FR": 21,
+    "RO": 12,
+    "HU": 9,
+    "GR": 6
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "AT"
+  },
+  {
+   "company": "Refurbed",
+   "board_name": " refurbed",
+   "provider": "greenhouse",
+   "handle": "refurbed",
+   "roles": 10,
+   "europe": 1,
+   "countries": {
+    "AT": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Rindus",
+   "board_name": "Jobs at rindus",
+   "provider": "personio",
+   "handle": "rindus",
+   "roles": 12,
+   "europe": 12,
+   "countries": {
+    "ES": 12
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Rocket Internet",
+   "board_name": "Rocket Internet",
+   "provider": "smartrecruiters",
+   "handle": "rocketinternet",
+   "roles": 17,
+   "europe": 13,
+   "countries": {
+    "DE": 10,
+    "GB": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Rohlik",
+   "board_name": "Rohlik Jobs",
+   "provider": "ashby",
+   "handle": "rohlik",
+   "roles": 101,
+   "europe": 82,
+   "countries": {
+    "CZ": 45,
+    "DE": 30,
+    "HU": 4,
+    "AT": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CZ"
+  },
+  {
+   "company": "Roland Berger",
+   "board_name": "Roland Berger",
+   "provider": "smartrecruiters",
+   "handle": "rolandberger",
+   "roles": 213,
+   "europe": 144,
+   "countries": {
+    "DE": 58,
+    "NL": 22,
+    "FR": 10,
+    "PT": 9,
+    "RO": 9,
+    "BE": 8,
+    "SE": 6,
+    "CH": 5,
+    "HU": 5,
+    "IT": 4
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Rtl Group",
+   "board_name": "RTL",
+   "provider": "recruitee",
+   "handle": "rtl",
+   "roles": 4,
+   "europe": 4,
+   "countries": {
+    "NL": 4
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "LU"
+  },
+  {
+   "company": "Satispay",
+   "board_name": "Satispay Jobs",
+   "provider": "ashby",
+   "handle": "satispay",
+   "roles": 106,
+   "europe": 106,
+   "countries": {
+    "IT": 53,
+    "LU": 19,
+    "ES": 9,
+    "GB": 6,
+    "NL": 5,
+    "PL": 3,
+    "PT": 3,
+    "FR": 2,
+    "DE": 2,
+    "EE": 1
+   },
+   "italian": 52,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Scaleway",
+   "board_name": "Scaleway",
+   "provider": "lever",
+   "handle": "scaleway",
+   "roles": 28,
+   "europe": 28,
+   "countries": {
+    "FR": 25,
+    "IT": 1,
+    "PL": 1,
+    "SE": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Scandit",
+   "board_name": "Scandit",
+   "provider": "greenhouse",
+   "handle": "scandit",
+   "roles": 12,
+   "europe": 8,
+   "countries": {
+    "PL": 3,
+    "GB": 3,
+    "FI": 1,
+    "CH": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CH"
+  },
+  {
+   "company": "Scopely",
+   "board_name": "Scopely",
+   "provider": "greenhouse",
+   "handle": "scopely",
+   "roles": 171,
+   "europe": 99,
+   "countries": {
+    "ES": 79,
+    "GB": 12,
+    "IE": 7,
+    "CH": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Scout24",
+   "board_name": "Scout24",
+   "provider": "greenhouse",
+   "handle": "scout24",
+   "roles": 16,
+   "europe": 16,
+   "countries": {
+    "DE": 15,
+    "AT": 1
+   },
+   "italian": 4,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Sequra",
+   "board_name": "SeQura",
+   "provider": "recruitee",
+   "handle": "sequra",
+   "roles": 13,
+   "europe": 13,
+   "countries": {
+    "ES": 13
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Servicenow",
+   "board_name": "ServiceNow",
+   "provider": "smartrecruiters",
+   "handle": "servicenow",
+   "roles": 704,
+   "europe": 106,
+   "countries": {
+    "GB": 25,
+    "AT": 17,
+    "DE": 14,
+    "IE": 13,
+    "SE": 7,
+    "NL": 7,
+    "ES": 5,
+    "BE": 3,
+    "IT": 3,
+    "NO": 2
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Seyna",
+   "board_name": "Seyna Jobs",
+   "provider": "ashby",
+   "handle": "seyna",
+   "roles": 15,
+   "europe": 15,
+   "countries": {
+    "FR": 15
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Shapr3d",
+   "board_name": "Shapr3D Jobs",
+   "provider": "ashby",
+   "handle": "shapr3d",
+   "roles": 4,
+   "europe": 4,
+   "countries": {
+    "HU": 4
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "HU"
+  },
+  {
+   "company": "Shift Technology",
+   "board_name": "Shift Technology",
+   "provider": "greenhouse",
+   "handle": "shifttechnology",
+   "roles": 31,
+   "europe": 18,
+   "countries": {
+    "FR": 13,
+    "GB": 3,
+    "ES": 1,
+    "DE": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Showpad",
+   "board_name": "Showpad",
+   "provider": "greenhouse",
+   "handle": "showpad",
+   "roles": 28,
+   "europe": 14,
+   "countries": {
+    "BE": 5,
+    "RO": 5,
+    "GB": 2,
+    "NL": 1,
+    "DE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "BE"
+  },
+  {
+   "company": "Sika",
+   "board_name": "",
+   "provider": "personio",
+   "handle": "sika",
+   "roles": 6,
+   "europe": 5,
+   "countries": {
+    "DE": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CH"
+  },
+  {
+   "company": "Sixt",
+   "board_name": "SIXT",
+   "provider": "smartrecruiters",
+   "handle": "sixt",
+   "roles": 505,
+   "europe": 386,
+   "countries": {
+    "DE": 249,
+    "ES": 40,
+    "GB": 39,
+    "PT": 22,
+    "FR": 10,
+    "AT": 8,
+    "IT": 6,
+    "CH": 6,
+    "NL": 3,
+    "BE": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Snowflake",
+   "board_name": "Snowflake Jobs",
+   "provider": "ashby",
+   "handle": "snowflake",
+   "roles": 357,
+   "europe": 68,
+   "countries": {
+    "GB": 29,
+    "PL": 11,
+    "DE": 10,
+    "IE": 7,
+    "FR": 3,
+    "NL": 3,
+    "SE": 3,
+    "BE": 1,
+    "FI": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Software Mind",
+   "board_name": "Software Mind",
+   "provider": "smartrecruiters",
+   "handle": "softwaremind",
+   "roles": 42,
+   "europe": 30,
+   "countries": {
+    "PL": 25,
+    "RO": 3,
+    "MD": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PL"
+  },
+  {
+   "company": "Sorare",
+   "board_name": "Sorare Jobs",
+   "provider": "ashby",
+   "handle": "sorare",
+   "roles": 4,
+   "europe": 4,
+   "countries": {
+    "FR": 4
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Spotify",
+   "board_name": "Spotify",
+   "provider": "lever",
+   "handle": "spotify",
+   "roles": 76,
+   "europe": 39,
+   "countries": {
+    "GB": 26,
+    "SE": 11,
+    "FR": 1,
+    "BE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Squarespace",
+   "board_name": "Squarespace",
+   "provider": "greenhouse",
+   "handle": "squarespace",
+   "roles": 32,
+   "europe": 8,
+   "countries": {
+    "IE": 6,
+    "PT": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Staffbase",
+   "board_name": "Staffbase",
+   "provider": "greenhouse",
+   "handle": "staffbase",
+   "roles": 26,
+   "europe": 15,
+   "countries": {
+    "DE": 14,
+    "GB": 1
+   },
+   "italian": 2,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Statista",
+   "board_name": "Statista Jobs",
+   "provider": "ashby",
+   "handle": "statista",
+   "roles": 36,
+   "europe": 35,
+   "countries": {
+    "DE": 33,
+    "GB": 2
+   },
+   "italian": 3,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Stepstone",
+   "board_name": "StepStone Group",
+   "provider": "greenhouse",
+   "handle": "stepstone",
+   "roles": 52,
+   "europe": 12,
+   "countries": {
+    "IE": 7,
+    "GB": 3,
+    "CH": 2
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Stripe",
+   "board_name": "Stripe",
+   "provider": "greenhouse",
+   "handle": "stripe",
+   "roles": 726,
+   "europe": 134,
+   "countries": {
+    "IE": 72,
+    "GB": 43,
+    "FR": 5,
+    "RO": 4,
+    "PL": 3,
+    "ES": 3,
+    "DE": 1,
+    "IT": 1,
+    "SE": 1,
+    "LU": 1
+   },
+   "italian": 4,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Suitsupply",
+   "board_name": "Suitsupply",
+   "provider": "greenhouse",
+   "handle": "suitsupply",
+   "roles": 167,
+   "europe": 64,
+   "countries": {
+    "NL": 35,
+    "DE": 11,
+    "IT": 5,
+    "GB": 4,
+    "SE": 3,
+    "IS": 1,
+    "PT": 1,
+    "FI": 1,
+    "BE": 1,
+    "FR": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "SumUp",
+   "board_name": "SumUp",
+   "provider": "greenhouse",
+   "handle": "sumup",
+   "roles": 347,
+   "europe": 294,
+   "countries": {
+    "GB": 69,
+    "IT": 47,
+    "FR": 44,
+    "DE": 43,
+    "BG": 34,
+    "ES": 17,
+    "IE": 14,
+    "LT": 5,
+    "NL": 5,
+    "FI": 3
+   },
+   "italian": 3,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Sunrise",
+   "board_name": "Sunrise Robotics Corporation Jobs",
+   "provider": "ashby",
+   "handle": "sunrise",
+   "roles": 11,
+   "europe": 3,
+   "countries": {
+    "SI": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CH"
+  },
+  {
+   "company": "Surveymonkey",
+   "board_name": "SurveyMonkey Jobs",
+   "provider": "ashby",
+   "handle": "surveymonkey",
+   "roles": 18,
+   "europe": 3,
+   "countries": {
+    "IT": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Sutherland",
+   "board_name": "Sutherland",
+   "provider": "smartrecruiters",
+   "handle": "sutherland",
+   "roles": 409,
+   "europe": 32,
+   "countries": {
+    "BG": 17,
+    "GB": 7,
+    "XK": 6,
+    "RO": 2
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "BG"
+  },
+  {
+   "company": "Swile",
+   "board_name": "Swile",
+   "provider": "lever",
+   "handle": "swile",
+   "roles": 29,
+   "europe": 15,
+   "countries": {
+    "FR": 15
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Swissquote",
+   "board_name": "Swissquote",
+   "provider": "smartrecruiters",
+   "handle": "swissquote",
+   "roles": 47,
+   "europe": 44,
+   "countries": {
+    "CH": 34,
+    "LU": 5,
+    "RO": 2,
+    "MT": 1,
+    "GB": 1,
+    "CY": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "CH"
+  },
+  {
+   "company": "Sword Health",
+   "board_name": "Sword",
+   "provider": "greenhouse",
+   "handle": "swordhealth",
+   "roles": 44,
+   "europe": 26,
+   "countries": {
+    "PT": 14,
+    "DE": 9,
+    "GR": 2,
+    "GB": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PT"
+  },
+  {
+   "company": "Tactile Games",
+   "board_name": "Tactile Games",
+   "provider": "greenhouse",
+   "handle": "tactilegames",
+   "roles": 3,
+   "europe": 3,
+   "countries": {
+    "DK": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Tacto",
+   "board_name": "Tacto Jobs",
+   "provider": "ashby",
+   "handle": "tacto",
+   "roles": 22,
+   "europe": 22,
+   "countries": {
+    "DE": 22
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Taxdoo",
+   "board_name": "",
+   "provider": "personio",
+   "handle": "taxdoo",
+   "roles": 8,
+   "europe": 8,
+   "countries": {
+    "DE": 8
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Teleperformance",
+   "board_name": "Teleperformance Benelux & Surinam",
+   "provider": "recruitee",
+   "handle": "teleperformance",
+   "roles": 19,
+   "europe": 4,
+   "countries": {
+    "NL": 3,
+    "BE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Telus Digital",
+   "board_name": "TELUS Digital Jobs",
+   "provider": "ashby",
+   "handle": "telus-digital",
+   "roles": 68,
+   "europe": 5,
+   "countries": {
+    "PT": 3,
+    "BG": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Ten Square Games",
+   "board_name": "Ten Square Games",
+   "provider": "recruitee",
+   "handle": "tensquaregames",
+   "roles": 11,
+   "europe": 11,
+   "countries": {
+    "PL": 11
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PL"
+  },
+  {
+   "company": "Teneo",
+   "board_name": "Teneo ",
+   "provider": "greenhouse",
+   "handle": "teneo",
+   "roles": 50,
+   "europe": 14,
+   "countries": {
+    "GB": 10,
+    "DK": 2,
+    "FR": 1,
+    "DE": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Text",
+   "board_name": "Text",
+   "provider": "lever",
+   "handle": "text",
+   "roles": 4,
+   "europe": 4,
+   "countries": {
+    "PL": 4
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PL"
+  },
+  {
+   "company": "Thermondo",
+   "board_name": "Jobs bei",
+   "provider": "personio",
+   "handle": "thermondo",
+   "roles": 200,
+   "europe": 66,
+   "countries": {
+    "DE": 66
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Toast",
+   "board_name": "Toast",
+   "provider": "greenhouse",
+   "handle": "toast",
+   "roles": 307,
+   "europe": 28,
+   "countries": {
+    "IE": 17,
+    "GB": 9,
+    "AL": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Tony S Chocolonely",
+   "board_name": "Tony's Chocolonely",
+   "provider": "recruitee",
+   "handle": "tonyschocolonely",
+   "roles": 8,
+   "europe": 7,
+   "countries": {
+    "NL": 3,
+    "SE": 2,
+    "BE": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Too Good To Go",
+   "board_name": "Too Good To Go Jobs",
+   "provider": "ashby",
+   "handle": "toogoodtogo",
+   "roles": 38,
+   "europe": 20,
+   "countries": {
+    "PL": 5,
+    "GB": 3,
+    "DK": 3,
+    "IT": 2,
+    "AT": 2,
+    "BE": 2,
+    "FR": 1,
+    "ES": 1,
+    "PT": 1
+   },
+   "italian": 4,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Tourlane",
+   "board_name": "Tourlane Jobs",
+   "provider": "ashby",
+   "handle": "tourlane",
+   "roles": 5,
+   "europe": 4,
+   "countries": {
+    "FR": 2,
+    "DE": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Trade Republic Bank",
+   "board_name": "Trade Republic",
+   "provider": "greenhouse",
+   "handle": "traderepublicbank",
+   "roles": 43,
+   "europe": 15,
+   "countries": {
+    "DE": 9,
+    "FR": 4,
+    "GB": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Travix",
+   "board_name": "Travix",
+   "provider": "greenhouse",
+   "handle": "travix",
+   "roles": 5,
+   "europe": 5,
+   "countries": {
+    "NL": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Tripadvisor",
+   "board_name": "Tripadvisor",
+   "provider": "greenhouse",
+   "handle": "tripadvisor",
+   "roles": 104,
+   "europe": 87,
+   "countries": {
+    "GB": 49,
+    "PL": 13,
+    "ES": 9,
+    "NL": 3,
+    "IT": 3,
+    "IE": 3,
+    "HR": 2,
+    "PT": 1,
+    "IS": 1,
+    "SE": 1
+   },
+   "italian": 9,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Trivago",
+   "board_name": "trivago",
+   "provider": "greenhouse",
+   "handle": "trivago",
+   "roles": 15,
+   "europe": 15,
+   "countries": {
+    "DE": 15
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Twikey",
+   "board_name": "",
+   "provider": "personio",
+   "handle": "twikey",
+   "roles": 3,
+   "europe": 2,
+   "countries": {
+    "GB": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "BE"
+  },
+  {
+   "company": "Twilio",
+   "board_name": "Twilio",
+   "provider": "greenhouse",
+   "handle": "twilio",
+   "roles": 131,
+   "europe": 29,
+   "countries": {
+    "GB": 11,
+    "IE": 10,
+    "EE": 5,
+    "ES": 3
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Typeform",
+   "board_name": "Typeform",
+   "provider": "greenhouse",
+   "handle": "typeform",
+   "roles": 13,
+   "europe": 9,
+   "countries": {
+    "DE": 5,
+    "GB": 3,
+    "IE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Uipath",
+   "board_name": "UiPath Jobs",
+   "provider": "ashby",
+   "handle": "uipath",
+   "roles": 105,
+   "europe": 35,
+   "countries": {
+    "RO": 21,
+    "GB": 8,
+    "FR": 4,
+    "IT": 1,
+    "NO": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "RO"
+  },
+  {
+   "company": "Upvest",
+   "board_name": "Upvest Jobs",
+   "provider": "ashby",
+   "handle": "upvest",
+   "roles": 15,
+   "europe": 15,
+   "countries": {
+    "DE": 15
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Vandebron",
+   "board_name": "Vandebron",
+   "provider": "recruitee",
+   "handle": "vandebron",
+   "roles": 13,
+   "europe": 13,
+   "countries": {
+    "NL": 13
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Vattenfall",
+   "board_name": "Vattenfall",
+   "provider": "smartrecruiters",
+   "handle": "vattenfall",
+   "roles": 299,
+   "europe": 299,
+   "countries": {
+    "SE": 184,
+    "DE": 74,
+    "NL": 19,
+    "DK": 11,
+    "GB": 7,
+    "PL": 4
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "NL"
+  },
+  {
+   "company": "Vay",
+   "board_name": "Vay",
+   "provider": "greenhouse",
+   "handle": "vay",
+   "roles": 15,
+   "europe": 1,
+   "countries": {
+    "DE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Veepee",
+   "board_name": "Veepee",
+   "provider": "lever",
+   "handle": "veepee",
+   "roles": 87,
+   "europe": 41,
+   "countries": {
+    "ES": 13,
+    "FR": 13,
+    "IT": 6,
+    "BE": 6,
+    "DE": 2,
+    "GB": 1
+   },
+   "italian": 2,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Veriff",
+   "board_name": "Veriff",
+   "provider": "greenhouse",
+   "handle": "veriff",
+   "roles": 12,
+   "europe": 7,
+   "countries": {
+    "EE": 6,
+    "ES": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "SK HR SI BALTICS"
+  },
+  {
+   "company": "Vestiaire Collective",
+   "board_name": "Vestiaire Collective",
+   "provider": "lever",
+   "handle": "vestiairecollective",
+   "roles": 6,
+   "europe": 5,
+   "countries": {
+    "FR": 4,
+    "DE": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Vitol",
+   "board_name": "Vitol",
+   "provider": "smartrecruiters",
+   "handle": "vitol",
+   "roles": 31,
+   "europe": 7,
+   "countries": {
+    "CH": 5,
+    "NL": 1,
+    "GB": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "CH"
+  },
+  {
+   "company": "Vtex",
+   "board_name": "VTEX",
+   "provider": "greenhouse",
+   "handle": "vtex",
+   "roles": 31,
+   "europe": 3,
+   "countries": {
+    "ES": 1,
+    "RO": 1,
+    "PL": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Wallapop",
+   "board_name": "Wallapop",
+   "provider": "greenhouse",
+   "handle": "wallapop",
+   "roles": 5,
+   "europe": 5,
+   "countries": {
+    "ES": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "ES"
+  },
+  {
+   "company": "Wandelbots",
+   "board_name": "Jobs at Wandelbots GmbH",
+   "provider": "personio",
+   "handle": "wandelbots",
+   "roles": 8,
+   "europe": 6,
+   "countries": {
+    "DE": 6
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Webflow",
+   "board_name": "Webflow",
+   "provider": "greenhouse",
+   "handle": "webflow",
+   "roles": 22,
+   "europe": 4,
+   "countries": {
+    "GB": 4
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "EU"
+  },
+  {
+   "company": "Westwing",
+   "board_name": "Jobs at",
+   "provider": "personio",
+   "handle": "westwing",
+   "roles": 59,
+   "europe": 54,
+   "countries": {
+    "DE": 50,
+    "PL": 4
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Wise",
+   "board_name": "Wise",
+   "provider": "smartrecruiters",
+   "handle": "wise",
+   "roles": 406,
+   "europe": 262,
+   "countries": {
+    "GB": 186,
+    "EE": 59,
+    "HU": 15,
+    "BE": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "SK HR SI BALTICS"
+  },
+  {
+   "company": "Wolt",
+   "board_name": "Wolt - English",
+   "provider": "greenhouse",
+   "handle": "wolt",
+   "roles": 220,
+   "europe": 190,
+   "countries": {
+    "DE": 32,
+    "HU": 24,
+    "FI": 16,
+    "GR": 14,
+    "CY": 12,
+    "RS": 11,
+    "PL": 9,
+    "SK": 9,
+    "MT": 9,
+    "HR": 7
+   },
+   "italian": 1,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Wunderflats",
+   "board_name": "",
+   "provider": "personio",
+   "handle": "wunderflats",
+   "roles": 9,
+   "europe": 9,
+   "countries": {
+    "DE": 9
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Younited",
+   "board_name": "Younited",
+   "provider": "lever",
+   "handle": "younited",
+   "roles": 6,
+   "europe": 6,
+   "countries": {
+    "FR": 6
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "FR"
+  },
+  {
+   "company": "Zenjob",
+   "board_name": "Zenjob Jobs",
+   "provider": "ashby",
+   "handle": "zenjob",
+   "roles": 13,
+   "europe": 13,
+   "countries": {
+    "DE": 13
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "DE"
+  },
+  {
+   "company": "Zowie",
+   "board_name": "Zowie Jobs",
+   "provider": "ashby",
+   "handle": "zowie",
+   "roles": 7,
+   "europe": 7,
+   "countries": {
+    "PL": 5,
+    "RO": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-08",
+   "region": "PL"
+  }
+ ],
+ "_comment": "European employers whose job board answered on the date shown. Built by tools/catalogue.py from catalogue/candidates/; never edited by hand. 'europe' counts roles placed in Europe, 'italian' those that mention the Italian language.",
+ "updated": "2026-10-08"
+}

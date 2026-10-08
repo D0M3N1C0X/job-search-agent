@@ -113,6 +113,12 @@ COMMAND = "python3 -m jsa" if CHECKOUT else "jsa"
 # jobs.db left by a run on the example, its output — is not copied onwards.
 PROFILE_FILES = ("profile.json", "tracks.json", "watchlist.json", "answers.json")
 
+# The shared employer catalogue (tools/catalogue.py): European boards verified
+# to answer. Everyone gets it without configuring anything; a personal
+# watchlist only adds to it.
+CATALOGUE_PATH = (REPO_ROOT / "catalogue" / "companies.json" if CHECKOUT
+                  else PACKAGE_DIR / "catalogue.json")
+
 
 @dataclass(slots=True)
 class Config:
@@ -122,6 +128,30 @@ class Config:
     watchlist: list[dict[str, Any]]
     demo: bool
     warnings: list[str] = field(default_factory=list)
+    catalogue: list[dict[str, Any]] = field(default_factory=list)
+
+    def boards(self) -> list[dict[str, Any]]:
+        """Every board to fetch: the personal watchlist, then the catalogue.
+
+        Catalogue boards come only when they list roles in a country this
+        profile accepts — a board hiring only in Lisbon is noise for someone
+        moving to Munich. Turned off with preferences.catalogue = false.
+        """
+        prefs = self.profile.get("preferences", {})
+        boards = list(self.watchlist)
+        if prefs.get("catalogue", True) is False:
+            return boards
+        allowed = set(prefs.get("countries_allowed") or [])
+        seen = {(b["provider"], b["handle"]) for b in boards}
+        for entry in self.catalogue:
+            key = (entry.get("provider"), entry.get("handle"))
+            if key in seen or not all(key):
+                continue
+            if allowed and not allowed & set(entry.get("countries", {})):
+                continue
+            seen.add(key)
+            boards.append({**entry, "catalogue": True})
+        return boards
 
     @property
     def db_path(self) -> Path:
@@ -210,4 +240,17 @@ def load(explicit: str | os.PathLike[str] | None = None) -> Config:
     return Config(
         home=home, profile=profile, tracks=tracks, watchlist=watchlist, demo=demo,
         warnings=validate(profile, tracks, home / "profile.json"),
+        catalogue=load_catalogue(),
     )
+
+
+def load_catalogue(path: Path | None = None) -> list[dict[str, Any]]:
+    """The shared catalogue's entries; empty, not an error, when it is missing or damaged."""
+    override = os.environ.get("JSA_CATALOGUE")
+    path = path or (Path(override) if override else CATALOGUE_PATH)
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return []
+    companies = data.get("companies") if isinstance(data, dict) else None
+    return [c for c in companies or [] if isinstance(c, dict)]
