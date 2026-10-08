@@ -168,7 +168,7 @@ def main() -> int:
     # Derived: what the net salary buys, relative to Italy. Prices and pay are
     # not always published for the same year; both years are kept on the figure.
     italy = countries["IT"]["facts"]
-    for code, entry in countries.items():
+    for entry in countries.values():
         facts = entry["facts"]
         net, pli = facts.get("net_earnings"), facts.get("price_level")
         if net and pli:
