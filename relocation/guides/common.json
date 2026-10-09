@@ -1,0 +1,18 @@
+{
+ "_comment": "Steps that apply to every Italian moving to work in another EU country. Each fact is written from the source it cites, read on the date in 'checked'.",
+ "checked": "2026-10-09",
+ "before": [
+  {"text": "Se ti trasferisci all'estero per più di dodici mesi, devi dichiararlo al consolato italiano della zona in cui vai a vivere entro novanta giorni: è l'iscrizione all'AIRE.",
+   "source": "Legge 470/1988, art. 6 (Normattiva)", "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1988-10-27;470~art6"},
+  {"text": "Chi va all'estero per un periodo non superiore a dodici mesi non si iscrive all'AIRE.",
+   "source": "Legge 470/1988, art. 1, comma 8 (Normattiva)", "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1988-10-27;470~art1"}
+ ],
+ "health": [
+  {"text": "Se lavori come dipendente in un altro paese UE, ti iscrivi alla sua previdenza sociale e sei coperto, con i tuoi familiari, dal suo sistema, sanità compresa. Fa eccezione il distacco temporaneo con modulo A1, fino a 24 mesi.",
+   "source": "La tua Europa — copertura previdenziale", "url": "https://europa.eu/youreurope/citizens/work/unemployment-and-benefits/country-coverage/index_en.htm"}
+ ],
+ "home": [
+  {"text": "Chi risiede legalmente nell'UE ha diritto a un conto di pagamento di base. La banca può rifiutarlo per le regole antiriciclaggio o, in alcuni paesi, se hai già un conto simile lì; non perché vivi altrove.",
+   "source": "Direttiva 2014/92/UE, art. 16, e La tua Europa — conti bancari", "url": "https://europa.eu/youreurope/citizens/consumers/financial-products-and-services/bank-accounts-eu/index_en.htm"}
+ ]
+}

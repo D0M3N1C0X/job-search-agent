@@ -1,0 +1,22 @@
+{
+ "country": "ES", "slug": "spagna", "city": "madrid", "checked": "2026-10-09",
+ "registration": [
+  {"text": "Se resti più di tre mesi, entro tre mesi dall'ingresso chiedi di persona l'iscrizione al Registro Central de Extranjeros, all'Oficina de Extranjeros della provincia o alla polizia. Il certificato ti viene rilasciato subito e riporta il tuo numero di identità di straniero (NIE).",
+   "source": "Real Decreto 240/2007, art. 7 (BOE)", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2007-4184"},
+  {"text": "Chi vive in Spagna deve iscriversi al Padrón del comune in cui risiede abitualmente (empadronamiento).",
+   "source": "Ley 7/1985, art. 15 (BOE)", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1985-5392"}
+ ],
+ "tax": [
+  {"text": "Sei residente fiscale in Spagna se ci resti più di 183 giorni nell'anno solare.",
+   "source": "Ley 35/2006 del IRPF, art. 9.1.a (BOE)", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-20764"}
+ ],
+ "health": [
+  {"text": "Se non hai ancora il numero della Seguridad Social, deve chiederlo il datore di lavoro prima dell'assunzione (modulo TA.1 con documento d'identità).",
+   "source": "Seguridad Social", "url": "https://www.seg-social.es/wps/portal/wss/internet/InformacionUtil/44539/43384/44147"}
+ ],
+ "home": [
+  {"text": "Per l'affitto di un'abitazione la cauzione (fianza) è pari a una mensilità e si versa in contanti alla firma.",
+   "source": "Ley 29/1994 de Arrendamientos Urbanos, art. 36.1 (BOE)", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1994-26003"}
+ ],
+ "gaps": ["Come si ottiene la tessera sanitaria della comunità autonoma: le pagine ufficiali lette non lo descrivono in modo verificabile."]
+}

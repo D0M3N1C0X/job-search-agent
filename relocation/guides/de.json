@@ -1,0 +1,45 @@
+{
+ "country": "DE",
+ "slug": "germania",
+ "city": "berlino",
+ "checked": "2026-10-09",
+ "registration": [
+  {
+   "text": "Quando vai a vivere in un'abitazione hai due settimane per registrarti all'ufficio anagrafe (Meldebehörde): è la Anmeldung.",
+   "source": "Bundesmeldegesetz, § 17 (gesetze-im-internet.de)",
+   "url": "https://www.gesetze-im-internet.de/bmg/__17.html"
+  }
+ ],
+ "tax": [
+  {
+   "text": "Dopo la Anmeldung ricevi per posta il codice fiscale tedesco (Steuer-Identifikationsnummer). Non serve chiederlo.",
+   "source": "Bundeszentralamt für Steuern",
+   "url": "https://bzst.de/DE/Service/LeichteSprache/steuerid/steuerid.html"
+  }
+ ],
+ "health": [
+  {
+   "text": "Chi vive in Germania deve avere un'assicurazione sanitaria.",
+   "source": "Versicherungsvertragsgesetz, § 193(3)",
+   "url": "https://www.gesetze-im-internet.de/vvg_2008/__193.html"
+  },
+  {
+   "text": "I dipendenti sono iscritti obbligatoriamente alla cassa pubblica (gesetzliche Krankenversicherung) fino a 77.400 euro lordi l'anno, la soglia del 2026; sopra, l'iscrizione non è più obbligatoria.",
+   "source": "Ministero federale della Salute",
+   "url": "https://www.bundesgesundheitsministerium.de/gesetzlich-versicherte"
+  }
+ ],
+ "home": [
+  {
+   "text": "La cauzione può essere al massimo di tre mensilità di affitto, spese escluse, e puoi pagarla in tre rate mensili.",
+   "source": "Codice civile tedesco (BGB), § 551",
+   "url": "https://www.gesetze-im-internet.de/bgb/__551.html"
+  },
+  {
+   "text": "Hai diritto a un conto base (Basiskonto) anche senza un indirizzo fisso, se risiedi legalmente nell'UE.",
+   "source": "Zahlungskontengesetz, § 31",
+   "url": "https://www.gesetze-im-internet.de/zkg/__31.html"
+  }
+ ],
+ "gaps": []
+}

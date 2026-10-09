@@ -1,0 +1,18 @@
+{
+ "country": "NL", "slug": "paesi-bassi", "city": "amsterdam", "checked": "2026-10-09",
+ "registration": [
+  {"text": "Se resti più di quattro mesi devi iscriverti al comune in cui vivi entro cinque giorni dall'arrivo. Con l'iscrizione ricevi il BSN, che serve per sanità e tasse.",
+   "source": "Governo olandese (government.nl)", "url": "https://www.government.nl/faq/when-should-i-register-with-the-personal-records-database-as-a-resident"}
+ ],
+ "tax": [],
+ "health": [
+  {"text": "Hai quattro mesi per stipulare l'assicurazione sanitaria olandese obbligatoria, con copertura dal giorno dell'arrivo. Se la fai dopo, le cure del periodo scoperto non sono rimborsate e rischi una multa.",
+   "source": "Governo olandese (government.nl)", "url": "https://www.government.nl/faq/health-insurance/when-do-i-need-to-take-out-health-insurance-if-i-come-to-live-in-the-netherlands"}
+ ],
+ "home": [
+  {"text": "Per i contratti dal 1° luglio 2023 la cauzione massima è di due mesi di affitto netto.",
+   "source": "Governo olandese — guida per inquilini", "url": "https://www.government.nl/themes/building-and-housing/housing/rented-housing/step-by-step-plan-for-tenants"}
+ ],
+ "gaps": ["Residenza fiscale: nelle fonti ufficiali lette non c'è una regola dei giorni; dipende dalle circostanze. Da completare.",
+          "Cauzione: una pagina FAQ del governo indica ancora tre mensilità senza distinguere la data del contratto."]
+}

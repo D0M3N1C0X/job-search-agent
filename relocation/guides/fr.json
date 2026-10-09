@@ -1,0 +1,20 @@
+{
+ "country": "FR", "slug": "francia", "city": "parigi", "checked": "2026-10-09",
+ "registration": [
+  {"text": "Da cittadino UE non hai bisogno di un permesso di soggiorno per lavorare in Francia. Puoi chiedere la carta di soggiorno «Citoyen UE/EEE/Suisse», gratuita, ma non è obbligatoria.",
+   "source": "Service-Public.fr", "url": "https://www.service-public.gouv.fr/particuliers/vosdroits/F16003?lang=en"}
+ ],
+ "tax": [
+  {"text": "Sei domiciliato fiscalmente in Francia se vale uno solo di questi criteri: la tua casa è in Francia, ci soggiorni almeno 183 giorni nell'anno, ci svolgi l'attività principale o ci hai il centro dei tuoi interessi economici.",
+   "source": "Service-Public.fr", "url": "https://www.service-public.gouv.fr/particuliers/vosdroits/F62?lang=en"}
+ ],
+ "health": [
+  {"text": "Se arrivi per lavorare e non hai un numero di previdenza sociale, ti rivolgi alla cassa malattia (CPAM) con documento d'identità e atto di nascita. Ricevi subito un numero provvisorio da dare al datore di lavoro.",
+   "source": "Service-Public.fr", "url": "https://www.service-public.gouv.fr/particuliers/vosdroits/F16467?lang=en"}
+ ],
+ "home": [
+  {"text": "Per un alloggio non arredato la cauzione non può superare un mese di affitto, spese escluse.",
+   "source": "Service-Public.fr", "url": "https://www.service-public.gouv.fr/particuliers/vosdroits/F39713/0"}
+ ],
+ "gaps": []
+}
