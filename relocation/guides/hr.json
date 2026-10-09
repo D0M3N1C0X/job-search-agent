@@ -1,0 +1,25 @@
+{
+ "country": "HR",
+ "slug": "croazia",
+ "city": "",
+ "checked": "2026-10-09",
+ "registration": [
+  {
+   "text": "Se resti più di tre mesi registri il soggiorno temporaneo alla polizia del luogo in cui vivi, al più tardi otto giorni dopo la fine dei primi tre mesi.",
+   "source": "Ministero dell'Interno croato (MUP)",
+   "url": "https://mup.gov.hr/aliens-281621/stay-and-work/short-term-temporary-and-permanent-stay-of-eea-nationals/281689"
+  },
+  {
+   "text": "Registri anche l'indirizzo di residenza temporanea entro 15 giorni dall'arrivo in quel luogo, se pensi di restarci più di tre mesi.",
+   "source": "Ministero dell'Interno croato (MUP)",
+   "url": "https://mup.gov.hr/aliens-281621/stay-and-work/short-term-temporary-and-permanent-stay-of-eea-nationals/281689"
+  }
+ ],
+ "tax": [],
+ "health": [],
+ "home": [],
+ "gaps": [
+  "Una pagina del ministero degli Esteri croato indica la scadenza di otto giorni prima, e non dopo, la fine dei tre mesi: per sicurezza registrati prima.",
+  "Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale."
+ ]
+}

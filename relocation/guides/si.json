@@ -1,0 +1,25 @@
+{
+ "country": "SI",
+ "slug": "slovenia",
+ "city": "",
+ "checked": "2026-10-09",
+ "registration": [
+  {
+   "text": "Per restare chiedi il certificato di registrazione della residenza all'unità amministrativa più vicina, con documento d'identità e prova della tua attività in Slovenia. Vale cinque anni.",
+   "source": "SPOT, portale del governo sloveno",
+   "url": "https://spot.gov.si/en/info/considering-doing-business-in-slovenia/certificate-on-the-registration-of-residence"
+  },
+  {
+   "text": "Ricevuto il certificato, hai tre giorni per registrare l'indirizzo di residenza temporanea all'unità amministrativa.",
+   "source": "SPOT, portale del governo sloveno",
+   "url": "https://spot.gov.si/en/info/considering-doing-business-in-slovenia/certificate-on-the-registration-of-residence"
+  }
+ ],
+ "tax": [],
+ "health": [],
+ "home": [],
+ "gaps": [
+  "Scadenza per chiedere il certificato: le fonti lette non la indicano in modo univoco.",
+  "Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale."
+ ]
+}

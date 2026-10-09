@@ -37,7 +37,7 @@ COUNTRY_EN = {
     "PT": "Portugal", "FR": "France", "BE": "Belgium", "NL": "Netherlands", "LU": "Luxembourg",
     "PL": "Poland", "CZ": "Czechia", "SK": "Slovakia", "HU": "Hungary", "RO": "Romania",
     "BG": "Bulgaria", "HR": "Croatia", "SI": "Slovenia", "EE": "Estonia", "LV": "Latvia",
-    "LT": "Lithuania",
+    "LT": "Lithuania", "IE": "Ireland",
 }
 MONTHS = {
     "it": "gennaio febbraio marzo aprile maggio giugno luglio agosto settembre ottobre novembre dicembre",
@@ -159,12 +159,12 @@ CITY = {
            "FR": "Parigi", "BE": "Bruxelles", "NL": "Amsterdam", "LU": "Lussemburgo",
            "PL": "Varsavia", "CZ": "Praga", "SK": "Bratislava", "HU": "Budapest", "RO": "Bucarest",
            "BG": "Sofia", "HR": "Zagabria", "SI": "Lubiana", "EE": "Tallinn", "LV": "Riga",
-           "LT": "Vilnius"},
+           "LT": "Vilnius", "IE": "Dublino"},
     "en": {"DE": "Berlin", "AT": "Vienna", "CH": "Zurich", "ES": "Madrid", "PT": "Lisbon",
            "FR": "Paris", "BE": "Brussels", "NL": "Amsterdam", "LU": "Luxembourg",
            "PL": "Warsaw", "CZ": "Prague", "SK": "Bratislava", "HU": "Budapest", "RO": "Bucharest",
            "BG": "Sofia", "HR": "Zagreb", "SI": "Ljubljana", "EE": "Tallinn", "LV": "Riga",
-           "LT": "Vilnius"},
+           "LT": "Vilnius", "IE": "Dublin"},
 }
 
 # Photos in docs/img/cities, chosen from Unsplash (licence and authors in credits.json).
@@ -708,11 +708,12 @@ def guide_page(guide: dict, common: dict, guides: list[dict], catalogue: dict, c
     city_slug = guide["city"]
     hiring = [e for e in catalogue["companies"] if code in e.get("countries", {})]
     roles = sum(e["countries"][code] for e in hiring)
-    alt = next(a["it"][0] for slug, c, _n, a in CITIES if slug == city_slug)
+    alt = next((a["it"][0] for slug, _c, _n, a in CITIES if slug == city_slug), "")
     checked = long_date(guide["checked"], "it")
     sections = []
     for key, title, sub in TOPICS:
-        items = guide.get(key, []) + common.get(key, [])
+        shared = [] if key in guide.get("skip_common", []) else common.get(key, [])
+        items = guide.get(key, []) + shared
         if items:
             sections.append(f"<section class='wrap g-sec'><h2>{title}</h2><p class='sub'>{sub}</p>{steps_html(items)}</section>")
     gaps = "".join(f"<li>{escape(g)}</li>" for g in guide.get("gaps", []))
@@ -722,6 +723,27 @@ def guide_page(guide: dict, common: dict, guides: list[dict], catalogue: dict, c
         f"<a href='{g['slug']}.html'{current if g is guide else ''}>{escape(names[g['country']])}</a>"
         for g in guides)
     css = CSS.replace("url(fonts/", "url(../fonts/") + GUIDE_CSS
+    if city_slug:
+        visual = f"""<div class="g-photo">
+    <img src="../img/cities/{city_slug}-1-900.webp" srcset="../img/cities/{city_slug}-1-480.webp 480w, ../img/cities/{city_slug}-1-900.webp 900w" sizes="(max-width:860px) 100vw, 560px" alt="{escape(alt)}" width="900" height="1200">
+    <div class="label">
+      <div><span>Potere d'acquisto vs Italia</span><b class="vs">{row['vs']}</b></div>
+      <div><span>Netto medio annuo</span><b>{row['net']}</b></div>
+      <div><span>Prezzi vs Italia</span><b>{row['prices']}</b></div>
+    </div>
+  </div>"""
+    else:
+        visual = f"""<div class="calc">
+    <span class="tag" style="align-self:flex-start">Da Italia a {escape(name)}</span>
+    <span class="big{' neg' if row['neg'] else ''}">{row['vs']}</span>
+    <p>di potere d'acquisto per lo stipendio netto medio, già tolti i prezzi.</p>
+    <div class="figures">
+      <div><span>Netto {escape(name)}</span><b>{row['net']}</b></div>
+      <div><span>Prezzi</span><b>{row['prices']}</b></div>
+      <div><span>Disoccupazione</span><b>{plain_pct(row['unemployment'], 'it') if row['unemployment'] is not None else '–'}</b></div>
+    </div>
+    <span class="source">Eurostat {row['year']} · dati nazionali</span>
+  </div>"""
     title = f"Trasferirsi in {name} da italiano — {NAME}"
     desc = (f"Registrazione, tasse, sanità, casa e banca per un italiano che va a lavorare in {name}, "
             f"con le fonti ufficiali. Più i numeri: stipendio netto {row['net']}, potere d'acquisto {row['vs']} rispetto all'Italia.")
@@ -732,7 +754,7 @@ def guide_page(guide: dict, common: dict, guides: list[dict], catalogue: dict, c
 <meta name="description" content="{escape(desc)}">
 <meta property="og:title" content="{escape(title)}">
 <meta property="og:description" content="{escape(desc)}">
-<meta property="og:image" content="../img/cities/{city_slug}-1-900.webp">
+<meta property="og:image" content="{'../img/cities/' + city_slug + '-1-900.webp' if city_slug else '../img/social-preview.png'}">
 <meta name="theme-color" content="#F6F7FA">
 <link rel="preload" href="../fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>{css}</style></head><body>
@@ -749,14 +771,7 @@ def guide_page(guide: dict, common: dict, guides: list[dict], catalogue: dict, c
     <p class="lede" style="font-size:16px;margin-top:12px">{len(hiring)} aziende del nostro catalogo assumono in {escape(name)}, con {roles} offerte aperte.</p>
     <div class="ctas"><a class="btn btn-coral" href="../demo/">Apri la demo</a></div>
   </div>
-  <div class="g-photo">
-    <img src="../img/cities/{city_slug}-1-900.webp" srcset="../img/cities/{city_slug}-1-480.webp 480w, ../img/cities/{city_slug}-1-900.webp 900w" sizes="(max-width:860px) 100vw, 560px" alt="{escape(alt)}" width="900" height="1200">
-    <div class="label">
-      <div><span>Potere d'acquisto vs Italia</span><b class="vs">{row['vs']}</b></div>
-      <div><span>Netto medio annuo</span><b>{row['net']}</b></div>
-      <div><span>Prezzi vs Italia</span><b>{row['prices']}</b></div>
-    </div>
-  </div>
+  {visual}
 </section>
 <section class="wrap"><div class="before"><h2>Prima di partire, dall'Italia</h2>{steps_html(common['before'])}</div></section>
 {''.join(sections)}

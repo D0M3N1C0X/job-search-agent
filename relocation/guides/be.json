@@ -1,0 +1,26 @@
+{
+ "country": "BE",
+ "slug": "belgio",
+ "city": "",
+ "checked": "2026-10-09",
+ "registration": [
+  {
+   "text": "Se resti più di tre mesi devi registrarti al comune in cui vivi entro tre mesi dall'arrivo; altrimenti rischi una multa di 200 euro. Il comune ti rilascia l'Annex 19, verifica la residenza e poi ti iscrive al registro degli stranieri.",
+   "source": "Servizio pubblico federale Interno (IBZ)",
+   "url": "https://ibz.be/en/registration-and-reporting-obligation-general"
+  }
+ ],
+ "tax": [],
+ "health": [
+  {
+   "text": "Per avere l'assicurazione malattia obbligatoria devi iscriverti a una mutualité (cassa malattia): è l'unico modo per averne i benefici.",
+   "source": "Sicurezza sociale belga",
+   "url": "https://www.socialsecurity.be/citizen/fr/sante/s-affilier-a-une-mutualite"
+  }
+ ],
+ "home": [],
+ "gaps": [
+  "Cauzione: cambia per regione (Bruxelles, Fiandre, Vallonia); non ancora verificata regione per regione.",
+  "Residenza fiscale: non ancora verificata su una fonte ufficiale."
+ ]
+}

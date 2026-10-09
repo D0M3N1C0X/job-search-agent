@@ -1,0 +1,36 @@
+{
+ "country": "AT",
+ "slug": "austria",
+ "city": "",
+ "checked": "2026-10-09",
+ "registration": [
+  {
+   "text": "Quando vai a vivere in un'abitazione hai tre giorni per registrarti all'ufficio anagrafe (Meldebehörde) con il Meldezettel.",
+   "source": "Meldegesetz 1991, § 3 (RIS)",
+   "url": "https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=10005799"
+  },
+  {
+   "text": "Se resti più di tre mesi devi comunicarlo all'autorità entro quattro mesi dall'ingresso; su richiesta ricevi l'Anmeldebescheinigung.",
+   "source": "Niederlassungs- und Aufenthaltsgesetz, § 53 (RIS)",
+   "url": "https://www.ris.bka.gv.at/Dokumente/Bundesnormen/NOR40149045/NOR40149045.html"
+  }
+ ],
+ "tax": [
+  {
+   "text": "Se hai un'abitazione in Austria o ci soggiorni a lungo sei soggetto a imposta su tutto il reddito; dopo sei mesi di soggiorno lo diventi comunque, con effetto retroattivo dall'inizio.",
+   "source": "Ministero federale delle Finanze",
+   "url": "https://www.bmf.gv.at/themen/steuern/arbeitnehmerveranlagung/allgemeines-zur-lohn-und-einkommenssteuer/persoenliche-steuerpflicht.html"
+  }
+ ],
+ "health": [
+  {
+   "text": "Il datore di lavoro deve iscriverti alla cassa malattia competente (ÖGK) prima del primo giorno di lavoro.",
+   "source": "Unternehmensserviceportal (usp.gv.at)",
+   "url": "https://www.usp.gv.at/themen/mitarbeiter-und-gesundheit/einstellung-mitarbeiter-und-arten-der-beschaeftigung/weitere-informationen-einstellen-von-personal/anmeldung-dienstnehmer.html"
+  }
+ ],
+ "home": [],
+ "gaps": [
+  "Cauzione dell'affitto: nessun limite verificato su una fonte ufficiale."
+ ]
+}
