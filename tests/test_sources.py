@@ -100,7 +100,7 @@ class TestAtsParsers(unittest.TestCase):
     def test_every_provider_is_registered(self):
         self.assertEqual(
             set(ats.PROVIDERS),
-            {"greenhouse", "lever", "ashby", "smartrecruiters", "recruitee", "workable", "personio"},
+            {"greenhouse", "lever", "ashby", "smartrecruiters", "recruitee", "workable", "personio", "workday"},
         )
 
     def test_country_and_remote_guessing(self):
@@ -231,3 +231,53 @@ class TestMailbox(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestWorkday(unittest.TestCase):
+    FACETS = [{"facetParameter": "locationMainGroup", "values": [
+        {"facetParameter": "locationHierarchy1", "descriptor": "Country/Region", "values": [
+            {"descriptor": "Germany", "id": "de1", "count": 49},
+            {"descriptor": "Poland", "id": "pl1", "count": 29},
+            {"descriptor": "United States", "id": "us1", "count": 300},
+        ]}]},
+        {"facetParameter": "jobFamilyGroup", "values": [
+            {"descriptor": "Engineering", "id": "x", "count": 9},
+            {"descriptor": "Sales", "id": "y", "count": 3}]}]
+
+    def test_the_country_facet_is_found_by_its_values_wherever_it_is_nested(self):
+        param, by_country = ats._country_facet(self.FACETS)
+        self.assertEqual(param, "locationHierarchy1")
+        self.assertEqual(by_country, {"DE": ["de1"], "PL": ["pl1"], "US": ["us1"]})
+
+    def test_no_country_facet_is_none(self):
+        self.assertIsNone(ats._country_facet(self.FACETS[1:]))
+
+    def test_postings_parse_with_the_country_they_were_asked_for(self):
+        page = {"jobPostings": [
+            {"title": "HR Specialist", "externalPath": "/job/Krakow/HR-Specialist_R1",
+             "locationsText": "3 Locations", "postedOn": "Posted Today", "bulletFields": ["R1"]},
+            {"title": "No path"}]}
+        jobs = ats.parse_workday(page, "Acme", handle="acme/wd3/Careers", country="PL")
+        self.assertEqual(len(jobs), 1)
+        job = jobs[0]
+        self.assertEqual(job.country, "PL")
+        self.assertEqual(job.location, "")           # "3 Locations" says nothing
+        self.assertEqual(job.url, "https://acme.wd3.myworkdayjobs.com/Careers/job/Krakow/HR-Specialist_R1")
+        self.assertEqual(job.raw["handle"], "acme/wd3/Careers")
+        self.assertTrue(job.posted_at)
+
+    def test_posted_on_becomes_a_date_and_30_plus_days_stays_approximate(self):
+        self.assertEqual(ats._posted("Posted 30+ Days Ago")[:4].isdigit(), True)
+        self.assertEqual(ats._posted("whenever"), "")
+
+    def test_a_malformed_handle_is_refused(self):
+        with self.assertRaises(ats.FetchError):
+            ats._workday_parts("acme/Careers")
+
+    def test_probing_never_guesses_a_workday_board(self):
+        seen = []
+        fakes = {name: (lambda n: lambda *a, **k: seen.append(n) or [])(name) for name in ats.PROVIDERS}
+        with mock.patch.dict(ats.PROVIDERS, fakes):
+            ats.probe("acme")
+        self.assertIn("greenhouse", seen)
+        self.assertNotIn("workday", seen)

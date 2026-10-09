@@ -12,8 +12,10 @@ Each provider function takes the company's board handle and returns Jobs.
 from __future__ import annotations
 
 import re
+import time
 import unicodedata
 import xml.etree.ElementTree as ET
+from datetime import date, timedelta
 from typing import Any, Callable
 
 from ..models import Job
@@ -456,6 +458,138 @@ def parse_personio(body: str, company: str, *, handle: str = "", domain: str = "
     return jobs
 
 
+# ------------------------------------------------------------- Workday
+#
+# Workday publishes no job-board API. Each employer's careers page reads its
+# postings from a JSON endpoint on myworkdayjobs.com, and that is what is read
+# here: the same public postings anyone sees on the site, nothing behind a
+# login. Politely, because it is undocumented: one request at a time, a pause
+# between pages, only European countries, and a cap per employer. Bodies are
+# fetched later, one by one, only for postings worth reading (`jsa enrich`).
+
+WORKDAY_PAGE = 20          # the most the endpoint returns per request
+WORKDAY_MAX_JOBS = 1000    # per employer per run
+WORKDAY_PAUSE = 0.4        # seconds between requests
+_POSTED = re.compile(r"posted\s+(today|yesterday|(\d+)\+?\s+days?\s+ago)", re.I)
+_EUROPE_CODES = set("""AD AL AT BA BE BG CH CY CZ DE DK EE ES FI FR GB GR HR HU IE IS IT LI LT LU LV
+MC MD ME MK MT NL NO PL PT RO RS SE SI SK SM XK""".split())
+
+
+def _workday_parts(handle: str) -> tuple[str, str, str]:
+    """"tenant/wd3/Site" -> (tenant, "wd3", "Site")."""
+    parts = handle.strip("/").split("/")
+    if len(parts) != 3 or not all(parts):
+        raise FetchError(f"workday handle must be tenant/wdN/site, got {handle!r}")
+    return parts[0], parts[1], parts[2]
+
+
+def _workday_base(handle: str) -> tuple[str, str]:
+    tenant, wd, site = _workday_parts(handle)
+    host = f"https://{tenant}.{wd}.myworkdayjobs.com"
+    return f"{host}/wday/cxs/{tenant}/{site}", f"{host}/{site}"
+
+
+def _country_facet(facets: list[dict[str, Any]]) -> tuple[str, dict[str, list[str]]] | None:
+    """The facet that lists countries, as (parameter, {ISO code: [facet ids]}).
+
+    Employers name it differently (locationCountry, locationHierarchy1, nested
+    under locationMainGroup...), so it is recognised by its values: the facet
+    whose entries are mostly places that resolve to a country.
+    """
+    best: tuple[float, str, dict[str, list[str]]] | None = None
+
+    def walk(items: list[dict[str, Any]]) -> None:
+        nonlocal best
+        for facet in items:
+            values = [v for v in facet.get("values", []) if isinstance(v, dict)]
+            leaves = [v for v in values if "id" in v and "descriptor" in v]
+            if len(leaves) >= 2:
+                mapped: dict[str, list[str]] = {}
+                for v in leaves:
+                    code = guess_country(v["descriptor"])
+                    if code:
+                        mapped.setdefault(code, []).append(v["id"])
+                share = sum(len(ids) for ids in mapped.values()) / len(leaves)
+                # A country list beats a city list: fewer ids per country.
+                name = facet.get("facetParameter", "")
+                rank = share + (0.5 if "country" in name.lower() or name.endswith("Hierarchy1") else 0)
+                if share >= 0.6 and (best is None or rank > best[0]):
+                    best = (rank, name, mapped)
+            walk([v for v in values if "values" in v])
+
+    walk(facets)
+    return (best[1], best[2]) if best else None
+
+
+def _posted(text: str) -> str:
+    match = _POSTED.search(text or "")
+    if not match:
+        return ""
+    days = 0 if match.group(1).lower() == "today" else 1 if match.group(1).lower() == "yesterday" \
+        else int(match.group(2))
+    return (date.today() - timedelta(days=days)).isoformat()
+
+
+def parse_workday(data: Any, company: str, *, handle: str, country: str = "") -> list[Job]:
+    _api, public = _workday_base(handle)
+    jobs = []
+    for j in data.get("jobPostings", []):
+        path = j.get("externalPath") or ""
+        if not path:
+            continue
+        bullets = j.get("bulletFields") or []
+        location = j.get("locationsText") or (bullets[1] if len(bullets) > 1 else "")
+        if re.match(r"\d+\s+locations?$", location.strip(), re.I):
+            location = ""  # "3 Locations": the country facet is the better answer
+        jobs.append(_mk(
+            "workday", company,
+            source_id=path,
+            title=j.get("title", ""),
+            url=public + path,
+            location=location,
+            country=country or guess_country(location),
+            description="",
+            posted_at=_posted(j.get("postedOn", "")),
+            raw={"handle": handle, "path": path, "req": bullets[0] if bullets else ""},
+        ))
+    return jobs
+
+
+@provider("workday")
+def workday(handle: str, company: str = "", **opts: Any) -> list[Job]:
+    api, _public = _workday_base(handle)
+    company = company or _workday_parts(handle)[0]
+    query = {"appliedFacets": {}, "limit": WORKDAY_PAGE, "offset": 0, "searchText": ""}
+    first = http_json(api + "/jobs", body=query, **opts)
+    found = _country_facet(first.get("facets") or [])
+    if not found:
+        # No way to ask for Europe only: read what the first page offers and stop.
+        return [j for j in parse_workday(first, company, handle=handle) if j.country in _EUROPE_CODES]
+    param, by_country = found
+    jobs: list[Job] = []
+    for code in sorted(c for c in by_country if c in _EUROPE_CODES):
+        offset, total = 0, 0
+        while len(jobs) < WORKDAY_MAX_JOBS:
+            time.sleep(WORKDAY_PAUSE)
+            page = http_json(api + "/jobs", body={**query, "appliedFacets": {param: by_country[code]},
+                                                   "offset": offset}, **opts)
+            # Only the first page carries the total; later pages say 0.
+            total = total or page.get("total") or 0
+            batch = parse_workday(page, company, handle=handle, country=code)
+            jobs.extend(batch)
+            offset += WORKDAY_PAGE
+            if len(batch) < WORKDAY_PAGE or (total and offset >= total):
+                break
+    return jobs[:WORKDAY_MAX_JOBS]
+
+
+def workday_detail(handle: str, path: str, **opts: Any) -> str:
+    """Full posting body for one Workday role."""
+    api, _public = _workday_base(handle)
+    detail = http_json(api + path, **opts)
+    return html_to_text((detail.get("jobPostingInfo") or {}).get("jobDescription", ""))
+
+
 # ------------------------------------------------------------------ API
 
 def fetch_company(entry: dict[str, Any], **opts: Any) -> list[Job]:
@@ -475,7 +609,8 @@ def probe(handle: str, providers: list[str] | None = None, **opts: Any) -> list[
     """
     from concurrent.futures import ThreadPoolExecutor
 
-    names = providers or list(PROVIDERS)
+    # Workday handles name a tenant, a server and a site: nothing a slug can guess.
+    names = providers or [p for p in PROVIDERS if p != "workday"]
 
     def attempt(name: str) -> tuple[str, int] | None:
         try:

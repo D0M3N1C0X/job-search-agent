@@ -410,6 +410,12 @@ def cmd_enrich(args: argparse.Namespace, cfg: config.Config,
                     continue
                 job.description = ats_sources.smartrecruiters_detail(
                     handle, job.source_id, cache_dir=cfg.cache_dir)
+            elif job.source == "workday":
+                handle, path = job.raw.get("handle"), job.raw.get("path")
+                if not handle or not path:
+                    continue
+                job.description = ats_sources.workday_detail(
+                    handle, path, cache_dir=cfg.cache_dir, cache_ttl=86400)
             elif job.source in ("linkedin", "email:linkedin"):
                 job.description = linkedin.fetch_description(job.source_id, retries=1)
             else:
