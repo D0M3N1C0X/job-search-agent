@@ -38,17 +38,12 @@ sys.path.insert(0, str(ROOT))
 
 from jsa.sources import ats  # noqa: E402
 from jsa.util import http_get, http_json  # noqa: E402
+from jsa.italian import ITALIAN  # noqa: E402,F401 - re-exported for tests
 from jsa.wizard import EUROPE  # noqa: E402
 
 CATALOGUE = ROOT / "catalogue" / "companies.json"
 MIN_ROLES = 3
 
-# Mentions of the Italian language, in the languages postings are written in.
-ITALIAN = re.compile(
-    r"\b(italian|italiano|italiana|italienisch\w*|italien|italienne|italiaans\w*|"
-    r"italiensk\w*|wło(?:ski|skiego|skim)|wlo(?:ski|skiego)|italsk\w*|italština|olasz\w*)\b",
-    re.I,
-)
 LEGAL = re.compile(
     r"\b(gmbh|ag|se|sa|s\.a\.|spa|s\.p\.a\.|bv|b\.v\.|nv|n\.v\.|ltd|limited|plc|inc|group|"
     r"holding|holdings|kg|co|oy|ab|as|a/s|sp\. z o\.o\.|sp z oo|s\.r\.o\.|srl)\b\.?",

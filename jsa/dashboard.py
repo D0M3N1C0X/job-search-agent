@@ -17,6 +17,8 @@ from .models import STATUSES
 from .score import SCORER_VERSION
 from .store import Store
 from .config import COMMAND
+from .italian import mentions_italian
+from .places import country_cards
 from .util import days_between, now, safe_url
 
 RESPONSE_STATUSES = {"screening", "interview", "offer", "rejected"}
@@ -153,6 +155,8 @@ def collect(store: Store, *, interactive: bool, limit: int = 4000) -> dict[str, 
             "status": row["app_status"] or "",
             "notes": row["app_notes"] or "",
             "description": (row["description"] or "")[:DESCRIPTION_CHARS],
+            # Read from the whole text: "Italian" is often in the requirements, past the cut.
+            "italian": mentions_italian(row["title"], row["description"]),
         })
     return {
         "generated": now(),
@@ -163,6 +167,7 @@ def collect(store: Store, *, interactive: bool, limit: int = 4000) -> dict[str, 
         "counts": stats["counts"],
         "stats": {k: v for k, v in stats.items() if k != "counts"},
         "jobs": jobs,
+        "countries": country_cards(),
     }
 
 
