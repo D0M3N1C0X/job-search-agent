@@ -44,6 +44,7 @@ packages = ["jsa", "jsa.sources", "jsa.example"]
 
 [tool.setuptools.package-data]
 "jsa.example" = ["*.json"]
+"jsa" = ["assets/*.woff2", "assets/OFL.txt"]
 
 # Lint runs in CI only (`ruff check .`); nothing here is needed to run the tool.
 # The rules are the ones that find bugs rather than argue about style: pyflakes,
