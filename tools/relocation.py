@@ -43,7 +43,7 @@ COUNTRIES = {
     "FR": "Francia", "BE": "Belgio", "NL": "Paesi Bassi", "LU": "Lussemburgo",
     "PL": "Polonia", "CZ": "Cechia", "SK": "Slovacchia", "HU": "Ungheria", "RO": "Romania",
     "BG": "Bulgaria", "HR": "Croazia", "SI": "Slovenia", "EE": "Estonia", "LV": "Lettonia",
-    "LT": "Lituania",
+    "LT": "Lituania", "IE": "Irlanda",
 }
 
 INDICATORS = {

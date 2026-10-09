@@ -1,0 +1,19 @@
+{
+ "country": "RO",
+ "slug": "romania",
+ "city": "",
+ "checked": "2026-10-09",
+ "registration": [
+  {
+   "text": "Se resti più di tre mesi devi registrare la residenza presso l'ufficio dell'Ispettorato generale per l'immigrazione (IGI) del tuo distretto. Il certificato di registrazione viene rilasciato lo stesso giorno e vale da uno a cinque anni.",
+   "source": "Ispettorato generale per l'immigrazione (IGI)",
+   "url": "https://igi.mai.gov.ro/inregistrarea-rezidentei/"
+  }
+ ],
+ "tax": [],
+ "health": [],
+ "home": [],
+ "gaps": [
+  "Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale."
+ ]
+}

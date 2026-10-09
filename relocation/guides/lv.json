@@ -1,0 +1,20 @@
+{
+ "country": "LV",
+ "slug": "lettonia",
+ "city": "",
+ "checked": "2026-10-09",
+ "registration": [
+  {
+   "text": "Se lavori in Lettonia hai diritto alla carta di registrazione rilasciata dall'Ufficio per la cittadinanza e la migrazione (PMLP). Non sei obbligato a registrarti se cerchi lavoro (fino a sei mesi), se torni ogni settimana in un altro paese UE in cui vivi o se studi fino a un anno.",
+   "source": "Ufficio per la cittadinanza e la migrazione (PMLP)",
+   "url": "https://www.pmlp.gov.lv/en/what-residence-documents-are-issued-union-citizens-and-their-family-members"
+  }
+ ],
+ "tax": [],
+ "health": [],
+ "home": [],
+ "gaps": [
+  "Scadenza della registrazione: non verificata.",
+  "Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale."
+ ]
+}

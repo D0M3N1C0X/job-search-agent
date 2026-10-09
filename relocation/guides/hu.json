@@ -1,0 +1,19 @@
+{
+ "country": "HU",
+ "slug": "ungheria",
+ "city": "",
+ "checked": "2026-10-09",
+ "registration": [
+  {
+   "text": "Se resti più di 90 giorni devi comunicare la residenza alla direzione regionale dell'ufficio immigrazione al più tardi il 93° giorno dall'ingresso. Il certificato di registrazione non scade, finché il documento d'identità è valido.",
+   "source": "Direzione generale per la polizia degli stranieri (OIF)",
+   "url": "https://oif.gov.hu/factsheets/registration-certificate-for-eea-nationals"
+  }
+ ],
+ "tax": [],
+ "health": [],
+ "home": [],
+ "gaps": [
+  "Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale."
+ ]
+}

@@ -1,16 +1,16 @@
 # Fonti e verifiche — dati per trasferirsi
 
-Letti da Eurostat il 2026-10-08 con `python3 tools/relocation.py`. Ogni numero in `countries.json` porta con sé dataset e anno.
+Letti da Eurostat il 2026-10-09 con `python3 tools/relocation.py`. Ogni numero in `countries.json` porta con sé dataset e anno.
 
 ## Fonti
 
 | Indicatore | Dataset | Aggiornato da Eurostat | Query |
 |---|---|---|---|
-| net_earnings | `earn_nt_net` | 2026-10-01 | [query](https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/earn_nt_net?format=JSON&lang=EN&sinceTimePeriod=2018&currency=EUR&estruct=NET&ecase=P1_NCH_AW100&geo=IT&geo=DE&geo=AT&geo=CH&geo=ES&geo=PT&geo=FR&geo=BE&geo=NL&geo=LU&geo=PL&geo=CZ&geo=SK&geo=HU&geo=RO&geo=BG&geo=HR&geo=SI&geo=EE&geo=LV&geo=LT) |
-| gross_earnings | `earn_nt_net` | 2026-10-01 | [query](https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/earn_nt_net?format=JSON&lang=EN&sinceTimePeriod=2018&currency=EUR&estruct=GRS&ecase=P1_NCH_AW100&geo=IT&geo=DE&geo=AT&geo=CH&geo=ES&geo=PT&geo=FR&geo=BE&geo=NL&geo=LU&geo=PL&geo=CZ&geo=SK&geo=HU&geo=RO&geo=BG&geo=HR&geo=SI&geo=EE&geo=LV&geo=LT) |
-| price_level | `prc_ppp_ind` | 2025-07-10 | [query](https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_ppp_ind?format=JSON&lang=EN&sinceTimePeriod=2018&na_item=PLI_EU27_2020&ppp_cat=A01&geo=IT&geo=DE&geo=AT&geo=CH&geo=ES&geo=PT&geo=FR&geo=BE&geo=NL&geo=LU&geo=PL&geo=CZ&geo=SK&geo=HU&geo=RO&geo=BG&geo=HR&geo=SI&geo=EE&geo=LV&geo=LT) |
-| housing_price_level | `prc_ppp_ind` | 2025-07-10 | [query](https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_ppp_ind?format=JSON&lang=EN&sinceTimePeriod=2018&na_item=PLI_EU27_2020&ppp_cat=A0104&geo=IT&geo=DE&geo=AT&geo=CH&geo=ES&geo=PT&geo=FR&geo=BE&geo=NL&geo=LU&geo=PL&geo=CZ&geo=SK&geo=HU&geo=RO&geo=BG&geo=HR&geo=SI&geo=EE&geo=LV&geo=LT) |
-| unemployment | `une_rt_a` | 2026-09-10 | [query](https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/une_rt_a?format=JSON&lang=EN&sinceTimePeriod=2018&age=Y15-74&sex=T&unit=PC_ACT&geo=IT&geo=DE&geo=AT&geo=CH&geo=ES&geo=PT&geo=FR&geo=BE&geo=NL&geo=LU&geo=PL&geo=CZ&geo=SK&geo=HU&geo=RO&geo=BG&geo=HR&geo=SI&geo=EE&geo=LV&geo=LT) |
+| net_earnings | `earn_nt_net` | 2026-10-01 | [query](https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/earn_nt_net?format=JSON&lang=EN&sinceTimePeriod=2018&currency=EUR&estruct=NET&ecase=P1_NCH_AW100&geo=IT&geo=DE&geo=AT&geo=CH&geo=ES&geo=PT&geo=FR&geo=BE&geo=NL&geo=LU&geo=PL&geo=CZ&geo=SK&geo=HU&geo=RO&geo=BG&geo=HR&geo=SI&geo=EE&geo=LV&geo=LT&geo=IE) |
+| gross_earnings | `earn_nt_net` | 2026-10-01 | [query](https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/earn_nt_net?format=JSON&lang=EN&sinceTimePeriod=2018&currency=EUR&estruct=GRS&ecase=P1_NCH_AW100&geo=IT&geo=DE&geo=AT&geo=CH&geo=ES&geo=PT&geo=FR&geo=BE&geo=NL&geo=LU&geo=PL&geo=CZ&geo=SK&geo=HU&geo=RO&geo=BG&geo=HR&geo=SI&geo=EE&geo=LV&geo=LT&geo=IE) |
+| price_level | `prc_ppp_ind` | 2025-07-10 | [query](https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_ppp_ind?format=JSON&lang=EN&sinceTimePeriod=2018&na_item=PLI_EU27_2020&ppp_cat=A01&geo=IT&geo=DE&geo=AT&geo=CH&geo=ES&geo=PT&geo=FR&geo=BE&geo=NL&geo=LU&geo=PL&geo=CZ&geo=SK&geo=HU&geo=RO&geo=BG&geo=HR&geo=SI&geo=EE&geo=LV&geo=LT&geo=IE) |
+| housing_price_level | `prc_ppp_ind` | 2025-07-10 | [query](https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_ppp_ind?format=JSON&lang=EN&sinceTimePeriod=2018&na_item=PLI_EU27_2020&ppp_cat=A0104&geo=IT&geo=DE&geo=AT&geo=CH&geo=ES&geo=PT&geo=FR&geo=BE&geo=NL&geo=LU&geo=PL&geo=CZ&geo=SK&geo=HU&geo=RO&geo=BG&geo=HR&geo=SI&geo=EE&geo=LV&geo=LT&geo=IE) |
+| unemployment | `une_rt_a` | 2026-09-10 | [query](https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/une_rt_a?format=JSON&lang=EN&sinceTimePeriod=2018&age=Y15-74&sex=T&unit=PC_ACT&geo=IT&geo=DE&geo=AT&geo=CH&geo=ES&geo=PT&geo=FR&geo=BE&geo=NL&geo=LU&geo=PL&geo=CZ&geo=SK&geo=HU&geo=RO&geo=BG&geo=HR&geo=SI&geo=EE&geo=LV&geo=LT&geo=IE) |
 
 ## Registro delle verifiche
 
@@ -42,6 +42,7 @@ Valori scartati e lacune. Un dato che manca qui sotto resta vuoto nel prodotto: 
 | net_earnings | LV 2024 | scartato: 1,439.85 si discosta di oltre il 40% dagli anni vicini |
 | net_earnings | LV 2025 | scartato: 19,035.44 si discosta di oltre il 40% dagli anni vicini |
 | net_earnings | LT 2024 | scartato: 1,468.14 si discosta di oltre il 40% dagli anni vicini |
+| net_earnings | IE 2024 | scartato: 3,738.97 si discosta di oltre il 40% dagli anni vicini |
 | gross_earnings | IT 2024 | scartato: 3,241.00 si discosta di oltre il 40% dagli anni vicini |
 | gross_earnings | DE 2024 | scartato: 4,665.00 si discosta di oltre il 40% dagli anni vicini |
 | gross_earnings | AT 2024 | scartato: 5,055.00 si discosta di oltre il 40% dagli anni vicini |
@@ -68,6 +69,7 @@ Valori scartati e lacune. Un dato che manca qui sotto resta vuoto nel prodotto: 
 | gross_earnings | LV 2024 | scartato: 2,026.00 si discosta di oltre il 40% dagli anni vicini |
 | gross_earnings | LV 2025 | scartato: 26,208.00 si discosta di oltre il 40% dagli anni vicini |
 | gross_earnings | LT 2024 | scartato: 2,399.00 si discosta di oltre il 40% dagli anni vicini |
+| gross_earnings | IE 2024 | scartato: 4,953.00 si discosta di oltre il 40% dagli anni vicini |
 
 ## Cosa non c'è ancora
 

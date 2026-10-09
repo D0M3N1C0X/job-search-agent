@@ -1,0 +1,24 @@
+{
+ "country": "CZ",
+ "slug": "cechia",
+ "city": "",
+ "checked": "2026-10-09",
+ "registration": [
+  {
+   "text": "Se pensi di restare più di 30 giorni devi dichiarare il tuo indirizzo alla Polizia degli stranieri entro 30 giorni dall'ingresso, se non lo ha già fatto chi ti ospita (per esempio un hotel). È gratuito; se non lo fai rischi una multa fino a 3.000 corone.",
+   "source": "Portale della pubblica amministrazione ceca",
+   "url": "https://portal.gov.cz/en/sluzby-vs/registration-of-residence-by-an-eu-citizen-or-a-family-member-of-an-eu-citizen-after-arrival-in-the-czech-republic-S7764"
+  },
+  {
+   "text": "Per soggiorni oltre i tre mesi puoi chiedere il certificato di soggiorno temporaneo, ma non è obbligatorio. Vale dieci anni ed è gratuito.",
+   "source": "Portale della pubblica amministrazione ceca",
+   "url": "https://portal.gov.cz/en/sluzby-vs/registration-certificate-of-an-eu-citizen-S6224"
+  }
+ ],
+ "tax": [],
+ "health": [],
+ "home": [],
+ "gaps": [
+  "Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale."
+ ]
+}

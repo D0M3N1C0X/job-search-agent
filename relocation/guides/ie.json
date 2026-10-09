@@ -1,0 +1,29 @@
+{
+ "country": "IE",
+ "slug": "irlanda",
+ "city": "",
+ "checked": "2026-10-09",
+ "registration": [
+  {
+   "text": "Il PPS number serve per lavorare e per le tasse. Non puoi chiederlo dall'estero: lo chiedi una volta in Irlanda, con passaporto o carta d'identità e una prova di indirizzo di non più di tre mesi (bolletta, estratto conto, contratto d'affitto).",
+   "source": "Citizens Information",
+   "url": "https://www.citizensinformation.ie/en/social-welfare/irish-social-welfare-system/personal-public-service-number/"
+  }
+ ],
+ "tax": [
+  {
+   "text": "Sei residente fiscale in Irlanda se ci stai 183 giorni o più nell'anno fiscale, oppure 280 giorni sommando quest'anno e il precedente. Conta anche una parte di giornata.",
+   "source": "Revenue",
+   "url": "https://www.revenue.ie/en/jobs-and-pensions/tax-residence/resident-for-tax-purposes.aspx"
+  }
+ ],
+ "health": [],
+ "home": [
+  {
+   "text": "Il padrone di casa non può chiedere una cauzione superiore a un mese di affitto.",
+   "source": "Residential Tenancies Board",
+   "url": "https://rtb.ie/renting/rights-responsibilities/security-deposits/"
+  }
+ ],
+ "gaps": []
+}

@@ -1,0 +1,31 @@
+{
+ "country": "LU",
+ "slug": "lussemburgo",
+ "city": "",
+ "checked": "2026-10-09",
+ "registration": [
+  {
+   "text": "Se resti più di tre mesi chiedi l'attestazione di registrazione al comune di residenza entro tre mesi dall'arrivo. Ricevuti i documenti, il comune te la consegna subito.",
+   "source": "Legge del 29 agosto 2008, art. 8 (Legilux)",
+   "url": "https://legilux.public.lu/eli/etat/leg/loi/2008/08/29/n1/jo"
+  }
+ ],
+ "tax": [],
+ "health": [
+  {
+   "text": "Entro otto giorni dal tuo primo giorno di lavoro il datore di lavoro ti iscrive al Centre commun de la sécurité sociale (CCSS).",
+   "source": "Guichet.lu",
+   "url": "https://guichet.public.lu/fr/entreprises/ressources-humaines/securite-sociale/affiliation-salarie-resident.html"
+  }
+ ],
+ "home": [
+  {
+   "text": "La garanzia per l'affitto non può superare due mensilità.",
+   "source": "Guichet.lu",
+   "url": "https://guichet.public.lu/fr/citoyens/logement/location/contrat-litige/conclure-contrat-bail-location.html"
+  }
+ ],
+ "gaps": [
+  "Residenza fiscale: non ancora verificata su una fonte ufficiale."
+ ]
+}

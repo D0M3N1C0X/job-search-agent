@@ -1,0 +1,30 @@
+{
+ "country": "EE",
+ "slug": "estonia",
+ "city": "",
+ "checked": "2026-10-09",
+ "registration": [
+  {
+   "text": "Entro tre mesi dall'ingresso registri la residenza presso il comune, come prevede la legge sul registro della popolazione.",
+   "source": "Legge sui cittadini dell'Unione europea, § 7 (Riigi Teataja)",
+   "url": "https://www.riigiteataja.ee/en/eli/504012016002/consolide"
+  },
+  {
+   "text": "Con la registrazione ottieni il diritto di soggiorno temporaneo per cinque anni. La carta d'identità estone si può chiedere solo dopo aver registrato la residenza.",
+   "source": "Polizia e guardia di frontiera estone",
+   "url": "https://www.politsei.ee/en/eu-citizens-temporary-right-of-residence"
+  }
+ ],
+ "tax": [
+  {
+   "text": "Sei residente fiscale in Estonia se ci hai la residenza o se ci stai almeno 183 giorni in un periodo di dodici mesi consecutivi.",
+   "source": "Amministrazione fiscale e doganale estone (EMTA)",
+   "url": "https://emta.ee/en/private-client/foreigner-non-resident/tax-residency/determining-residency"
+  }
+ ],
+ "health": [],
+ "home": [],
+ "gaps": [
+  "Sanità e cauzione: non ancora verificate su una fonte ufficiale."
+ ]
+}

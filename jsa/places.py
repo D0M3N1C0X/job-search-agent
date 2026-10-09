@@ -38,6 +38,7 @@ NAMES = {
     "SK": ("Slovacchia", "Slovakia"), "HU": ("Ungheria", "Hungary"), "RO": ("Romania", "Romania"),
     "BG": ("Bulgaria", "Bulgaria"), "HR": ("Croazia", "Croatia"), "SI": ("Slovenia", "Slovenia"),
     "EE": ("Estonia", "Estonia"), "LV": ("Lettonia", "Latvia"), "LT": ("Lituania", "Lithuania"),
+    "IE": ("Irlanda", "Ireland"),
 }
 
 

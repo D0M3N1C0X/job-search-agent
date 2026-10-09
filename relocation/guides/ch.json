@@ -1,0 +1,36 @@
+{
+ "country": "CH",
+ "slug": "svizzera",
+ "city": "",
+ "checked": "2026-10-09",
+ "skip_common": [
+  "health",
+  "home"
+ ],
+ "registration": [
+  {
+   "text": "La Svizzera non è nell'UE, ma vale la libera circolazione. Per un lavoro di oltre tre mesi devi registrarti al comune di residenza entro 14 giorni dall'arrivo e prima di iniziare a lavorare, chiedendo il permesso di soggiorno. Servono un documento d'identità e la conferma scritta dell'impiego.",
+   "source": "Segreteria di Stato della migrazione (SEM)",
+   "url": "https://www.sem.admin.ch/sem/en/home/themen/fza_schweiz-eu-efta/eu-efta_buerger_schweiz/faq.html"
+  }
+ ],
+ "tax": [],
+ "health": [
+  {
+   "text": "Chi si stabilisce in Svizzera deve stipulare l'assicurazione malattie entro tre mesi. Se lo fai in tempo, la copertura parte dall'inizio della residenza; se lo fai dopo, parte solo dall'adesione e paghi un supplemento.",
+   "source": "Ufficio federale della sanità pubblica (UFSP)",
+   "url": "https://www.bag.admin.ch/en/health-insurance-requirement-to-obtain-insurance-for-persons-resident-in-switzerland"
+  }
+ ],
+ "home": [
+  {
+   "text": "Per un'abitazione la garanzia non può superare tre pigioni mensili, e il locatore deve depositarla in banca su un conto intestato a te.",
+   "source": "Codice delle obbligazioni, art. 257e (Fedlex)",
+   "url": "https://www.fedlex.admin.ch/eli/cc/27/317_321_377/it#art_257_e"
+  }
+ ],
+ "gaps": [
+  "Tasse: imposta alla fonte per i lavoratori stranieri, non ancora verificata su una fonte ufficiale.",
+  "Le regole UE comuni su conto bancario e previdenza non sono riportate: la Svizzera non è nell'UE."
+ ]
+}
