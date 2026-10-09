@@ -10,10 +10,15 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#F6F7FA">
 <link rel="alternate" hreflang="en" href="index.en.html">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+/* Inter, served from this site (SIL Open Font License, fonts/OFL.txt): no request to a third party. */
+@font-face{font-family:Inter;font-style:normal;font-weight:400 900;font-display:swap;
+ src:url(fonts/inter-latin.woff2) format("woff2");
+ unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:Inter;font-style:normal;font-weight:400 900;font-display:swap;
+ src:url(fonts/inter-latin-ext.woff2) format("woff2");
+ unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
 :root{color-scheme:light;--ink:#0B1220;--body:#3A4558;--muted:#5B6474;--soft:#F6F7FA;--card:#FFFFFF;
  --line:#E2E5EC;--coral:#FF6B4A;--coral-ink:#C2401F;--night:#0B1220;--night2:#16203A;--night3:#1E2A47;
  --night-ink:#B8C1D3;--night-muted:#8A94A8}
@@ -92,6 +97,30 @@ h2{margin:0;font-size:clamp(34px,4.6vw,60px);line-height:1.02;letter-spacing:-.0
 .tile[aria-pressed="true"] span,.tile[aria-pressed="true"] b{color:var(--ink)}
 .note{margin:20px 0 0;font-size:13px;line-height:1.5;color:var(--muted);max-width:820px}
 
+.cities{padding-bottom:104px}
+.cities .head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.cities .head p{margin:0;color:var(--muted);font-size:15px}
+.strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:36px}
+.city{position:relative;border:0;padding:0;border-radius:28px;overflow:hidden;aspect-ratio:4/5;cursor:pointer;
+ background:#DCE1EA;font-family:inherit;text-align:left;transition:transform .2s ease}
+.city:hover{transform:translateY(-3px)}
+.city img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.city .label{position:absolute;left:0;right:0;bottom:0;padding:64px 22px 22px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px;
+ background:linear-gradient(to top,rgba(11,18,32,.82),rgba(11,18,32,0));color:#fff}
+.city .label strong{font-size:clamp(20px,2.2vw,28px);letter-spacing:-.03em}
+.city .label span{display:inline-flex;height:34px;align-items:center;padding:0 14px;border-radius:999px;
+ background:var(--coral);color:var(--ink);font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
+.city .label span.neg{background:rgba(255,255,255,.88)}
+.city[aria-pressed="true"]{outline:3px solid var(--coral);outline-offset:3px}
+@media (max-width:860px){.strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .city .label{padding:48px 14px 14px;flex-direction:column;align-items:flex-start;gap:6px}
+ .city .label span{height:28px;font-size:14px;padding:0 10px}}
+.collage{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;width:100%;margin-bottom:16px}
+.collage img{width:100%;height:clamp(110px,16vw,220px);object-fit:cover;border-radius:20px;display:block}
+.collage img:nth-child(even){margin-top:28px}
+@media (max-width:700px){.collage{grid-template-columns:repeat(3,minmax(0,1fr))}.collage img:nth-child(n+4){display:none}}
+.credits{font-size:12px;color:var(--muted);line-height:1.6}
+.credits a{color:var(--muted)}
 .how{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:56px;align-items:center;
  padding-top:104px;padding-bottom:104px}
 .how ol{list-style:none;margin:32px 0 0;padding:0;display:flex;flex-direction:column;gap:24px}
@@ -192,6 +221,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   <p class="note">Potere d&#x27;acquisto dello stipendio netto medio rispetto all&#x27;Italia, 2023. Fonte: Eurostat. Lo stipendio non è tutto: Cechia ha la disoccupazione più bassa, il 2,8%.</p>
 </section>
 
+<section class="wrap cities" aria-labelledby="cities-h">
+  <div class="head"><h2 id="cities-h">Sei città, sei conti diversi.</h2><p>Potere d&#x27;acquisto rispetto all&#x27;Italia. Tocca una città per vedere i suoi conti.</p></div>
+  <div class="strip"><button type="button" class="city" data-code="NL" aria-pressed="false"><img src="img/cities/amsterdam-1-900.webp" srcset="img/cities/amsterdam-1-480.webp 480w, img/cities/amsterdam-1-900.webp 900w" sizes="(max-width:860px) 50vw, 400px" alt="Canale di Amsterdam al tramonto" width="900" height="1200" loading="lazy" decoding="async"><span class="label"><strong>Amsterdam</strong><span class="">+49%</span></span></button><button type="button" class="city" data-code="DE" aria-pressed="true"><img src="img/cities/berlino-1-900.webp" srcset="img/cities/berlino-1-480.webp 480w, img/cities/berlino-1-900.webp 900w" sizes="(max-width:860px) 50vw, 400px" alt="Berlino e la torre della televisione al tramonto" width="900" height="1200" loading="lazy" decoding="async"><span class="label"><strong>Berlino</strong><span class="">+39%</span></span></button><button type="button" class="city" data-code="FR" aria-pressed="false"><img src="img/cities/parigi-1-900.webp" srcset="img/cities/parigi-1-480.webp 480w, img/cities/parigi-1-900.webp 900w" sizes="(max-width:860px) 50vw, 400px" alt="I tetti di Parigi con la Tour Eiffel" width="900" height="1200" loading="lazy" decoding="async"><span class="label"><strong>Parigi</strong><span class="">+17%</span></span></button><button type="button" class="city" data-code="ES" aria-pressed="false"><img src="img/cities/madrid-1-900.webp" srcset="img/cities/madrid-1-480.webp 480w, img/cities/madrid-1-900.webp 900w" sizes="(max-width:860px) 50vw, 400px" alt="I tetti di Madrid al tramonto" width="900" height="1200" loading="lazy" decoding="async"><span class="label"><strong>Madrid</strong><span class="">+4%</span></span></button><button type="button" class="city" data-code="PL" aria-pressed="false"><img src="img/cities/varsavia-1-900.webp" srcset="img/cities/varsavia-1-480.webp 480w, img/cities/varsavia-1-900.webp 900w" sizes="(max-width:860px) 50vw, 400px" alt="Il Palazzo della Cultura al tramonto" width="900" height="1200" loading="lazy" decoding="async"><span class="label"><strong>Varsavia</strong><span class="neg">−18%</span></span></button><button type="button" class="city" data-code="PT" aria-pressed="false"><img src="img/cities/lisbona-1-900.webp" srcset="img/cities/lisbona-1-480.webp 480w, img/cities/lisbona-1-900.webp 900w" sizes="(max-width:860px) 50vw, 400px" alt="I tetti arancioni di Lisbona" width="900" height="1200" loading="lazy" decoding="async"><span class="label"><strong>Lisbona</strong><span class="neg">−28%</span></span></button></div>
+</section>
+
 <section class="band">
   <div class="wrap how">
     <div class="phone" aria-hidden="true">
@@ -215,6 +249,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 </section>
 
 <section class="wrap final">
+  <div class="collage"><img src="img/cities/amsterdam-2-900.webp" srcset="img/cities/amsterdam-2-480.webp 480w, img/cities/amsterdam-2-900.webp 900w" sizes="(max-width:860px) 50vw, 400px" alt="Case sul canale di notte" width="900" height="1200" loading="lazy" decoding="async"><img src="img/cities/berlino-2-900.webp" srcset="img/cities/berlino-2-480.webp 480w, img/cities/berlino-2-900.webp 900w" sizes="(max-width:860px) 50vw, 400px" alt="La Sprea e l&#x27;Isola dei Musei" width="900" height="1200" loading="lazy" decoding="async"><img src="img/cities/parigi-2-900.webp" srcset="img/cities/parigi-2-480.webp 480w, img/cities/parigi-2-900.webp 900w" sizes="(max-width:860px) 50vw, 400px" alt="La Tour Eiffel" width="900" height="1200" loading="lazy" decoding="async"><img src="img/cities/madrid-2-900.webp" srcset="img/cities/madrid-2-480.webp 480w, img/cities/madrid-2-900.webp 900w" sizes="(max-width:860px) 50vw, 400px" alt="La Gran Vía" width="900" height="1200" loading="lazy" decoding="async"><img src="img/cities/varsavia-2-900.webp" srcset="img/cities/varsavia-2-480.webp 480w, img/cities/varsavia-2-900.webp 900w" sizes="(max-width:860px) 50vw, 400px" alt="La piazza della Città Vecchia" width="900" height="1200" loading="lazy" decoding="async"><img src="img/cities/lisbona-2-900.webp" srcset="img/cities/lisbona-2-480.webp 480w, img/cities/lisbona-2-900.webp 900w" sizes="(max-width:860px) 50vw, 400px" alt="Il tram giallo" width="900" height="1200" loading="lazy" decoding="async"></div>
   <h2>Prima i numeri. Poi la valigia.</h2>
   <p>Gratis e open source. Gira su macOS, Windows e Linux.</p>
   <div class="ctas" style="justify-content:center">
@@ -230,12 +265,13 @@ python3 -m jsa demo</pre></div>
 <footer><div class="wrap">
   <span>Licenza MIT · costruito da Domenico Perroni · <a href="https://github.com/D0M3N1C0X/job-search-agent">github.com/D0M3N1C0X/job-search-agent</a></span>
   <span>Paesi: Eurostat · Offerte: bacheche pubbliche delle aziende</span>
+  <span class="credits">Foto su Unsplash di <a href="https://unsplash.com/@redcharlie?utm_source=job-search-agent&amp;utm_medium=referral">redcharlie</a>, <a href="https://unsplash.com/@pedrotiagocunha?utm_source=job-search-agent&amp;utm_medium=referral">Pedro Cunha</a>, <a href="https://unsplash.com/@vradenburg?utm_source=job-search-agent&amp;utm_medium=referral">Adam Vradenburg</a>, <a href="https://unsplash.com/@nikita_pishchugin?utm_source=job-search-agent&amp;utm_medium=referral">Nikita Pishchugin</a>, <a href="https://unsplash.com/@marttisalmi?utm_source=job-search-agent&amp;utm_medium=referral">Martti Salmi</a>, <a href="https://unsplash.com/@adri1xplr?utm_source=job-search-agent&amp;utm_medium=referral">Adrien</a>, <a href="https://unsplash.com/@alexazabache?utm_source=job-search-agent&amp;utm_medium=referral">Alex Azabache</a>, <a href="https://unsplash.com/@jmoncasi?utm_source=job-search-agent&amp;utm_medium=referral">Jordi Moncasi</a>, <a href="https://unsplash.com/@valik_chern?utm_source=job-search-agent&amp;utm_medium=referral">Valentyn Chernetskyi</a>, <a href="https://unsplash.com/@malyushev?utm_source=job-search-agent&amp;utm_medium=referral">Victor Malyushev</a>, <a href="https://unsplash.com/@tombyrom?utm_source=job-search-agent&amp;utm_medium=referral">Tom Byrom</a>, <a href="https://unsplash.com/@juliandik?utm_source=job-search-agent&amp;utm_medium=referral">Julian Dik</a>.</span>
 </div></footer>
 
 <script>
 const DATA = {"CH": {"vs": "+78%", "neg": false, "net": "82.060 €", "prices": "+88%", "city": "Zurigo"}, "NL": {"vs": "+49%", "neg": false, "net": "45.156 €", "prices": "+23%", "city": "Amsterdam"}, "DE": {"vs": "+39%", "neg": false, "net": "37.908 €", "prices": "+11%", "city": "Berlino"}, "LU": {"vs": "+29%", "neg": false, "net": "48.798 €", "prices": "+54%", "city": "Lussemburgo"}, "AT": {"vs": "+28%", "neg": false, "net": "38.376 €", "prices": "+22%", "city": "Vienna"}, "BE": {"vs": "+19%", "neg": false, "net": "35.439 €", "prices": "+21%", "city": "Bruxelles"}, "FR": {"vs": "+17%", "neg": false, "net": "31.574 €", "prices": "+10%", "city": "Parigi"}, "ES": {"vs": "+4%", "neg": false, "net": "23.597 €", "prices": "−8%", "city": "Madrid"}, "CZ": {"vs": "−14%", "neg": true, "net": "17.266 €", "prices": "−18%", "city": "Praga"}, "PL": {"vs": "−18%", "neg": true, "net": "14.487 €", "prices": "−28%", "city": "Varsavia"}, "SI": {"vs": "−25%", "neg": true, "net": "17.114 €", "prices": "−7%", "city": "Lubiana"}, "EE": {"vs": "−25%", "neg": true, "net": "18.142 €", "prices": "−2%", "city": "Tallinn"}, "LT": {"vs": "−25%", "neg": true, "net": "14.783 €", "prices": "−20%", "city": "Vilnius"}, "HU": {"vs": "−26%", "neg": true, "net": "12.720 €", "prices": "−30%", "city": "Budapest"}, "RO": {"vs": "−27%", "neg": true, "net": "10.525 €", "prices": "−41%", "city": "Bucarest"}, "PT": {"vs": "−28%", "neg": true, "net": "15.301 €", "prices": "−13%", "city": "Lisbona"}, "BG": {"vs": "−31%", "neg": true, "net": "9.890 €", "prices": "−42%", "city": "Sofia"}, "HR": {"vs": "−31%", "neg": true, "net": "12.601 €", "prices": "−25%", "city": "Zagabria"}, "LV": {"vs": "−31%", "neg": true, "net": "13.418 €", "prices": "−21%", "city": "Riga"}, "SK": {"vs": "−36%", "neg": true, "net": "13.028 €", "prices": "−17%", "city": "Bratislava"}}, L = {"net_there": "Netto {cc}", "h1": "Quanto vale il tuo stipendio a {city}?"};
 const sel = document.getElementById('country');
-const tiles = [...document.querySelectorAll('.tile')];
+const tiles = [...document.querySelectorAll('.tile, .city')];
 function show(code) {
   const c = DATA[code];
   if (!c) return;

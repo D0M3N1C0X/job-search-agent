@@ -69,6 +69,10 @@ COPY = {
         "countries_note": "Potere d'acquisto dello stipendio netto medio rispetto all'Italia, {year}. "
                           "Fonte: Eurostat. Lo stipendio non è tutto: {low} ha la disoccupazione "
                           "più bassa, il {low_rate}.",
+        "cities_h": "Sei città, sei conti diversi.",
+        "cities_p": "Potere d'acquisto rispetto all'Italia. Tocca una città per vedere i suoi conti.",
+        "power": "potere d'acquisto",
+        "photos": "Foto su Unsplash di",
         "how_h": "Dal CV alla candidatura. Senza moduli.",
         "how": [
             ("Importa il CV", "PDF o Word: il profilo si compila da solo e lo controlli tu."),
@@ -117,6 +121,10 @@ COPY = {
         "countries_note": "Purchasing power of the average net salary compared with Italy, {year}. "
                           "Source: Eurostat. Pay is not everything: {low} has the lowest "
                           "unemployment, {low_rate}.",
+        "cities_h": "Six cities, six different sums.",
+        "cities_p": "Purchasing power compared with Italy. Tap a city to see its sums.",
+        "power": "purchasing power",
+        "photos": "Photos on Unsplash by",
         "how_h": "From CV to application. No forms.",
         "how": [
             ("Import your CV", "PDF or Word: the profile fills itself in, and you check it."),
@@ -157,7 +165,36 @@ CITY = {
            "LT": "Vilnius"},
 }
 
+# Photos in docs/img/cities, chosen from Unsplash (licence and authors in credits.json).
+CITIES = [
+    ("amsterdam", "NL", {"it": "Amsterdam", "en": "Amsterdam"},
+     {"it": ("Canale di Amsterdam al tramonto", "Case sul canale di notte"),
+      "en": ("Amsterdam canal at sunset", "Canal houses at night")}),
+    ("berlino", "DE", {"it": "Berlino", "en": "Berlin"},
+     {"it": ("Berlino e la torre della televisione al tramonto", "La Sprea e l'Isola dei Musei"),
+      "en": ("Berlin and the TV tower at sunset", "The Spree and Museum Island")}),
+    ("parigi", "FR", {"it": "Parigi", "en": "Paris"},
+     {"it": ("I tetti di Parigi con la Tour Eiffel", "La Tour Eiffel"),
+      "en": ("Paris rooftops and the Eiffel Tower", "The Eiffel Tower")}),
+    ("madrid", "ES", {"it": "Madrid", "en": "Madrid"},
+     {"it": ("I tetti di Madrid al tramonto", "La Gran Vía"),
+      "en": ("Madrid rooftops at sunset", "Gran Vía")}),
+    ("varsavia", "PL", {"it": "Varsavia", "en": "Warsaw"},
+     {"it": ("Il Palazzo della Cultura al tramonto", "La piazza della Città Vecchia"),
+      "en": ("The Palace of Culture at sunset", "The Old Town square")}),
+    ("lisbona", "PT", {"it": "Lisbona", "en": "Lisbon"},
+     {"it": ("I tetti arancioni di Lisbona", "Il tram giallo"),
+      "en": ("Lisbon's orange rooftops", "The yellow tram")}),
+]
+
 CSS = """
+/* Inter, served from this site (SIL Open Font License, fonts/OFL.txt): no request to a third party. */
+@font-face{font-family:Inter;font-style:normal;font-weight:400 900;font-display:swap;
+ src:url(fonts/inter-latin.woff2) format("woff2");
+ unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:Inter;font-style:normal;font-weight:400 900;font-display:swap;
+ src:url(fonts/inter-latin-ext.woff2) format("woff2");
+ unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
 :root{color-scheme:light;--ink:#0B1220;--body:#3A4558;--muted:#5B6474;--soft:#F6F7FA;--card:#FFFFFF;
  --line:#E2E5EC;--coral:#FF6B4A;--coral-ink:#C2401F;--night:#0B1220;--night2:#16203A;--night3:#1E2A47;
  --night-ink:#B8C1D3;--night-muted:#8A94A8}
@@ -236,6 +273,30 @@ h2{margin:0;font-size:clamp(34px,4.6vw,60px);line-height:1.02;letter-spacing:-.0
 .tile[aria-pressed="true"] span,.tile[aria-pressed="true"] b{color:var(--ink)}
 .note{margin:20px 0 0;font-size:13px;line-height:1.5;color:var(--muted);max-width:820px}
 
+.cities{padding-bottom:104px}
+.cities .head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.cities .head p{margin:0;color:var(--muted);font-size:15px}
+.strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:36px}
+.city{position:relative;border:0;padding:0;border-radius:28px;overflow:hidden;aspect-ratio:4/5;cursor:pointer;
+ background:#DCE1EA;font-family:inherit;text-align:left;transition:transform .2s ease}
+.city:hover{transform:translateY(-3px)}
+.city img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.city .label{position:absolute;left:0;right:0;bottom:0;padding:64px 22px 22px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px;
+ background:linear-gradient(to top,rgba(11,18,32,.82),rgba(11,18,32,0));color:#fff}
+.city .label strong{font-size:clamp(20px,2.2vw,28px);letter-spacing:-.03em}
+.city .label span{display:inline-flex;height:34px;align-items:center;padding:0 14px;border-radius:999px;
+ background:var(--coral);color:var(--ink);font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
+.city .label span.neg{background:rgba(255,255,255,.88)}
+.city[aria-pressed="true"]{outline:3px solid var(--coral);outline-offset:3px}
+@media (max-width:860px){.strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .city .label{padding:48px 14px 14px;flex-direction:column;align-items:flex-start;gap:6px}
+ .city .label span{height:28px;font-size:14px;padding:0 10px}}
+.collage{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;width:100%;margin-bottom:16px}
+.collage img{width:100%;height:clamp(110px,16vw,220px);object-fit:cover;border-radius:20px;display:block}
+.collage img:nth-child(even){margin-top:28px}
+@media (max-width:700px){.collage{grid-template-columns:repeat(3,minmax(0,1fr))}.collage img:nth-child(n+4){display:none}}
+.credits{font-size:12px;color:var(--muted);line-height:1.6}
+.credits a{color:var(--muted)}
 .how{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:56px;align-items:center;
  padding-top:104px;padding-bottom:104px}
 .how ol{list-style:none;margin:32px 0 0;padding:0;display:flex;flex-direction:column;gap:24px}
@@ -282,7 +343,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 SCRIPT = """
 const DATA = %(data)s, L = %(labels)s;
 const sel = document.getElementById('country');
-const tiles = [...document.querySelectorAll('.tile')];
+const tiles = [...document.querySelectorAll('.tile, .city')];
 function show(code) {
   const c = DATA[code];
   if (!c) return;
@@ -399,6 +460,36 @@ def page(lang: str, catalogue: dict, countries: dict) -> str:
         f'<div><span>{escape(r["name"])}</span><b class="{"neg" if r["neg"] else ""}">{r["vs"]}</b></div>'
         for r in rows[1:5]
     )
+    credits = {c_["file"]: c_ for c_ in json.loads(
+        (DOCS / "img" / "cities" / "credits.json").read_text(encoding="utf-8"))}
+
+    def picture(slug: str, alt: str, lazy: bool = True) -> str:
+        loading = ' loading="lazy"' if lazy else ""
+        return (f'<img src="img/cities/{slug}-900.webp" '
+                f'srcset="img/cities/{slug}-480.webp 480w, img/cities/{slug}-900.webp 900w" '
+                f'sizes="(max-width:860px) 50vw, 400px" '
+                f'alt="{escape(alt)}" width="900" height="1200"{loading} decoding="async">')
+
+    strip = "".join(
+        f'<button type="button" class="city" data-code="{code}" '
+        f'aria-pressed="{str(code == DEFAULT_COUNTRY).lower()}">'
+        f'{picture(slug + "-1", alts[lang][0])}'
+        f'<span class="label"><strong>{escape(names[lang])}</strong>'
+        f'<span class="{"neg" if by_code[code]["neg"] else ""}">{by_code[code]["vs"]}</span>'
+        f'</span></button>'
+        for slug, code, names, alts in CITIES if code in by_code
+    )
+    collage = "".join(picture(slug + "-2", alts[lang][1]) for slug, _code, _names, alts in CITIES)
+    authors = []
+    for slug, _code, _names, _alts in CITIES:
+        for n in (1, 2):
+            entry = credits.get(f"{slug}-{n}")
+            if entry and entry["author"] not in [a[0] for a in authors]:
+                authors.append((entry["author"], entry["profile"]))
+    photo_credits = ", ".join(
+        f'<a href="{escape(url)}?utm_source=job-search-agent&amp;utm_medium=referral">{escape(name)}</a>'
+        for name, url in authors)
+
     data = {r["code"]: {"vs": r["vs"], "neg": r["neg"], "net": r["net"], "prices": r["prices"],
                         "city": CITY[lang].get(r["code"], "")} for r in rows}
     labels = {"net_there": c["net_there"], "h1": c["h1"]}
@@ -419,9 +510,7 @@ def page(lang: str, catalogue: dict, countries: dict) -> str:
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#F6F7FA">
 <link rel="alternate" hreflang="{'en' if lang == 'it' else 'it'}" href="{other}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>{CSS}</style></head><body>
 
 <header class="wrap top">
@@ -481,6 +570,11 @@ def page(lang: str, catalogue: dict, countries: dict) -> str:
   <p class="note">{escape(c['countries_note'].format(year=year, low=lowest['name'], low_rate=plain_pct(lowest['unemployment'], lang)))}</p>
 </section>
 
+<section class="wrap cities" aria-labelledby="cities-h">
+  <div class="head"><h2 id="cities-h">{escape(c['cities_h'])}</h2><p>{escape(c['cities_p'])}</p></div>
+  <div class="strip">{strip}</div>
+</section>
+
 <section class="band">
   <div class="wrap how">
     <div class="phone" aria-hidden="true">
@@ -504,6 +598,7 @@ def page(lang: str, catalogue: dict, countries: dict) -> str:
 </section>
 
 <section class="wrap final">
+  <div class="collage">{collage}</div>
   <h2>{escape(c['final_h'])}</h2>
   <p>{escape(c['final_p'])}</p>
   <div class="ctas" style="justify-content:center">
@@ -517,6 +612,7 @@ def page(lang: str, catalogue: dict, countries: dict) -> str:
 <footer><div class="wrap">
   <span>{c['foot']} · <a href="{REPO}">{REPO.replace('https://', '')}</a></span>
   <span>{c['foot_sources']}</span>
+  <span class="credits">{c['photos']} {photo_credits}.</span>
 </div></footer>
 
 <script>{SCRIPT % {"data": json.dumps(data, ensure_ascii=False), "labels": json.dumps(labels, ensure_ascii=False)}}</script>
