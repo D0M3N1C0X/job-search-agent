@@ -706,7 +706,6 @@ def guide_page(guide: dict, common: dict, guides: list[dict], catalogue: dict, c
     row = {r["code"]: r for r in country_rows(countries, "it")}[code]
     name = row["name"]
     city_slug = guide["city"]
-    city = CITY["it"][code]
     hiring = [e for e in catalogue["companies"] if code in e.get("countries", {})]
     roles = sum(e["countries"][code] for e in hiring)
     alt = next(a["it"][0] for slug, c, _n, a in CITIES if slug == city_slug)

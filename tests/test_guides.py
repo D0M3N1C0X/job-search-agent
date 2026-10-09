@@ -1,7 +1,6 @@
 """The moving guides publish legal facts: every one must carry its source."""
 
 import json
-import re
 import unittest
 from pathlib import Path
 
