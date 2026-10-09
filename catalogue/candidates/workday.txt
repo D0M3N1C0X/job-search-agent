@@ -1,0 +1,39 @@
+# Large European groups and tech/fintech on Workday. A Workday board cannot be
+# guessed from a name: each handle below was read from the employer's own
+# careers URL on myworkdayjobs.com (tenant/wdN/site).
+## WORKDAY
+Accenture | workday:accenture/wd103/AccentureCareers
+Adient | workday:adient/wd3/External
+Adobe | workday:adobe/wd5/external_experienced
+Airbus | workday:ag/wd3/Airbus
+AstraZeneca | workday:astrazeneca/wd3/Careers
+AVEVA | workday:aveva/wd3/AVEVA_careers
+Barclays | workday:barclays/wd3/External_Career_Site_Barclays
+BBVA | workday:bbva/wd3/BBVA
+Booking Holdings | workday:priceline/wd1/BookingHoldings
+Coca-Cola | workday:coke/wd1/coca-cola-careers
+Deloitte Ireland | workday:deloitteie/wd3/experienced_professionals
+Diageo | workday:diageo/wd3/Diageo_Careers
+Expedia Group | workday:expedia/wd108/search
+GSK | workday:gsk/wd5/GSKCareers
+ING | workday:ing/wd3/ICSGBLCOR
+Julius Baer | workday:juliusbaer/wd3/External
+Lloyds Banking Group | workday:lbg/wd3/LBG_Careers
+Mastercard | workday:mastercard/wd1/CorporateCareers
+NN Group | workday:nngroup/wd3/WDExternal
+Novartis | workday:novartis/wd3/Novartis_Careers
+NVIDIA | workday:nvidia/wd5/NVIDIAExternalCareerSite
+NXP Semiconductors | workday:nxp/wd3/careers
+PayPal | workday:paypal/wd1/jobs
+Philips | workday:philips/wd3/jobs-and-careers
+Puma | workday:puma/wd502/Jobs_at_Puma
+PwC | workday:pwc/wd3/Global_Experienced_Careers
+Roche | workday:roche/wd3/roche-ext
+Salesforce | workday:salesforce/wd12/External_Career_Site
+Sanofi | workday:sanofi/wd3/sanoficareers
+Shell | workday:shell/wd3/ShellCareers
+Siemens Gamesa | workday:siemensgamesa/wd3/SGRE
+Swiss Life | workday:swisslife/wd3/Swiss_Life_International_Division_Career_Site
+Swisscom | workday:swisscom/wd103/SwisscomExternalCareers
+Unilever | workday:unilever/wd3/Unilever_Experienced_Professionals
+Workday | workday:workday/wd5/Workday

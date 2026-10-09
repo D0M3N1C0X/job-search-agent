@@ -193,8 +193,9 @@ def http_get(
     retries: int = 3,
     cache_dir: Path | None = None,
     cache_ttl: int = 900,
+    body: Any = None,
 ) -> str:
-    """GET a URL and return the decoded body.
+    """GET a URL (or POST `body` as JSON) and return the decoded response.
 
     Retries on 429/5xx with exponential backoff. Optionally serves from an
     on-disk cache, which keeps repeated runs (and the test suite) offline-ish
@@ -206,7 +207,8 @@ def http_get(
     cache_file = None
     if cache_dir is not None:
         cache_dir.mkdir(parents=True, exist_ok=True)
-        cache_file = cache_dir / (hashlib.sha256(url.encode()).hexdigest()[:32] + ".json")
+        key = url if body is None else url + "\n" + json.dumps(body, sort_keys=True)
+        cache_file = cache_dir / (hashlib.sha256(key.encode()).hexdigest()[:32] + ".json")
         if cache_file.exists() and time.time() - cache_file.stat().st_mtime < cache_ttl:
             return cache_file.read_text(encoding="utf-8")
 
@@ -216,6 +218,10 @@ def http_get(
         "Accept-Encoding": "gzip",
         "Accept-Language": "en",
     }
+    data = None
+    if body is not None:
+        data = json.dumps(body).encode("utf-8")
+        req_headers["Content-Type"] = "application/json"
     req_headers.update(headers or {})
 
     delay = 1.0
@@ -223,17 +229,17 @@ def http_get(
     for attempt in range(1, retries + 1):
         try:
             # The scheme was checked at the top: http(s) only.
-            req = urllib.request.Request(url, headers=req_headers)  # noqa: S310
+            req = urllib.request.Request(url, data=data, headers=req_headers)  # noqa: S310
             with urllib.request.urlopen(req, timeout=timeout, context=_SSL) as resp:  # noqa: S310
                 raw = _read_capped(resp, url)
                 charset = resp.headers.get_content_charset() or "utf-8"
                 try:
-                    body = raw.decode(charset, errors="replace")
+                    text = raw.decode(charset, errors="replace")
                 except LookupError:  # a charset Python has never heard of
-                    body = raw.decode("utf-8", errors="replace")
+                    text = raw.decode("utf-8", errors="replace")
             if cache_file is not None:
-                cache_file.write_text(body, encoding="utf-8")
-            return body
+                cache_file.write_text(text, encoding="utf-8")
+            return text
         except urllib.error.HTTPError as exc:
             last_error = exc
             if exc.code in (403, 404, 410):

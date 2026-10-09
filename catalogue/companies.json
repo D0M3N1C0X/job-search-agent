@@ -32,6 +32,29 @@
    "region": "FR"
   },
   {
+   "company": "Accenture",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "accenture/wd103/AccentureCareers",
+   "roles": 1000,
+   "europe": 1000,
+   "countries": {
+    "FR": 207,
+    "IT": 127,
+    "IE": 97,
+    "BE": 81,
+    "ES": 79,
+    "GR": 69,
+    "CZ": 65,
+    "DE": 59,
+    "AT": 43,
+    "DK": 40
+   },
+   "italian": 1,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Accor",
    "board_name": "Accor",
    "provider": "smartrecruiters",
@@ -55,6 +78,29 @@
    "region": "FR"
   },
   {
+   "company": "Adient",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "adient/wd3/External",
+   "roles": 42,
+   "europe": 42,
+   "countries": {
+    "DE": 11,
+    "SK": 8,
+    "HU": 7,
+    "ES": 3,
+    "GB": 3,
+    "RS": 3,
+    "MK": 2,
+    "RO": 2,
+    "CZ": 1,
+    "FR": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Adjust",
    "board_name": "Adjust",
    "provider": "recruitee",
@@ -67,6 +113,28 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "DE"
+  },
+  {
+   "company": "Adobe",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "adobe/wd5/external_experienced",
+   "roles": 56,
+   "europe": 56,
+   "countries": {
+    "RO": 16,
+    "GB": 14,
+    "DE": 6,
+    "FR": 6,
+    "SE": 4,
+    "CH": 3,
+    "DK": 3,
+    "ES": 2,
+    "IT": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
   },
   {
    "company": "Adyen",
@@ -169,6 +237,24 @@
    "italian": 3,
    "verified": "2026-10-08",
    "region": "EU"
+  },
+  {
+   "company": "Airbus",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "ag/wd3/Airbus",
+   "roles": 1000,
+   "europe": 1000,
+   "countries": {
+    "DE": 496,
+    "ES": 367,
+    "FR": 125,
+    "DK": 11,
+    "BE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
   },
   {
    "company": "Aircall",
@@ -330,6 +416,29 @@
    "region": "EU"
   },
   {
+   "company": "AstraZeneca",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "astrazeneca/wd3/Careers",
+   "roles": 249,
+   "europe": 249,
+   "countries": {
+    "GB": 66,
+    "ES": 41,
+    "DE": 37,
+    "SE": 30,
+    "PL": 20,
+    "FR": 14,
+    "IE": 8,
+    "NL": 8,
+    "HU": 5,
+    "IT": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Auto1",
    "board_name": "AUTO1 Group",
    "provider": "smartrecruiters",
@@ -351,6 +460,29 @@
    "italian": 1,
    "verified": "2026-10-08",
    "region": "DE"
+  },
+  {
+   "company": "AVEVA",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "aveva/wd3/AVEVA_careers",
+   "roles": 81,
+   "europe": 81,
+   "countries": {
+    "GB": 41,
+    "ES": 11,
+    "FR": 8,
+    "DE": 5,
+    "IT": 5,
+    "NO": 3,
+    "SE": 3,
+    "DK": 2,
+    "PL": 2,
+    "NL": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
   },
   {
    "company": "Avi Medical",
@@ -394,6 +526,48 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "DE"
+  },
+  {
+   "company": "Barclays",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "barclays/wd3/External_Career_Site_Barclays",
+   "roles": 165,
+   "europe": 165,
+   "countries": {
+    "GB": 110,
+    "CZ": 14,
+    "DE": 11,
+    "FR": 7,
+    "MC": 6,
+    "CH": 4,
+    "NL": 4,
+    "IE": 3,
+    "IT": 3,
+    "SE": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
+   "company": "BBVA",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "bbva/wd3/BBVA",
+   "roles": 53,
+   "europe": 53,
+   "countries": {
+    "ES": 31,
+    "GB": 14,
+    "CH": 3,
+    "DE": 2,
+    "FR": 2,
+    "BE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
   },
   {
    "company": "Bird",
@@ -690,6 +864,29 @@
    "region": "PT"
   },
   {
+   "company": "Coca-Cola",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "coke/wd1/coca-cola-careers",
+   "roles": 41,
+   "europe": 41,
+   "countries": {
+    "GB": 8,
+    "IE": 8,
+    "BG": 7,
+    "PL": 6,
+    "DE": 2,
+    "IT": 2,
+    "BE": 1,
+    "EE": 1,
+    "ES": 1,
+    "FR": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Collibra",
    "board_name": "Collibra",
    "provider": "greenhouse",
@@ -966,6 +1163,21 @@
    "region": "DE"
   },
   {
+   "company": "Deloitte Ireland",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "deloitteie/wd3/experienced_professionals",
+   "roles": 60,
+   "europe": 60,
+   "countries": {
+    "IE": 56,
+    "GB": 4
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Deutsche Bank",
    "board_name": "",
    "provider": "personio",
@@ -978,6 +1190,27 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "DE"
+  },
+  {
+   "company": "Diageo",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "diageo/wd3/Diageo_Careers",
+   "roles": 91,
+   "europe": 91,
+   "countries": {
+    "HU": 49,
+    "GB": 16,
+    "DE": 10,
+    "IE": 10,
+    "GR": 3,
+    "CZ": 1,
+    "PT": 1,
+    "RO": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
   },
   {
    "company": "Docebo",
@@ -1206,6 +1439,28 @@
    "italian": 1,
    "verified": "2026-10-08",
    "region": "DE"
+  },
+  {
+   "company": "Expedia Group",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "expedia/wd108/search",
+   "roles": 59,
+   "europe": 59,
+   "countries": {
+    "GB": 37,
+    "CZ": 5,
+    "ES": 5,
+    "IT": 4,
+    "IE": 3,
+    "DE": 2,
+    "AT": 1,
+    "CH": 1,
+    "SE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
   },
   {
    "company": "Fairphone",
@@ -1705,6 +1960,29 @@
    "region": "DE"
   },
   {
+   "company": "GSK",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "gsk/wd5/GSKCareers",
+   "roles": 290,
+   "europe": 290,
+   "countries": {
+    "GB": 108,
+    "BE": 45,
+    "PL": 34,
+    "DE": 32,
+    "FR": 25,
+    "CH": 12,
+    "IT": 11,
+    "ES": 9,
+    "PT": 4,
+    "HU": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Guardsquare",
    "board_name": "Guardsquare",
    "provider": "greenhouse",
@@ -1891,6 +2169,29 @@
    "region": "PL"
   },
   {
+   "company": "ING",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "ing/wd3/ICSGBLCOR",
+   "roles": 423,
+   "europe": 423,
+   "countries": {
+    "PL": 90,
+    "RO": 82,
+    "BE": 54,
+    "NL": 47,
+    "DE": 45,
+    "ES": 42,
+    "LU": 26,
+    "IT": 20,
+    "SK": 9,
+    "FR": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Inpost",
    "board_name": "InPost",
    "provider": "smartrecruiters",
@@ -1999,6 +2300,26 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "FR"
+  },
+  {
+   "company": "Julius Baer",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "juliusbaer/wd3/External",
+   "roles": 94,
+   "europe": 94,
+   "countries": {
+    "CH": 57,
+    "ES": 26,
+    "DE": 7,
+    "GB": 1,
+    "IT": 1,
+    "LU": 1,
+    "MC": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
   },
   {
    "company": "Kiwi.com",
@@ -2121,6 +2442,20 @@
    "region": "BE"
   },
   {
+   "company": "Lloyds Banking Group",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "lbg/wd3/LBG_Careers",
+   "roles": 7,
+   "europe": 7,
+   "countries": {
+    "GB": 7
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Lodgify",
    "board_name": "Lodgify",
    "provider": "lever",
@@ -2220,6 +2555,29 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "FR"
+  },
+  {
+   "company": "Mastercard",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "mastercard/wd1/CorporateCareers",
+   "roles": 240,
+   "europe": 240,
+   "countries": {
+    "IE": 59,
+    "GB": 45,
+    "PT": 37,
+    "PL": 18,
+    "DE": 11,
+    "HU": 11,
+    "IT": 7,
+    "NO": 7,
+    "BE": 5,
+    "DK": 5
+   },
+   "italian": 1,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
   },
   {
    "company": "Mazars",
@@ -2564,6 +2922,28 @@
    "region": "EU"
   },
   {
+   "company": "NN Group",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "nngroup/wd3/WDExternal",
+   "roles": 169,
+   "europe": 169,
+   "countries": {
+    "NL": 56,
+    "BE": 31,
+    "ES": 26,
+    "HU": 23,
+    "PL": 13,
+    "SK": 8,
+    "RO": 6,
+    "CZ": 3,
+    "GR": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Nord Security",
    "board_name": "Nord Security Jobs",
    "provider": "ashby",
@@ -2596,6 +2976,75 @@
    "italian": 1,
    "verified": "2026-10-08",
    "region": "EU"
+  },
+  {
+   "company": "Novartis",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "novartis/wd3/Novartis_Careers",
+   "roles": 327,
+   "europe": 327,
+   "countries": {
+    "SI": 68,
+    "AT": 61,
+    "CH": 37,
+    "GB": 28,
+    "ES": 27,
+    "BE": 16,
+    "CZ": 15,
+    "IE": 14,
+    "FR": 12,
+    "NL": 11
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
+   "company": "NVIDIA",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "nvidia/wd5/NVIDIAExternalCareerSite",
+   "roles": 291,
+   "europe": 291,
+   "countries": {
+    "DE": 58,
+    "GB": 57,
+    "CH": 52,
+    "FR": 38,
+    "PL": 30,
+    "ES": 15,
+    "DK": 8,
+    "NL": 7,
+    "SE": 7,
+    "FI": 5
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
+   "company": "NXP Semiconductors",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "nxp/wd3/careers",
+   "roles": 317,
+   "europe": 317,
+   "countries": {
+    "FR": 71,
+    "RO": 47,
+    "DE": 46,
+    "NL": 43,
+    "AT": 40,
+    "IT": 25,
+    "GB": 16,
+    "BE": 13,
+    "CZ": 9,
+    "ES": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
   },
   {
    "company": "Ohpen",
@@ -2797,6 +3246,26 @@
    "region": "BG"
   },
   {
+   "company": "PayPal",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "paypal/wd1/jobs",
+   "roles": 81,
+   "europe": 81,
+   "countries": {
+    "GB": 30,
+    "DE": 21,
+    "LU": 9,
+    "IE": 7,
+    "IT": 6,
+    "FR": 5,
+    "ES": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Pennylane",
    "board_name": "Pennylane SAS Jobs",
    "provider": "ashby",
@@ -2844,6 +3313,29 @@
    "italian": 1,
    "verified": "2026-10-08",
    "region": "DE"
+  },
+  {
+   "company": "Philips",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "philips/wd3/jobs-and-careers",
+   "roles": 184,
+   "europe": 184,
+   "countries": {
+    "DE": 49,
+    "NL": 46,
+    "PL": 29,
+    "FR": 13,
+    "GB": 9,
+    "BE": 7,
+    "ES": 7,
+    "AT": 6,
+    "IT": 3,
+    "PT": 3
+   },
+   "italian": 2,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
   },
   {
    "company": "Pipedrive",
@@ -2972,6 +3464,46 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "DE"
+  },
+  {
+   "company": "Puma",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "puma/wd502/Jobs_at_Puma",
+   "roles": 170,
+   "europe": 170,
+   "countries": {
+    "DE": 101,
+    "IT": 19,
+    "ES": 12,
+    "GB": 11,
+    "NL": 5,
+    "FR": 4,
+    "CH": 3,
+    "CZ": 3,
+    "IE": 3,
+    "SE": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
+   "company": "PwC",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "pwc/wd3/Global_Experienced_Careers",
+   "roles": 6,
+   "europe": 6,
+   "countries": {
+    "PL": 3,
+    "RO": 1,
+    "DK": 1,
+    "AL": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
   },
   {
    "company": "Qonto",
@@ -3104,6 +3636,25 @@
    "region": "ES"
   },
   {
+   "company": "Roche",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "roche/wd3/roche-ext",
+   "roles": 7,
+   "europe": 7,
+   "countries": {
+    "CH": 2,
+    "DE": 1,
+    "LV": 1,
+    "GB": 1,
+    "HU": 1,
+    "AT": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Rocket Internet",
    "board_name": "Rocket Internet",
    "provider": "smartrecruiters",
@@ -3171,6 +3722,52 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "LU"
+  },
+  {
+   "company": "Salesforce",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "salesforce/wd12/External_Career_Site",
+   "roles": 437,
+   "europe": 437,
+   "countries": {
+    "IE": 141,
+    "GB": 87,
+    "DE": 46,
+    "FR": 39,
+    "IT": 25,
+    "NL": 19,
+    "CH": 14,
+    "BE": 12,
+    "ES": 12,
+    "SE": 10
+   },
+   "italian": 15,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
+   "company": "Sanofi",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "sanofi/wd3/sanoficareers",
+   "roles": 310,
+   "europe": 310,
+   "countries": {
+    "FR": 137,
+    "DE": 58,
+    "HU": 38,
+    "ES": 25,
+    "IT": 11,
+    "BE": 8,
+    "GB": 8,
+    "IE": 8,
+    "CZ": 5,
+    "PL": 5
+   },
+   "italian": 1,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
   },
   {
    "company": "Satispay",
@@ -3325,6 +3922,24 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "HU"
+  },
+  {
+   "company": "Shell",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "shell/wd3/ShellCareers",
+   "roles": 46,
+   "europe": 46,
+   "countries": {
+    "GB": 15,
+    "NL": 15,
+    "DE": 8,
+    "DK": 7,
+    "PL": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
   },
   {
    "company": "Shift Technology",
@@ -3655,6 +4270,37 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "FR"
+  },
+  {
+   "company": "Swiss Life",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "swisslife/wd3/Swiss_Life_International_Division_Career_Site",
+   "roles": 33,
+   "europe": 33,
+   "countries": {
+    "GB": 19,
+    "LU": 8,
+    "CH": 4,
+    "NL": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
+   "company": "Swisscom",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "swisscom/wd103/SwisscomExternalCareers",
+   "roles": 6,
+   "europe": 6,
+   "countries": {
+    "CH": 6
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
   },
   {
    "company": "Swissquote",
@@ -4025,6 +4671,29 @@
    "region": "RO"
   },
   {
+   "company": "Unilever",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "unilever/wd3/Unilever_Experienced_Professionals",
+   "roles": 42,
+   "europe": 42,
+   "countries": {
+    "NL": 13,
+    "DE": 11,
+    "PL": 4,
+    "GB": 3,
+    "CH": 2,
+    "IT": 2,
+    "AT": 1,
+    "BE": 1,
+    "ES": 1,
+    "FI": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Upvest",
    "board_name": "Upvest Jobs",
    "provider": "ashby",
@@ -4264,6 +4933,29 @@
    "region": "DE"
   },
   {
+   "company": "Workday",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "workday/wd5/Workday",
+   "roles": 105,
+   "europe": 105,
+   "countries": {
+    "IE": 25,
+    "GB": 20,
+    "PL": 16,
+    "DE": 11,
+    "FR": 9,
+    "SE": 8,
+    "IT": 6,
+    "ES": 5,
+    "NL": 4,
+    "CZ": 1
+   },
+   "italian": 2,
+   "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Wunderflats",
    "board_name": "",
    "provider": "personio",
@@ -4322,5 +5014,5 @@
   }
  ],
  "_comment": "European employers whose job board answered on the date shown. Built by tools/catalogue.py from catalogue/candidates/; never edited by hand. 'europe' counts roles placed in Europe, 'italian' those that mention the Italian language.",
- "updated": "2026-10-08"
+ "updated": "2026-10-09"
 }

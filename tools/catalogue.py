@@ -82,7 +82,8 @@ def read_candidates(paths: list[Path]) -> list[tuple[str, list[str], str]]:
                 continue
             name, _, explicit = line.partition("|")
             name = name.strip()
-            slugs = explicit.split() + slugs_for(name)
+            given = explicit.split()
+            slugs = given if any(g.startswith("workday:") for g in given) else given + slugs_for(name)
             found.append((name, list(dict.fromkeys(slugs)), region))
     return found
 
@@ -164,6 +165,13 @@ def examine(provider: str, handle: str, company: str) -> dict | None:
 def probe_company(name: str, slugs: list[str], region: str) -> dict | None:
     """The company's best European board, or None."""
     best = None
+    # A Workday board cannot be guessed from a name: it is given as
+    # "workday:tenant/wdN/site", found on the employer's own careers page.
+    for given in [x for x in slugs if x.startswith("workday:")]:
+        entry = examine("workday", given.split(":", 1)[1], name)
+        if entry and (best is None or entry["europe"] > best["europe"]):
+            best = entry
+    slugs = [x for x in slugs if not x.startswith("workday:")] if best is None else []
     for handle in slugs:
         for provider, _count in ats.probe(handle):
             entry = examine(provider, handle, name)
