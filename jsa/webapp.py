@@ -653,7 +653,8 @@ function openJob(id) {
         ${land.unemployment !== null && land.unemployment !== undefined
           ? `<dt>${T.unemp}</dt><dd>${String(land.unemployment).replace('.', LANG === 'it' ? ',' : '.')}%</dd>` : ''}
       </dl>
-      <p class="note" style="margin:10px 0 0">${fmt('eurostat', {year: land.year})}</p></div>` : '';
+      <p class="note" style="margin:10px 0 0">${fmt('eurostat', {year: land.year})}</p>
+      ${safeUrl(land.guide) ? `<a class="btn" style="margin-top:12px" href="${esc(safeUrl(land.guide))}" target="_blank" rel="noopener noreferrer">${T.guide_link}</a>` : ''}</div>` : '';
   $('#dco').innerHTML = `${esc(j.company)} · ${esc(j.location || '–')}${safeUrl(j.url)
     ? ` · <a href="${esc(safeUrl(j.url))}" target="_blank" rel="noopener noreferrer">${T.open_posting}</a>` : ''}`;
   $('#dbody').innerHTML = `

@@ -56,6 +56,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "unemp": "Unemployment",
         "eurostat": "Eurostat {year}, national figures for a single worker on the average wage.",
         "why_score": "Why this score",
+        "guide_link": "Moving guide (Italian) ↗",
         "apply_hint": "Builds the CV (PDF and Word), a draft letter and the packet with your standard answers.",
         # steps
         "step1_t": "Triage",
@@ -203,6 +204,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "unemp": "Disoccupazione",
         "eurostat": "Eurostat {year}, dati nazionali per un lavoratore single con retribuzione media.",
         "why_score": "Perché questo punteggio",
+        "guide_link": "Guida al trasferimento ↗",
         "apply_hint": "Prepara il CV (PDF e Word), una bozza di lettera e il pacchetto con le tue risposte standard.",
         "step1_t": "Scremare",
         "step1_b": "Leggi le schede qui sotto. Tieni quelle che valgono un'ora, scarta le altre. "

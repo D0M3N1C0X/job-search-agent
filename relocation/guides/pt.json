@@ -1,0 +1,20 @@
+{
+ "country": "PT", "slug": "portogallo", "city": "lisbona", "checked": "2026-10-09",
+ "registration": [
+  {"text": "Se resti più di tre mesi, chiedi il certificato di registrazione di cittadino UE entro i 30 giorni successivi ai primi tre mesi dall'ingresso.",
+   "source": "gov.pt", "url": "https://www.gov.pt/servicos/pedir-o-certificado-de-registo-para-cidadao-da-ue-eee-suica-familiar-de-nacional-da-ue-eee-suica"},
+  {"text": "Da cittadino UE con un indirizzo in Portogallo puoi chiedere con un'unica domanda il codice fiscale (NIF), il numero di previdenza (NISS) e il numero del servizio sanitario (SNS), in uno dei 12 Espaços Cidadão abilitati.",
+   "source": "gov.pt", "url": "https://www.gov.pt/servicos/pedir-os-numeros-de-identificacao-fiscal-seguranca-social-e-nacional-de-utente-saude-para-estrangeiros"}
+ ],
+ "tax": [
+  {"text": "Sei residente fiscale in Portogallo se ci resti più di 183 giorni, consecutivi o no, in un periodo di dodici mesi che inizia o finisce nell'anno. Conta ogni giorno in cui dormi nel paese.",
+   "source": "Código do IRS, art. 16 (Portal das Finanças)", "url": "https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/cirs_rep/Pages/irs16.aspx"}
+ ],
+ "health": [],
+ "home": [
+  {"text": "La cauzione può arrivare al massimo a due mensilità. Una riforma degli affitti approvata dal governo il 9 luglio 2026 potrebbe cambiare questa regola: verifica prima di firmare.",
+   "source": "Código Civil, art. 1076.º, n.º 2 (PGD Lisboa) e governo portoghese, 9 luglio 2026", "url": "https://www.pgdlisboa.pt/leis/lei_mostra_articulado.php?artigo_id=775A1076&ficha=1&nid=775&nversao=&pagina=1&so_miolo=&tabela=leis"}
+ ],
+ "gaps": ["Cauzione: la riforma degli affitti del 9 luglio 2026 non risulta ancora in vigore; da ricontrollare.",
+          "Dove si presenta la domanda di registrazione: una pagina indica la câmara municipal, gov.pt indica l'AIMA."]
+}

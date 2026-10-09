@@ -1,0 +1,21 @@
+{
+ "country": "PL", "slug": "polonia", "city": "varsavia", "checked": "2026-10-09",
+ "registration": [
+  {"text": "Se resti più di tre mesi devi registrare il soggiorno di persona presso il voivoda (urząd wojewódzki) del luogo in cui vivi, al più tardi il giorno dopo la fine dei tre mesi dall'ingresso.",
+   "source": "Urząd Wojewódzki di Łódź (gov.pl)", "url": "https://www.gov.pl/web/uw-lodzki/zasady-pobytu-obywateli-unii-europejskiej-na-terytorium-rzeczypospolitej-polskiej"},
+  {"text": "Devi inoltre registrare l'indirizzo in comune (zameldowanie) entro il trentesimo giorno da quando ci vai a vivere.",
+   "source": "gov.pl", "url": "https://www.gov.pl/web/gov/zamelduj-sie-na-pobyt-staly-dla-cudzoziemcow"},
+  {"text": "Se registri l'indirizzo per più di trenta giorni ricevi il numero PESEL d'ufficio; altrimenti puoi chiederlo in qualsiasi comune, gratis.",
+   "source": "gov.pl", "url": "https://www.gov.pl/web/gov/uzyskaj-numer-pesel-dla-cudzoziemcow"}
+ ],
+ "tax": [
+  {"text": "Sei residente fiscale in Polonia se hai lì il centro dei tuoi interessi personali o economici, oppure se ci resti più di 183 giorni nell'anno fiscale.",
+   "source": "Powroty (gov.pl)", "url": "https://powroty.gov.pl/miejsce-zamieszkania-do-celow-podatkowych-5307/"}
+ ],
+ "health": [],
+ "home": [
+  {"text": "La cauzione non può superare dodici mensilità di affitto, calcolate sull'affitto in vigore alla firma.",
+   "source": "Legge sulla tutela dei diritti degli inquilini, art. 6.1 (testo unico 2020, Dz.U. 2020 poz. 611)", "url": "https://eli.gov.pl/api/acts/DU/2020/611/text/T/D20200611L.pdf"}
+ ],
+ "gaps": ["Cauzione: letto il testo unico del 2020; non verificato se modificato dopo."]
+}

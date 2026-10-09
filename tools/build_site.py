@@ -69,6 +69,7 @@ COPY = {
         "countries_note": "Potere d'acquisto dello stipendio netto medio rispetto all'Italia, {year}. "
                           "Fonte: Eurostat. Lo stipendio non è tutto: {low} ha la disoccupazione "
                           "più bassa, il {low_rate}.",
+        "guides_label": "Le guide per trasferirsi:",
         "cities_h": "Sei città, sei conti diversi.",
         "cities_p": "Potere d'acquisto rispetto all'Italia. Tocca una città per vedere i suoi conti.",
         "power": "potere d'acquisto",
@@ -121,6 +122,7 @@ COPY = {
         "countries_note": "Purchasing power of the average net salary compared with Italy, {year}. "
                           "Source: Eurostat. Pay is not everything: {low} has the lowest "
                           "unemployment, {low_rate}.",
+        "guides_label": "Moving guides (in Italian):",
         "cities_h": "Six cities, six different sums.",
         "cities_p": "Purchasing power compared with Italy. Tap a city to see its sums.",
         "power": "purchasing power",
@@ -337,6 +339,11 @@ footer{border-top:1px solid var(--line)}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:28px;padding-bottom:44px;
  font-size:13px;color:var(--muted)}
 @media (max-width:640px){nav.links .pill.section{display:none}header.top{height:64px;flex-wrap:nowrap}nav.links{flex-wrap:nowrap}}
+.guides-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:22px}
+.guides-row span{font-size:15px;color:var(--muted);margin-right:4px}
+.guides-row a{display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:999px;background:var(--card);
+ text-decoration:none;font-weight:600;font-size:14px}
+.guides-row a:hover{background:var(--coral)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 """
 
@@ -490,6 +497,9 @@ def page(lang: str, catalogue: dict, countries: dict) -> str:
         f'<a href="{escape(url)}?utm_source=job-search-agent&amp;utm_medium=referral">{escape(name)}</a>'
         for name, url in authors)
 
+    _common, guides = load_guides()
+    guide_links = "".join(f'<a href="paesi/{g["slug"]}.html">{escape(by_code[g["country"]]["name"])}</a>'
+                          for g in guides if g["country"] in by_code)
     data = {r["code"]: {"vs": r["vs"], "neg": r["neg"], "net": r["net"], "prices": r["prices"],
                         "city": CITY[lang].get(r["code"], "")} for r in rows}
     labels = {"net_there": c["net_there"], "h1": c["h1"]}
@@ -573,6 +583,7 @@ def page(lang: str, catalogue: dict, countries: dict) -> str:
 <section class="wrap cities" aria-labelledby="cities-h">
   <div class="head"><h2 id="cities-h">{escape(c['cities_h'])}</h2><p>{escape(c['cities_p'])}</p></div>
   <div class="strip">{strip}</div>
+  <div class="guides-row"><span>{escape(c['guides_label'])}</span>{guide_links}</div>
 </section>
 
 <section class="band">
@@ -620,11 +631,178 @@ def page(lang: str, catalogue: dict, countries: dict) -> str:
 """
 
 
+# ------------------------------------------------------------------ guides
+
+GUIDES = ROOT / "relocation" / "guides"
+TOPICS = [
+    ("registration", "Registrarsi", "Anagrafe e documenti per restare più di tre mesi."),
+    ("tax", "Tasse", "Quando diventi residente fiscale e quale numero ti serve."),
+    ("health", "Sanità", "Come sei coperto quando lavori lì."),
+    ("home", "Casa e banca", "Cauzione dell'affitto e conto corrente."),
+]
+GUIDE_CSS = """
+.g-hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:40px;align-items:center;
+ padding-top:40px;padding-bottom:72px}
+.g-hero .kicker{font-size:15px;font-weight:700;color:var(--coral-ink)}
+.g-hero h1{margin:10px 0 0;font-size:clamp(44px,6vw,80px);line-height:1;letter-spacing:-.05em;font-weight:900}
+.g-hero .lede{margin-top:18px}
+.g-photo{position:relative;border-radius:32px;overflow:hidden;aspect-ratio:4/5;max-height:560px;background:#DCE1EA}
+.g-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.g-photo .label{position:absolute;left:20px;right:20px;bottom:20px;background:rgba(11,18,32,.82);color:#fff;
+ border-radius:22px;padding:18px 20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;
+ backdrop-filter:blur(10px)}
+.g-photo .label div{display:flex;flex-direction:column;gap:2px}
+.g-photo .label span{font-size:11.5px;color:var(--night-muted)}
+.g-photo .label b{font-size:17px;font-variant-numeric:tabular-nums}
+.g-photo .label b.vs{color:var(--coral)}
+.g-sec{padding-top:56px}
+.g-sec h2{font-size:clamp(28px,3.4vw,44px)}
+.g-sec .sub{margin:8px 0 0;color:var(--muted);font-size:16px}
+.steps{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:12px}
+.steps li{background:var(--card);border-radius:24px;padding:22px 24px 20px 72px;position:relative}
+.steps li::before{counter-increment:step;content:counter(step);position:absolute;left:22px;top:22px;width:32px;height:32px;
+ border-radius:11px;background:var(--coral);color:var(--ink);font-weight:800;display:grid;place-items:center;font-size:15px}
+.steps{counter-reset:step}
+.steps p{margin:0;font-size:17px;line-height:1.6}
+.steps a{display:inline-block;margin-top:8px;font-size:13px;color:var(--muted)}
+.before{background:var(--night);color:#fff;border-radius:32px;padding:clamp(24px,4vw,40px);margin-top:8px}
+.before h2{color:#fff;font-size:clamp(26px,3vw,38px)}
+.before .steps li{background:var(--night2)}
+.before .steps p{color:#fff}
+.before .steps a{color:var(--night-muted)}
+.gaps{margin-top:56px;background:#FFF4E5;border-radius:24px;padding:22px 26px}
+.gaps h3{margin:0 0 8px;font-size:17px}
+.gaps ul{margin:0;padding-left:20px;color:#5B4A2E;line-height:1.6}
+.disclaimer{margin:40px 0 0;font-size:13.5px;color:var(--muted);max-width:760px;line-height:1.6}
+.otherguides{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.otherguides a{display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:999px;background:var(--card);
+ text-decoration:none;font-weight:600;font-size:14px}
+.otherguides a[aria-current]{background:var(--night);color:#fff}
+.guides-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:22px}
+.guides-row span{font-size:15px;color:var(--muted);margin-right:4px}
+.guides-row a{display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:999px;background:var(--card);
+ text-decoration:none;font-weight:600;font-size:14px}
+.guides-row a:hover{background:var(--coral)}
+@media (max-width:640px){.steps li{padding:18px 18px 16px 58px}.steps li::before{left:16px;top:18px;width:28px;height:28px}
+ .steps p{font-size:16px}.before{padding:20px 14px}.g-photo .label{left:12px;right:12px;bottom:12px;padding:14px}}
+"""
+
+
+def load_guides() -> tuple[dict, list[dict]]:
+    common = json.loads((GUIDES / "common.json").read_text(encoding="utf-8"))
+    guides = [json.loads(p.read_text(encoding="utf-8")) for p in sorted(GUIDES.glob("*.json"))
+              if p.name != "common.json"]
+    return common, guides
+
+
+def steps_html(items: list[dict]) -> str:
+    return "<ol class='steps'>" + "".join(
+        f"<li><p>{escape(i['text'])}</p><a href='{escape(i['url'])}' rel='noopener'>Fonte: {escape(i['source'])} ↗</a></li>"
+        for i in items) + "</ol>"
+
+
+def guide_page(guide: dict, common: dict, guides: list[dict], catalogue: dict, countries: dict) -> str:
+    code = guide["country"]
+    row = {r["code"]: r for r in country_rows(countries, "it")}[code]
+    name = row["name"]
+    city_slug = guide["city"]
+    city = CITY["it"][code]
+    hiring = [e for e in catalogue["companies"] if code in e.get("countries", {})]
+    roles = sum(e["countries"][code] for e in hiring)
+    alt = next(a["it"][0] for slug, c, _n, a in CITIES if slug == city_slug)
+    checked = long_date(guide["checked"], "it")
+    sections = []
+    for key, title, sub in TOPICS:
+        items = guide.get(key, []) + common.get(key, [])
+        if items:
+            sections.append(f"<section class='wrap g-sec'><h2>{title}</h2><p class='sub'>{sub}</p>{steps_html(items)}</section>")
+    gaps = "".join(f"<li>{escape(g)}</li>" for g in guide.get("gaps", []))
+    names = {r["code"]: r["name"] for r in country_rows(countries, "it")}
+    current = ' aria-current="page"'
+    others = "".join(
+        f"<a href='{g['slug']}.html'{current if g is guide else ''}>{escape(names[g['country']])}</a>"
+        for g in guides)
+    css = CSS.replace("url(fonts/", "url(../fonts/") + GUIDE_CSS
+    title = f"Trasferirsi in {name} da italiano — {NAME}"
+    desc = (f"Registrazione, tasse, sanità, casa e banca per un italiano che va a lavorare in {name}, "
+            f"con le fonti ufficiali. Più i numeri: stipendio netto {row['net']}, potere d'acquisto {row['vs']} rispetto all'Italia.")
+    return f"""<!doctype html>
+<html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{escape(title)}</title>
+<meta name="description" content="{escape(desc)}">
+<meta property="og:title" content="{escape(title)}">
+<meta property="og:description" content="{escape(desc)}">
+<meta property="og:image" content="../img/cities/{city_slug}-1-900.webp">
+<meta name="theme-color" content="#F6F7FA">
+<link rel="preload" href="../fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>{css}</style></head><body>
+<header class="wrap top">
+  <a class="brand" href="../index.html"><i></i>{NAME}</a>
+  <nav class="links" aria-label="Sezioni"><a class="pill" href="../index.html#paesi">Tutti i paesi</a></nav>
+</header>
+<main>
+<section class="wrap g-hero">
+  <div>
+    <span class="kicker">Guida al trasferimento</span>
+    <h1>Lavorare in {escape(name)} da italiano.</h1>
+    <p class="lede">I passi per sistemarti: registrazione, tasse, sanità, casa e banca. Ogni frase rimanda alla fonte ufficiale da cui è presa.</p>
+    <p class="lede" style="font-size:16px;margin-top:12px">{len(hiring)} aziende del nostro catalogo assumono in {escape(name)}, con {roles} offerte aperte.</p>
+    <div class="ctas"><a class="btn btn-coral" href="../demo/">Apri la demo</a></div>
+  </div>
+  <div class="g-photo">
+    <img src="../img/cities/{city_slug}-1-900.webp" srcset="../img/cities/{city_slug}-1-480.webp 480w, ../img/cities/{city_slug}-1-900.webp 900w" sizes="(max-width:860px) 100vw, 560px" alt="{escape(alt)}" width="900" height="1200">
+    <div class="label">
+      <div><span>Potere d'acquisto vs Italia</span><b class="vs">{row['vs']}</b></div>
+      <div><span>Netto medio annuo</span><b>{row['net']}</b></div>
+      <div><span>Prezzi vs Italia</span><b>{row['prices']}</b></div>
+    </div>
+  </div>
+</section>
+<section class="wrap"><div class="before"><h2>Prima di partire, dall'Italia</h2>{steps_html(common['before'])}</div></section>
+{''.join(sections)}
+<section class="wrap">
+  {f"<div class='gaps'><h3>Cosa non abbiamo ancora verificato</h3><ul>{gaps}</ul></div>" if gaps else ""}
+  <p class="disclaimer">Informazioni generali, verificate sulle fonti ufficiali il {checked}. I numeri del paese sono di Eurostat, anno {row['year']}, per un lavoratore single con retribuzione media. Questa guida non sostituisce un consulente: prima di agire, apri il link della fonte e controlla che nulla sia cambiato.</p>
+  <h2 style="font-size:24px;margin-top:48px">Altre guide</h2>
+  <div class="otherguides">{others}</div>
+</section>
+</main>
+<footer style="margin-top:72px"><div class="wrap">
+  <span>Licenza MIT · <a href="{REPO}">{REPO.replace('https://', '')}</a></span>
+  <span>Fonti ufficiali citate in ogni passo · registro in relocation/guides</span>
+</div></footer>
+</body></html>
+"""
+
+
+def register(common: dict, guides: list[dict]) -> str:
+    lines = ["# Registro delle verifiche — guide paese", "",
+             "Ogni passo pubblicato nelle guide, con la fonte da cui è scritto e la data del controllo. "
+             "Generato da `tools/build_site.py`: non modificare a mano.", ""]
+    for g in [dict(common, country="Comune a tutti i paesi")] + guides:
+        lines += [f"## {g['country']}", "", f"Verificato il {g['checked']}.", "", "| Tema | Fonte |", "|---|---|"]
+        for key in ("before", "registration", "tax", "health", "home"):
+            for item in g.get(key, []):
+                lines.append(f"| {key} | [{item['source']}]({item['url']}) |")
+        if g.get("gaps"):
+            lines += ["", "**Lacune**", ""] + [f"- {x}" for x in g["gaps"]]
+        lines.append("")
+    return "\n".join(lines)
+
+
 def main() -> int:
     DOCS.mkdir(exist_ok=True)
     catalogue, countries = load_data()
     (DOCS / "index.html").write_text(page("it", catalogue, countries), encoding="utf-8")
     (DOCS / "index.en.html").write_text(page("en", catalogue, countries), encoding="utf-8")
+
+    common, guides = load_guides()
+    (DOCS / "paesi").mkdir(exist_ok=True)
+    for guide in guides:
+        (DOCS / "paesi" / f"{guide['slug']}.html").write_text(
+            guide_page(guide, common, guides, catalogue, countries), encoding="utf-8")
+    (GUIDES / "REGISTRO.md").write_text(register(common, guides), encoding="utf-8")
 
     demo = DOCS / "demo"
     demo.mkdir(exist_ok=True)
@@ -633,6 +811,7 @@ def main() -> int:
         build_dashboard(store, cfg, demo / "index.html")
     (DOCS / ".nojekyll").write_text("", encoding="utf-8")
 
+    print(f"  docs/paesi/  {len(guides)} guide")
     for path in (DOCS / "index.html", DOCS / "index.en.html", demo / "index.html"):
         print(f"  {path.relative_to(ROOT)}  {path.stat().st_size / 1024:.0f} KB")
     print("\nGitHub Pages: Settings → Pages → Source: main / docs")
