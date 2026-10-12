@@ -22,9 +22,15 @@
    "url": "https://emta.ee/en/private-client/foreigner-non-resident/tax-residency/determining-residency"
   }
  ],
- "health": [],
+ "health": [
+  {
+   "text": "Se hai un contratto di lavoro di oltre un mese, la copertura sanitaria parte quattordici giorni dopo la data di inizio che il datore di lavoro registra nel registro dell'impiego.",
+   "source": "Cassa sanitaria estone (Tervisekassa)",
+   "url": "https://tervisekassa.ee/en/employers/health-insurance-employee"
+  }
+ ],
  "home": [],
  "gaps": [
-  "Sanità e cauzione: non ancora verificate su una fonte ufficiale."
+  "Cauzione: non ancora verificata su una fonte ufficiale."
  ]
 }

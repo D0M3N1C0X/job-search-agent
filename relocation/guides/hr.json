@@ -15,11 +15,23 @@
    "url": "https://mup.gov.hr/aliens-281621/stay-and-work/short-term-temporary-and-permanent-stay-of-eea-nationals/281689"
   }
  ],
- "tax": [],
- "health": [],
+ "tax": [
+  {
+   "text": "Sei residente fiscale in Croazia se ci hai la residenza abituale, cioè se ci stai almeno 183 giorni in uno o due anni solari, anche non di seguito; oppure se ci possiedi o usi un'abitazione per almeno 183 giorni.",
+   "source": "Amministrazione fiscale croata",
+   "url": "https://porezna-uprava.gov.hr/en/determination-of-residency-status/7378"
+  }
+ ],
+ "health": [
+  {
+   "text": "L'assicurazione sanitaria obbligatoria è gestita dall'HZZO; la domanda si presenta in un suo ufficio entro otto giorni dal fatto che la fa scattare.",
+   "source": "Ministero degli Esteri croato — assicurazione sanitaria",
+   "url": "https://mss.gov.hr/health/health-insurance/132"
+  }
+ ],
  "home": [],
  "gaps": [
-  "Una pagina del ministero degli Esteri croato indica la scadenza di otto giorni prima, e non dopo, la fine dei tre mesi: per sicurezza registrati prima.",
-  "Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale."
+  "Una pagina del ministero degli Esteri croato indica la scadenza di registrazione otto giorni prima, e non dopo, la fine dei tre mesi: per sicurezza registrati prima.",
+  "Cauzione: non ancora verificata su una fonte ufficiale."
  ]
 }
