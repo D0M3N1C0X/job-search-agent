@@ -203,9 +203,10 @@ def _languages(lines: list[str], draft: Draft) -> None:
     for line in lines:
         for piece in SPLIT.split(line):
             piece = piece.strip()
-            if not piece or not LEVEL.search(piece):
+            found = LEVEL.search(piece) if piece else None
+            if found is None:
                 continue
-            level = LEVEL.search(piece).group(1)
+            level = found.group(1)
             name = re.sub(r"[(),]", " ", piece.replace(level, "")).strip(" -–—:")
             if 2 <= len(name) <= 24:
                 normalised = {"madrelingua": "native", "mother tongue": "native",

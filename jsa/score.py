@@ -20,7 +20,7 @@ from .models import Job, Score, canonical, normalize_title
 SCORER_VERSION = "1.0.0"
 
 # Points available per dimension. They sum to 100.
-WEIGHTS = {
+WEIGHTS: dict[str, float] = {
     "title": 30,
     "skills": 30,
     "domain": 15,

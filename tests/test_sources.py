@@ -228,6 +228,24 @@ class TestMailbox(unittest.TestCase):
     def test_ignores_bodies_without_job_links(self):
         self.assertEqual(mailbox.extract("Just a newsletter, nothing to see."), [])
 
+    def test_mbox_and_eml_give_the_same_jobs(self):
+        """Regression: mbox exports used to yield legacy messages whose bodies came out empty."""
+        import tempfile
+        from pathlib import Path
+
+        headers = "From: Job alerts <jobs-noreply@linkedin.com>\nSubject: New jobs\nContent-Type: text/plain; charset=utf-8\n\n"
+        with tempfile.TemporaryDirectory() as d:
+            eml, mbox = Path(d) / "alert.eml", Path(d) / "alerts.mbox"
+            eml.write_text(headers + ALERT_EMAIL, encoding="utf-8")
+            mbox.write_text("From jobs-noreply@linkedin.com Mon Oct 12 09:00:00 2026\n" + headers + ALERT_EMAIL + "\n",
+                            encoding="utf-8")
+            found = {}
+            for path in (eml, mbox):
+                (message,) = list(mailbox.iter_messages(path))
+                found[path.suffix] = sorted(j.source_id for j in mailbox.extract(mailbox._body(message)))
+        self.assertTrue(found[".eml"])
+        self.assertEqual(found[".mbox"], found[".eml"])
+
 
 if __name__ == "__main__":
     unittest.main()

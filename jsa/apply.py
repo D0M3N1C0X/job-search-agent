@@ -347,7 +347,7 @@ def build_apply_page(job: Job, profile: dict[str, Any], answers: dict[str, Any],
                      folder: Path, files: list[Path], ats_report: Any = None,
                      letter_todo: int = 0) -> Path:
     """A local page that makes filling the employer's form a copy-and-click job."""
-    rows = []
+    rows: list[str] = []
     for key, value in answers.items():
         if key.startswith("_") or not isinstance(value, str) or not value:
             continue
@@ -459,7 +459,7 @@ def prepare_packet(cfg: Any, store: Any, job: Job, *, track_id: str | None = Non
     # Check the file that will be sent, read back the way an ATS reads it.
     report = ats_check(cv_pdf or cv_path, cfg.profile, job.description, job.company)
 
-    letter = overlay_data.get("cover_letter")
+    letter: dict[str, Any] = overlay_data.get("cover_letter") or {}
     drafted = not letter
     if drafted:
         # Skills from this track's own vocabulary that the posting mentions and

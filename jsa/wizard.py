@@ -101,7 +101,7 @@ def ask_list(question: str, *, default: list[str] | None = None) -> list[str]:
 def ask_bullets(question: str) -> list[str]:
     print(f"  {question}")
     print(_style("    One per line. Empty line when you are done.", DIM))
-    bullets = []
+    bullets: list[str] = []
     while True:
         line = _input("    · ")
         if not line:
@@ -154,7 +154,7 @@ def collect_identity() -> dict[str, Any]:
 
 def collect_languages() -> list[dict[str, str]]:
     heading("Languages", "Level matters: it decides which postings are rejected outright.")
-    languages = []
+    languages: list[dict[str, str]] = []
     while True:
         name = ask("Language (empty to finish)" if languages else "Language", required=not languages)
         if not name:
@@ -168,7 +168,7 @@ def collect_languages() -> list[dict[str, str]]:
 def collect_experience() -> list[dict[str, Any]]:
     heading("Experience", "Start with your current or most recent role. Two to four "
                           "bullets each is plenty; numbers where you have them.")
-    roles = []
+    roles: list[dict[str, Any]] = []
     while True:
         label = "Job title" if not roles else "Job title for the previous role (empty to finish)"
         title = ask(label, required=not roles)
@@ -187,7 +187,7 @@ def collect_experience() -> list[dict[str, Any]]:
 
 def collect_education() -> list[dict[str, str]]:
     heading("Education")
-    entries = []
+    entries: list[dict[str, str]] = []
     while True:
         degree = ask("Degree (empty to finish)" if entries else "Degree", required=not entries)
         if not degree:

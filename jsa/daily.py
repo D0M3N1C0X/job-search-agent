@@ -11,6 +11,7 @@ from __future__ import annotations
 import subprocess
 import sys
 from pathlib import Path
+from collections.abc import Sequence
 from typing import Any
 
 from datetime import datetime, timedelta, timezone
@@ -106,13 +107,15 @@ def prepare_best(cfg: Any, store: Store) -> list[dict[str, Any]]:
 
     from .apply import prepare_packet
 
-    prepared = []
+    prepared: list[dict[str, Any]] = []
     rows = store.best_scores(min_score=int(settings.get("min_score", 80)), include_applied=False,
                              limit=room * 3)
     for row in rows:
         if len(prepared) >= room:
             break
         job = store.get_job(row["id"])
+        if job is None:  # removed since the ranking was read
+            continue
         try:
             prepared.append(prepare_packet(cfg, store, job))
         except Exception as exc:  # noqa: BLE001 - one bad posting must not end the daily run
@@ -120,7 +123,7 @@ def prepare_best(cfg: Any, store: Store) -> list[dict[str, Any]]:
     return prepared
 
 
-def message(summary: dict[str, Any], prepared: list[dict[str, Any]] = ()) -> tuple[str, str] | None:
+def message(summary: dict[str, Any], prepared: Sequence[dict[str, Any]] = ()) -> tuple[str, str] | None:
     """The one line worth interrupting someone for, or nothing."""
     fresh, overdue = summary["fresh"], summary["overdue"]
     if not fresh and not overdue and not prepared:
@@ -141,7 +144,7 @@ def message(summary: dict[str, Any], prepared: list[dict[str, Any]] = ()) -> tup
     return (" · ".join(parts), subtitle)
 
 
-def write_digest(summary: dict[str, Any], path: Path, prepared: list[dict[str, Any]] = ()) -> Path:
+def write_digest(summary: dict[str, Any], path: Path, prepared: Sequence[dict[str, Any]] = ()) -> Path:
     lines = [f"# Daily digest — {now()[:16].replace('T', ' ')}", ""]
     if prepared:
         lines.append(f"## {len(prepared)} ready to send")

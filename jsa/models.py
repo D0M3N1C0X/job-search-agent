@@ -109,14 +109,15 @@ class Job:
 
     @classmethod
     def from_row(cls, row: Any) -> "Job":
-        data = dict(row)
+        data: dict[str, Any] = dict(row)
         raw = data.get("raw") or "{}"
         try:
             data["raw"] = json.loads(raw)
         except (TypeError, json.JSONDecodeError):
             data["raw"] = {}
         allowed = {f for f in cls.__dataclass_fields__}
-        job = cls(**{k: (v if v is not None else "") for k, v in data.items() if k in allowed})
+        fields: dict[str, Any] = {k: (v if v is not None else "") for k, v in data.items() if k in allowed}
+        job = cls(**fields)
         # What is stored is already text. __post_init__ would take any "<...>"
         # in it for a tag and strip it, every time the job is read back.
         job.description = data.get("description") or ""
