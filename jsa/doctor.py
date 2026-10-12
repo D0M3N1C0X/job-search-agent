@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from . import MINIMUM_PYTHON, __version__
-from .config import ConfigError, load, resolve_home
+from .config import Config, ConfigError, load, resolve_home
 from .util import FetchError, http_json
 
 # A board that has answered for years, used only to tell "no network" apart
@@ -70,21 +70,22 @@ def run_checks(*, home: str | Path | None = None, port: int = 8765,
 
     # ---- the workspace --------------------------------------------------
     where, demo = resolve_home(home)
+    cfg: Config | None = None
     try:
-        cfg = load(home)
+        loaded = load(home)
     except ConfigError as exc:
         report.add("Workspace", FAIL, exc.problem.splitlines()[0], exc.fix)
-        cfg = None
     else:
+        cfg = loaded
         report.add(
             "Workspace", WARN if demo else OK,
             f"{where}" + (" (the bundled demo profile)" if demo else ""),
             "Run `jsa setup` to make it yours." if demo else "",
         )
-        for warning in cfg.warnings:
+        for warning in loaded.warnings:
             report.add("Profile", WARN, warning, "Run `jsa setup` to fill in the gaps.")
-        report.add("Tracks", OK if cfg.tracks else FAIL,
-                   ", ".join(t["id"] for t in cfg.tracks) or "none defined")
+        report.add("Tracks", OK if loaded.tracks else FAIL,
+                   ", ".join(t["id"] for t in loaded.tracks) or "none defined")
 
     # ---- where the jobs come from ---------------------------------------
     if cfg is not None:

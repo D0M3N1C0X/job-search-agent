@@ -232,7 +232,7 @@ def load(explicit: str | os.PathLike[str] | None = None) -> Config:
         )
 
     watchlist_path = home / "watchlist.json"
-    watchlist = []
+    watchlist: list[Any] = []
     if watchlist_path.exists():
         data = _load_json(watchlist_path, what="watchlist.json")
         watchlist = data.get("companies", []) if isinstance(data, dict) else []

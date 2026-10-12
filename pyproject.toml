@@ -65,3 +65,21 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101", "S105", "S106", "S108", "S310"]
+
+# Type check, CI only like ruff: plain mode, so every Optional is checked before use.
+[tool.mypy]
+python_version = "3.10"
+files = ["jsa"]
+
+# certifi is optional (used when present for TLS roots); nothing else is imported from outside the stdlib.
+[[tool.mypy.overrides]]
+module = ["certifi"]
+ignore_missing_imports = true
+
+# Coverage, CI only: measured on the offline suite. 78% on 9 October 2026; it may rise, not fall.
+[tool.coverage.run]
+source = ["jsa"]
+
+[tool.coverage.report]
+fail_under = 76
+

@@ -273,3 +273,26 @@ class TestARunFromAnInstalledDashboardStaysOutOfSitePackages(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestDailyRunSurvivesARemovedPosting(unittest.TestCase):
+    """A posting deleted between reading the ranking and loading it used to end the daily run:
+    prepare_packet failed on None, and the handler meant to absorb it read job.title and failed too."""
+
+    def test_missing_job_is_skipped(self):
+        from jsa import daily
+
+        job = mock.Mock(title="HR Specialist", company="Acme")
+        cfg = mock.Mock(profile={"preferences": {"prepare": {"per_week": 3}}})
+        store = mock.Mock()
+        store.db.execute.return_value.fetchone.return_value = [0]
+        store.best_scores.return_value = [{"id": "gone"}, {"id": "kept"}]
+        store.get_job.side_effect = lambda job_id: None if job_id == "gone" else job
+
+        def prepare(cfg, store, posting):
+            if posting is None:
+                raise AttributeError("'NoneType' object has no attribute 'id'")
+            return {"job": posting}
+
+        with mock.patch("jsa.apply.prepare_packet", side_effect=prepare):
+            self.assertEqual(daily.prepare_best(cfg, store), [{"job": job}])
