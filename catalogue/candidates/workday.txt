@@ -37,3 +37,31 @@ Swiss Life | workday:swisslife/wd3/Swiss_Life_International_Division_Career_Site
 Swisscom | workday:swisscom/wd103/SwisscomExternalCareers
 Unilever | workday:unilever/wd3/Unilever_Experienced_Professionals
 Workday | workday:workday/wd5/Workday
+# Second round (12 October 2026): employers whose Workday postings ask for Italian,
+# and large groups found on myworkdayjobs.com.
+Concentrix | workday:cnx/wd1/external_global
+Deutsche Bank | workday:db/wd3/dbwebsite
+Siemens Healthineers | workday:onehealthineers/wd3/SHSJB
+Revvity | workday:revvity/wd1/External
+JLL | workday:jll/wd1/jllcareers
+Genesys | workday:genesys/wd1/Genesys
+Planet | workday:planet/wd3/Planet
+Gartner | workday:gartner/wd5/EXT
+Unisys | workday:unisys/wd5/External
+UPM | workday:upm/wd3/Careers
+Enovis | workday:enovis/wd5/enovis
+Baker Hughes | workday:bakerhughes/wd5/BakerHughes
+NCR | workday:ncr/wd1/ext_non_us
+Workiva | workday:workiva/wd1/careers
+VF Corporation | workday:vfc/wd5/vfc_careers
+Fragomen | workday:fragomen/wd1/FragomenCareers
+Brenntag | workday:brenntag/wd3/brenntag_jobs
+Trimble | workday:trimble/wd1/TrimbleCareers
+GE Vernova | workday:gevernova/wd5/Vernova_ExternalSite
+F5 | workday:ffive/wd5/f5jobs
+Quadient | workday:quadient/wd3/External_Career_Site
+Aurelius | workday:aureliusinvest/wd3/AURELIUS
+Linklaters | workday:linklaters/wd3/Linklaters
+Samsung | workday:sec/wd3/Samsung_Careers
+Motorola Solutions | workday:motorolasolutions/wd5/Careers
+Barry-Wehmiller | workday:barrywehmiller/wd1/BWCareers

@@ -439,6 +439,25 @@
    "region": "WORKDAY"
   },
   {
+   "company": "Aurelius",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "aureliusinvest/wd3/AURELIUS",
+   "roles": 28,
+   "europe": 28,
+   "countries": {
+    "DE": 17,
+    "NL": 6,
+    "IT": 2,
+    "LU": 1,
+    "MT": 1,
+    "SE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Auto1",
    "board_name": "AUTO1 Group",
    "provider": "smartrecruiters",
@@ -528,6 +547,21 @@
    "region": "DE"
   },
   {
+   "company": "Baker Hughes",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "bakerhughes/wd5/BakerHughes",
+   "roles": 3,
+   "europe": 3,
+   "countries": {
+    "IT": 2,
+    "PL": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Barclays",
    "board_name": "",
    "provider": "workday",
@@ -548,6 +582,26 @@
    },
    "italian": 0,
    "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
+   "company": "Barry-Wehmiller",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "barrywehmiller/wd1/BWCareers",
+   "roles": 40,
+   "europe": 40,
+   "countries": {
+    "DE": 22,
+    "GB": 9,
+    "NL": 3,
+    "DK": 2,
+    "IT": 2,
+    "RS": 1,
+    "SE": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-12",
    "region": "WORKDAY"
   },
   {
@@ -685,6 +739,29 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "NL"
+  },
+  {
+   "company": "Brenntag",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "brenntag/wd3/brenntag_jobs",
+   "roles": 113,
+   "europe": 113,
+   "countries": {
+    "DE": 32,
+    "GB": 15,
+    "FR": 14,
+    "PL": 12,
+    "ES": 10,
+    "BE": 8,
+    "CH": 5,
+    "NL": 5,
+    "IT": 4,
+    "PT": 4
+   },
+   "italian": 0,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
   },
   {
    "company": "Brevo",
@@ -918,6 +995,29 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "DE"
+  },
+  {
+   "company": "Concentrix",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "cnx/wd1/external_global",
+   "roles": 405,
+   "europe": 405,
+   "countries": {
+    "ES": 221,
+    "FR": 33,
+    "GR": 23,
+    "CZ": 17,
+    "GB": 17,
+    "PL": 17,
+    "PT": 15,
+    "RO": 14,
+    "IT": 7,
+    "BG": 6
+   },
+   "italian": 29,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
   },
   {
    "company": "Contentful",
@@ -1180,16 +1280,25 @@
   {
    "company": "Deutsche Bank",
    "board_name": "",
-   "provider": "personio",
-   "handle": "deutschebank",
-   "roles": 3,
-   "europe": 2,
+   "provider": "workday",
+   "handle": "db/wd3/dbwebsite",
+   "roles": 459,
+   "europe": 459,
    "countries": {
-    "GB": 2
+    "DE": 199,
+    "RO": 106,
+    "GB": 51,
+    "ES": 37,
+    "IT": 24,
+    "LU": 14,
+    "CH": 10,
+    "BE": 6,
+    "FR": 6,
+    "NL": 6
    },
-   "italian": 0,
-   "verified": "2026-10-08",
-   "region": "DE"
+   "italian": 1,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
   },
   {
    "company": "Diageo",
@@ -1397,6 +1506,25 @@
    "region": "PL"
   },
   {
+   "company": "Enovis",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "enovis/wd5/enovis",
+   "roles": 46,
+   "europe": 46,
+   "countries": {
+    "IT": 14,
+    "GB": 9,
+    "PT": 9,
+    "DE": 8,
+    "FR": 5,
+    "ES": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Enpal",
    "board_name": "Enpal Jobs",
    "provider": "ashby",
@@ -1460,6 +1588,27 @@
    },
    "italian": 0,
    "verified": "2026-10-09",
+   "region": "WORKDAY"
+  },
+  {
+   "company": "F5",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "ffive/wd5/f5jobs",
+   "roles": 37,
+   "europe": 37,
+   "countries": {
+    "IE": 13,
+    "PL": 8,
+    "GB": 7,
+    "FR": 4,
+    "CZ": 2,
+    "BE": 1,
+    "DE": 1,
+    "ES": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-12",
    "region": "WORKDAY"
   },
   {
@@ -1815,6 +1964,45 @@
    "region": "ES"
   },
   {
+   "company": "Gartner",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "gartner/wd5/EXT",
+   "roles": 321,
+   "europe": 321,
+   "countries": {
+    "GB": 149,
+    "ES": 67,
+    "DE": 18,
+    "NL": 15,
+    "IE": 13,
+    "FR": 8,
+    "AT": 6,
+    "BE": 6,
+    "SE": 6,
+    "DK": 5
+   },
+   "italian": 2,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
+  },
+  {
+   "company": "GE Vernova",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "gevernova/wd5/Vernova_ExternalSite",
+   "roles": 5,
+   "europe": 5,
+   "countries": {
+    "FR": 3,
+    "BE": 1,
+    "PL": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Gen Digital",
    "board_name": "Gen Digital Inc. Jobs",
    "provider": "ashby",
@@ -1829,6 +2017,29 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "CZ"
+  },
+  {
+   "company": "Genesys",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "genesys/wd1/Genesys",
+   "roles": 63,
+   "europe": 63,
+   "countries": {
+    "GB": 10,
+    "HU": 9,
+    "IE": 8,
+    "DE": 7,
+    "NL": 6,
+    "FR": 5,
+    "SE": 4,
+    "PT": 3,
+    "CH": 2,
+    "ES": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
   },
   {
    "company": "GetYourGuide",
@@ -2272,6 +2483,29 @@
    "region": "DE"
   },
   {
+   "company": "JLL",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "jll/wd1/jllcareers",
+   "roles": 583,
+   "europe": 583,
+   "countries": {
+    "GB": 275,
+    "DE": 82,
+    "PL": 61,
+    "FR": 28,
+    "ES": 26,
+    "IE": 23,
+    "NL": 23,
+    "IT": 10,
+    "PT": 10,
+    "BE": 8
+   },
+   "italian": 0,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Jobandtalent",
    "board_name": "Job&Talent",
    "provider": "lever",
@@ -2440,6 +2674,29 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "BE"
+  },
+  {
+   "company": "Linklaters",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "linklaters/wd3/Linklaters",
+   "roles": 156,
+   "europe": 156,
+   "countries": {
+    "DE": 69,
+    "FR": 18,
+    "GB": 18,
+    "LU": 13,
+    "NL": 11,
+    "PL": 8,
+    "IT": 6,
+    "BE": 5,
+    "ES": 5,
+    "PT": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
   },
   {
    "company": "Lloyds Banking Group",
@@ -2753,6 +3010,29 @@
    "region": "DE"
   },
   {
+   "company": "Motorola Solutions",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "motorolasolutions/wd5/Careers",
+   "roles": 222,
+   "europe": 222,
+   "countries": {
+    "GB": 76,
+    "PL": 73,
+    "DE": 17,
+    "IE": 10,
+    "PT": 7,
+    "NO": 6,
+    "RO": 6,
+    "DK": 5,
+    "FR": 5,
+    "IT": 4
+   },
+   "italian": 0,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Mozilla",
    "board_name": "Mozilla",
    "provider": "greenhouse",
@@ -2849,6 +3129,28 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "DE"
+  },
+  {
+   "company": "NCR",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "ncr/wd1/ext_non_us",
+   "roles": 59,
+   "europe": 59,
+   "countries": {
+    "RS": 37,
+    "GB": 6,
+    "DE": 4,
+    "IT": 4,
+    "ES": 2,
+    "NL": 2,
+    "PL": 2,
+    "DK": 1,
+    "FR": 1
+   },
+   "italian": 2,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
   },
   {
    "company": "Neon",
@@ -3356,6 +3658,29 @@
    "region": "PT"
   },
   {
+   "company": "Planet",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "planet/wd3/Planet",
+   "roles": 88,
+   "europe": 88,
+   "countries": {
+    "PL": 31,
+    "IE": 15,
+    "PT": 13,
+    "GB": 11,
+    "ES": 7,
+    "FR": 5,
+    "DE": 3,
+    "AT": 1,
+    "IS": 1,
+    "NO": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Pleo",
    "board_name": "Pleo Jobs",
    "provider": "ashby",
@@ -3747,6 +4072,29 @@
    "region": "WORKDAY"
   },
   {
+   "company": "Samsung",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "sec/wd3/Samsung_Careers",
+   "roles": 36,
+   "europe": 36,
+   "countries": {
+    "DE": 14,
+    "GB": 5,
+    "FR": 3,
+    "RO": 3,
+    "CH": 2,
+    "HR": 2,
+    "NL": 2,
+    "AT": 1,
+    "HU": 1,
+    "IT": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Sanofi",
    "board_name": "",
    "provider": "workday",
@@ -3975,6 +4323,29 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "BE"
+  },
+  {
+   "company": "Siemens Healthineers",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "onehealthineers/wd3/SHSJB",
+   "roles": 50,
+   "europe": 50,
+   "countries": {
+    "DE": 11,
+    "FR": 5,
+    "HU": 5,
+    "ES": 4,
+    "GB": 4,
+    "CH": 3,
+    "FI": 3,
+    "IT": 3,
+    "NL": 3,
+    "RO": 3
+   },
+   "italian": 0,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
   },
   {
    "company": "Sika",
@@ -4569,6 +4940,29 @@
    "region": "NL"
   },
   {
+   "company": "Trimble",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "trimble/wd1/TrimbleCareers",
+   "roles": 71,
+   "europe": 71,
+   "countries": {
+    "GB": 19,
+    "DE": 15,
+    "ES": 6,
+    "PL": 6,
+    "HU": 3,
+    "IT": 3,
+    "PT": 3,
+    "SE": 3,
+    "FR": 2,
+    "NL": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Tripadvisor",
    "board_name": "Tripadvisor",
    "provider": "greenhouse",
@@ -4694,6 +5088,28 @@
    "region": "WORKDAY"
   },
   {
+   "company": "Unisys",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "unisys/wd5/External",
+   "roles": 63,
+   "europe": 63,
+   "countries": {
+    "HU": 38,
+    "GB": 9,
+    "PL": 6,
+    "BE": 2,
+    "CH": 2,
+    "DE": 2,
+    "NL": 2,
+    "ES": 1,
+    "LT": 1
+   },
+   "italian": 1,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Upvest",
    "board_name": "Upvest Jobs",
    "provider": "ashby",
@@ -4802,6 +5218,29 @@
    "italian": 1,
    "verified": "2026-10-08",
    "region": "FR"
+  },
+  {
+   "company": "VF Corporation",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "vfc/wd5/vfc_careers",
+   "roles": 159,
+   "europe": 159,
+   "countries": {
+    "ES": 35,
+    "CH": 33,
+    "GB": 25,
+    "IT": 20,
+    "DE": 14,
+    "BE": 8,
+    "NL": 8,
+    "PT": 7,
+    "FR": 6,
+    "DK": 2
+   },
+   "italian": 0,
+   "verified": "2026-10-12",
+   "region": "WORKDAY"
   },
   {
    "company": "Vitol",
@@ -5014,5 +5453,5 @@
   }
  ],
  "_comment": "European employers whose job board answered on the date shown. Built by tools/catalogue.py from catalogue/candidates/; never edited by hand. 'europe' counts roles placed in Europe, 'italian' those that mention the Italian language.",
- "updated": "2026-10-09"
+ "updated": "2026-10-12"
 }
