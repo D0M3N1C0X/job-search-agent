@@ -87,3 +87,20 @@ jobs:
       # CI-only and pinned; the project itself still has no dependencies.
       - name: ruff
         run: pipx run ruff==0.16.9 check --output-format=github .
+      - name: mypy
+        run: pipx run mypy==2.4.0
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      # CI-only and pinned, like the linters: the tool itself installs nothing.
+      - name: Test suite under coverage
+        run: |
+          pipx install coverage==7.16.2
+          coverage run -m unittest discover -s tests -t .
+          coverage report --format=markdown >> "$GITHUB_STEP_SUMMARY"
+          coverage report

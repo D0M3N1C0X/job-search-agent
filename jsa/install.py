@@ -157,7 +157,7 @@ def build_icon(target: Path) -> bool:
 
 # --------------------------------------------------------------- shim
 
-def shim_path() -> Path | None:
+def shim_path() -> Path:
     """Where the `jsa` command is, or would go."""
     for directory in SHIM_DIRS:
         candidate = directory / SHIM_NAME

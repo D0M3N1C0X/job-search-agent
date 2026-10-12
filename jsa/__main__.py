@@ -237,6 +237,8 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
                     print(f"{entry['company']:<32} {entry['provider']:<16} "
                           + colour(f"failed — {type(exc).__name__}: {reason}"[:100], RED))
                     continue
+                if jobs is None:  # fetch() returns a list whenever it returns no exception
+                    continue
                 # What this board listed on its last successful fetch, else what
                 # `jsa probe` counted when it was added. Keyed by board, not by
                 # company name: Workable, for one, names jobs after its own account.
@@ -276,14 +278,14 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
         queries = cfg.profile.get("search", {}).get("linkedin_queries", [])
         if queries:
             try:
-                jobs = linkedin.search(queries=queries, pages=args.pages,
-                                       with_descriptions=not args.fast, retries=1)
+                found = list(linkedin.search(queries=queries, pages=args.pages,
+                                             with_descriptions=not args.fast, retries=1))
                 counts = {"new": 0, "seen": 0}
-                for job in jobs:
+                for job in found:
                     counts[store.upsert_job(job)] += 1
                 totals["new"] += counts["new"]
                 totals["seen"] += counts["seen"]
-                print(f"{'LinkedIn (guest)':<32} {'linkedin':<16} {len(jobs):>3} listed  "
+                print(f"{'LinkedIn (guest)':<32} {'linkedin':<16} {len(found):>3} listed  "
                       f"{colour('+' + str(counts['new']), GREEN)}")
             except Exception as exc:  # noqa: BLE001 - secondary source, best effort
                 totals["failed"] += 1
@@ -293,13 +295,13 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
 
     if wanted in ("all", "mailbox"):
         try:
-            jobs = mailbox.scan(path=cfg.inbox_dir)
+            found = list(mailbox.scan(path=cfg.inbox_dir))
             counts = {"new": 0, "seen": 0}
-            for job in jobs:
+            for job in found:
                 counts[store.upsert_job(job)] += 1
             totals["new"] += counts["new"]
             totals["seen"] += counts["seen"]
-            print(f"{'Alert emails':<32} {'mailbox':<16} {len(jobs):>3} listed  "
+            print(f"{'Alert emails':<32} {'mailbox':<16} {len(found):>3} listed  "
                   f"{colour('+' + str(counts['new']), GREEN)}")
         except Exception as exc:  # noqa: BLE001 - a malformed mailbox is not fatal
             totals["failed"] += 1

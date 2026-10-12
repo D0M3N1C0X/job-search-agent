@@ -16,7 +16,8 @@ import email.policy
 import mailbox as _mailbox
 import re
 from pathlib import Path
-from typing import Any, Iterator
+from email.message import EmailMessage
+from typing import Any, Iterator, cast
 
 from ..models import Job
 from ..util import html_to_text, log
@@ -40,11 +41,10 @@ PATTERNS: list[tuple[str, re.Pattern[str]]] = [
 _LI_PAIR = re.compile(r"^(?P<title>[^\n]{3,120})\n(?P<company>[^\n·]{2,80})·\s*(?P<location>[^\n]{2,80})$", re.M)
 
 
-def _body(message: email.message.Message) -> str:
+def _body(message: EmailMessage) -> str:
     """Best-effort plain text of an email, HTML flattened."""
     if message.is_multipart():
-        parts = [_body(p) for p in message.iter_parts()] if hasattr(message, "iter_parts") \
-            else [_body(p) for p in message.get_payload()]
+        parts = [_body(cast(EmailMessage, p)) for p in message.iter_parts()]
         return "\n".join(p for p in parts if p)
     content_type = message.get_content_type()
     if content_type not in ("text/plain", "text/html"):
@@ -56,17 +56,29 @@ def _body(message: email.message.Message) -> str:
     return html_to_text(payload) if content_type == "text/html" else payload
 
 
-def iter_messages(path: Path) -> Iterator[email.message.Message]:
+def _parse(raw: Any) -> EmailMessage:
+    """Read one message with the modern parser, whatever the container: mbox files would otherwise
+    hand back legacy messages without get_content(), and every body would come out empty."""
+    return cast(EmailMessage, email.message_from_binary_file(raw, policy=email.policy.default))
+
+
+def _mbox(path: Path) -> Iterator[EmailMessage]:
+    # the stubs expect mboxMessage from a factory; any Message is accepted at runtime
+    for message in _mailbox.mbox(str(path), factory=cast(Any, _parse)):
+        yield cast(EmailMessage, message)
+
+
+def iter_messages(path: Path) -> Iterator[EmailMessage]:
     if path.is_dir():
         for file in sorted(path.iterdir()):
             if file.suffix.lower() in (".eml", ".txt"):
-                yield email.message_from_bytes(file.read_bytes(), policy=email.policy.default)
+                yield cast(EmailMessage, email.message_from_bytes(file.read_bytes(), policy=email.policy.default))
             elif file.suffix.lower() == ".mbox":
-                yield from _mailbox.mbox(str(file))
+                yield from _mbox(file)
     elif path.suffix.lower() == ".mbox":
-        yield from _mailbox.mbox(str(path))
+        yield from _mbox(path)
     else:
-        yield email.message_from_bytes(path.read_bytes(), policy=email.policy.default)
+        yield cast(EmailMessage, email.message_from_bytes(path.read_bytes(), policy=email.policy.default))
 
 
 def extract(text: str, *, sender: str = "") -> list[Job]:

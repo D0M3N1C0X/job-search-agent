@@ -104,7 +104,7 @@ def pick(home: Path, job: Job, track_id: str) -> Path | None:
             path = folder(home) / file
             if path.exists():
                 return path
-    file = index["tracks"].get(track_id)
-    if file and (folder(home) / file).exists():
-        return folder(home) / file
+    track_file = index["tracks"].get(track_id)
+    if track_file and (folder(home) / track_file).exists():
+        return folder(home) / track_file
     return None
