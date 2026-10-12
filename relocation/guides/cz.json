@@ -15,10 +15,22 @@
    "url": "https://portal.gov.cz/en/sluzby-vs/registration-certificate-of-an-eu-citizen-S6224"
   }
  ],
- "tax": [],
- "health": [],
+ "tax": [
+  {
+   "text": "Sei residente fiscale in Cechia se ci hai la residenza o se ci stai almeno 183 giorni nell'anno solare, anche in più periodi. Conta ogni giorno iniziato.",
+   "source": "Portale della pubblica amministrazione ceca",
+   "url": "https://portal.gov.cz/en/informace/personal-income-taxes-INF-293"
+  }
+ ],
+ "health": [
+  {
+   "text": "Il datore di lavoro comunica la tua assunzione alla cassa malattia entro otto giorni; se non lo fa, devi farlo tu.",
+   "source": "Portale della pubblica amministrazione ceca",
+   "url": "https://portal.gov.cz/en/sluzby-vs/employers-notification-of-the-employees-entry-into-employment-S686"
+  }
+ ],
  "home": [],
  "gaps": [
-  "Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale."
+  "Cauzione: il ministero della Giustizia indica un massimo di sei mensilità, ma la sua pagina non supera il controllo del certificato di sicurezza; da verificare sul testo di legge."
  ]
 }

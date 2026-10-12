@@ -11,9 +11,16 @@
   }
  ],
  "tax": [],
- "health": [],
+ "health": [
+  {
+   "text": "Entro otto giorni da quando scatta l'obbligo di assicurazione scegli una cassa malattia (una pubblica e due private) e ti iscrivi; le cure ti spettano dal momento della domanda.",
+   "source": "Slovensko.sk",
+   "url": "https://www.slovensko.sk/en/life-situation/life-situation/_social-and-health-insurance-fo/"
+  }
+ ],
  "home": [],
  "gaps": [
-  "Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale."
+  "Residenza fiscale: la pagina ufficiale letta non la definisce.",
+  "Cauzione: nessun limite generale verificato per gli affitti privati."
  ]
 }

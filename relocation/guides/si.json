@@ -15,11 +15,23 @@
    "url": "https://spot.gov.si/en/info/considering-doing-business-in-slovenia/certificate-on-the-registration-of-residence"
   }
  ],
- "tax": [],
- "health": [],
+ "tax": [
+  {
+   "text": "Diventi residente fiscale in Slovenia quando crei un legame di residenza: per esempio la residenza permanente, la famiglia che vive lì o più di 183 giorni di permanenza nell'anno solare.",
+   "source": "Amministrazione finanziaria slovena (FURS)",
+   "url": "https://www.fu.gov.si/en/zivljenjski_dogodki_prebivalci/coming_to_slovenia_to_work_to_study_after_retirement_etc/"
+  }
+ ],
+ "health": [
+  {
+   "text": "Il datore di lavoro ti iscrive all'assicurazione sociale obbligatoria (modulo M-1) al più tardi il giorno in cui inizi a lavorare.",
+   "source": "SPOT, portale del governo sloveno",
+   "url": "https://spot.gov.si/en/info/employees/social-security-and-insurance/registration-for-compulsory-social-security-insurance-m1-form/"
+  }
+ ],
  "home": [],
  "gaps": [
-  "Scadenza per chiedere il certificato: le fonti lette non la indicano in modo univoco.",
-  "Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale."
+  "Scadenza per chiedere il certificato di registrazione: le fonti lette non la indicano in modo univoco.",
+  "Cauzione: non ancora verificata su una fonte ufficiale."
  ]
 }

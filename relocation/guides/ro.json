@@ -10,10 +10,16 @@
    "url": "https://igi.mai.gov.ro/inregistrarea-rezidentei/"
   }
  ],
- "tax": [],
+ "tax": [
+  {
+   "text": "Sei residente fiscale in Romania se ci hai il domicilio o il centro degli interessi vitali, oppure se ci sei presente per più di 183 giorni in un periodo di dodici mesi consecutivi che finisce nell'anno.",
+   "source": "Codice fiscale, art. 7, punto 28, citato dall'ANAF (2025)",
+   "url": "https://static.anaf.ro/static/10/Cluj/cj_nerezidenti_21oct2025.pdf"
+  }
+ ],
  "health": [],
  "home": [],
  "gaps": [
-  "Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale."
+  "Sanità e cauzione: non ancora verificate su una fonte ufficiale."
  ]
 }

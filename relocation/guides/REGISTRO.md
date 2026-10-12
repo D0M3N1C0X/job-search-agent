@@ -51,8 +51,8 @@ Verificato il 2026-10-09.
 
 **Lacune**
 
-- Registrazione: le pagine del ministero dell'Interno bulgaro sono protette da una verifica anti-bot e non le abbiamo potute leggere; da verificare.
-- Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale.
+- Registrazione, tasse e sanità: le pagine ufficiali bulgare sono protette da una verifica anti-bot o non superano il controllo del certificato di sicurezza; da verificare.
+- Cauzione: non ancora verificata.
 
 ## CH
 
@@ -77,10 +77,12 @@ Verificato il 2026-10-09.
 |---|---|
 | registration | [Portale della pubblica amministrazione ceca](https://portal.gov.cz/en/sluzby-vs/registration-of-residence-by-an-eu-citizen-or-a-family-member-of-an-eu-citizen-after-arrival-in-the-czech-republic-S7764) |
 | registration | [Portale della pubblica amministrazione ceca](https://portal.gov.cz/en/sluzby-vs/registration-certificate-of-an-eu-citizen-S6224) |
+| tax | [Portale della pubblica amministrazione ceca](https://portal.gov.cz/en/informace/personal-income-taxes-INF-293) |
+| health | [Portale della pubblica amministrazione ceca](https://portal.gov.cz/en/sluzby-vs/employers-notification-of-the-employees-entry-into-employment-S686) |
 
 **Lacune**
 
-- Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale.
+- Cauzione: il ministero della Giustizia indica un massimo di sei mensilità, ma la sua pagina non supera il controllo del certificato di sicurezza; da verificare sul testo di legge.
 
 ## DE
 
@@ -104,10 +106,11 @@ Verificato il 2026-10-09.
 | registration | [Legge sui cittadini dell'Unione europea, § 7 (Riigi Teataja)](https://www.riigiteataja.ee/en/eli/504012016002/consolide) |
 | registration | [Polizia e guardia di frontiera estone](https://www.politsei.ee/en/eu-citizens-temporary-right-of-residence) |
 | tax | [Amministrazione fiscale e doganale estone (EMTA)](https://emta.ee/en/private-client/foreigner-non-resident/tax-residency/determining-residency) |
+| health | [Cassa sanitaria estone (Tervisekassa)](https://tervisekassa.ee/en/employers/health-insurance-employee) |
 
 **Lacune**
 
-- Sanità e cauzione: non ancora verificate su una fonte ufficiale.
+- Cauzione: non ancora verificata su una fonte ufficiale.
 
 ## ES
 
@@ -144,11 +147,13 @@ Verificato il 2026-10-09.
 |---|---|
 | registration | [Ministero dell'Interno croato (MUP)](https://mup.gov.hr/aliens-281621/stay-and-work/short-term-temporary-and-permanent-stay-of-eea-nationals/281689) |
 | registration | [Ministero dell'Interno croato (MUP)](https://mup.gov.hr/aliens-281621/stay-and-work/short-term-temporary-and-permanent-stay-of-eea-nationals/281689) |
+| tax | [Amministrazione fiscale croata](https://porezna-uprava.gov.hr/en/determination-of-residency-status/7378) |
+| health | [Ministero degli Esteri croato — assicurazione sanitaria](https://mss.gov.hr/health/health-insurance/132) |
 
 **Lacune**
 
-- Una pagina del ministero degli Esteri croato indica la scadenza di otto giorni prima, e non dopo, la fine dei tre mesi: per sicurezza registrati prima.
-- Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale.
+- Una pagina del ministero degli Esteri croato indica la scadenza di registrazione otto giorni prima, e non dopo, la fine dei tre mesi: per sicurezza registrati prima.
+- Cauzione: non ancora verificata su una fonte ufficiale.
 
 ## HU
 
@@ -160,7 +165,8 @@ Verificato il 2026-10-09.
 
 **Lacune**
 
-- Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale.
+- Residenza fiscale: la sintesi ufficiale del fisco ungherese (2026) non riporta la regola dei giorni; da verificare sul testo di legge.
+- Sanità e cauzione: non ancora verificate su una fonte ufficiale.
 
 ## IE
 
@@ -181,8 +187,8 @@ Verificato il 2026-10-09.
 
 **Lacune**
 
-- Registrazione: le pagine del dipartimento della migrazione non si sono potute leggere o non descrivono in modo chiaro il caso del cittadino UE; da verificare.
-- Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale.
+- Registrazione e residenza fiscale: le pagine ufficiali lituane (dipartimento della migrazione e fisco) rifiutano il lettore automatico; da verificare.
+- Sanità e cauzione: non ancora verificate su una fonte ufficiale.
 
 ## LU
 
@@ -209,7 +215,8 @@ Verificato il 2026-10-09.
 **Lacune**
 
 - Scadenza della registrazione: non verificata.
-- Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale.
+- Residenza fiscale: nelle pagine del fisco lettone lette compare solo la regola dei trattati, non quella nazionale.
+- Sanità e cauzione: non ancora verificate su una fonte ufficiale.
 
 ## NL
 
@@ -265,10 +272,11 @@ Verificato il 2026-10-09.
 | Tema | Fonte |
 |---|---|
 | registration | [Ispettorato generale per l'immigrazione (IGI)](https://igi.mai.gov.ro/inregistrarea-rezidentei/) |
+| tax | [Codice fiscale, art. 7, punto 28, citato dall'ANAF (2025)](https://static.anaf.ro/static/10/Cluj/cj_nerezidenti_21oct2025.pdf) |
 
 **Lacune**
 
-- Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale.
+- Sanità e cauzione: non ancora verificate su una fonte ufficiale.
 
 ## SI
 
@@ -278,11 +286,13 @@ Verificato il 2026-10-09.
 |---|---|
 | registration | [SPOT, portale del governo sloveno](https://spot.gov.si/en/info/considering-doing-business-in-slovenia/certificate-on-the-registration-of-residence) |
 | registration | [SPOT, portale del governo sloveno](https://spot.gov.si/en/info/considering-doing-business-in-slovenia/certificate-on-the-registration-of-residence) |
+| tax | [Amministrazione finanziaria slovena (FURS)](https://www.fu.gov.si/en/zivljenjski_dogodki_prebivalci/coming_to_slovenia_to_work_to_study_after_retirement_etc/) |
+| health | [SPOT, portale del governo sloveno](https://spot.gov.si/en/info/employees/social-security-and-insurance/registration-for-compulsory-social-security-insurance-m1-form/) |
 
 **Lacune**
 
-- Scadenza per chiedere il certificato: le fonti lette non la indicano in modo univoco.
-- Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale.
+- Scadenza per chiedere il certificato di registrazione: le fonti lette non la indicano in modo univoco.
+- Cauzione: non ancora verificata su una fonte ufficiale.
 
 ## SK
 
@@ -291,7 +301,9 @@ Verificato il 2026-10-09.
 | Tema | Fonte |
 |---|---|
 | registration | [Slovensko.sk](https://www.slovensko.sk/en/life-situation/life-situation/_residence-of-union-citizens-an) |
+| health | [Slovensko.sk](https://www.slovensko.sk/en/life-situation/life-situation/_social-and-health-insurance-fo/) |
 
 **Lacune**
 
-- Tasse, sanità e cauzione: non ancora verificate su una fonte ufficiale.
+- Residenza fiscale: la pagina ufficiale letta non la definisce.
+- Cauzione: nessun limite generale verificato per gli affitti privati.
