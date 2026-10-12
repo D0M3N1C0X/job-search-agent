@@ -247,15 +247,15 @@ def _font_widths(body: bytes, objects: dict[int, bytes]) -> tuple[dict[int, floa
         except (IndexError, ValueError):
             pass
         return widths, float(dw.group(1)) if dw else 1000.0, True
-    raw = _array(body, b"Widths", objects)
-    first = _FIRSTCHAR.search(body)
-    if raw is None or not first:
+    listed = _array(body, b"Widths", objects)
+    first_char = _FIRSTCHAR.search(body)
+    if listed is None or not first_char:
         return None
     try:
-        values = [float(v) for v in re.findall(rb"-?\d*\.?\d+", raw)]
+        values = [float(v) for v in re.findall(rb"-?\d*\.?\d+", listed)]
     except ValueError:
         return None
-    start = int(first.group(1))
+    start = int(first_char.group(1))
     return {start + i: w for i, w in enumerate(values)}, 0.0, False
 
 
@@ -333,7 +333,7 @@ def extract(path: str | Path) -> str:
                 current = cmaps.get(obj) if obj else None
                 font_metrics = metrics.get(obj) if obj else None
                 two_byte = (font_metrics[2] if font_metrics
-                            else bool(current) and max(current, default=0) > 0xFF)
+                            else current is not None and max(current, default=0) > 0xFF)
                 try:
                     size = float(group["size"]) or size
                 except ValueError:

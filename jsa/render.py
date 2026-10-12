@@ -60,7 +60,7 @@ class Overlay:
 
     def validate(self, profile: dict[str, Any]) -> list[str]:
         """Drop any selected bullet that is not literally in the profile."""
-        pool = set()
+        pool: set[str] = set()
         for role in profile.get("experience", []):
             pool.update(b["text"] for b in role.get("bullets", []))
         for project in profile.get("projects", {}).get("items", []):

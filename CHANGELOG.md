@@ -9,6 +9,8 @@ you set up by hand (profile, tracks, database) needs attention.
 
 ### Added
 
+- CI runs mypy on the package and measures test coverage (78%, with a floor);
+  both are CI-only, so the tool still installs nothing.
 - A shared employer catalogue, used with no setup: `catalogue/companies.json`
   lists 265 European employers whose job boards were verified to answer, with
   where they hire and how many roles mention Italian. `jsa fetch` adds every
@@ -24,6 +26,12 @@ you set up by hand (profile, tracks, database) needs attention.
 
 ### Fixed
 
+- **Alert emails saved as .mbox gave no jobs.** mbox files were read as legacy
+  messages without `get_content()`, the error was swallowed, and every body came
+  out empty; .eml files were unaffected. Both now go through the same parser.
+- **One posting removed mid-run could end `jsa daily`.** A job deleted between
+  reading the ranking and loading it reached the preparation step as `None`,
+  and the handler meant to absorb the failure then failed itself.
 - US state abbreviations no longer read as European countries: "Wilmington, DE"
   was Germany and "Birmingham, AL" Britain.
 - HTTPS to sites using recent root certificates (ec.europa.eu) on older macOS:
@@ -45,6 +53,7 @@ you set up by hand (profile, tracks, database) needs attention.
   packets for the best untouched postings, up to a weekly cap that counts
   packets made by hand too, and the notification leads with what is ready.
   You still read each one and press send.
+
 
 ## [1.1.0] — 2026-09-26
 
