@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<meta name="robots" content="noindex">
+<title>Privacy · job-search-agent beta</title>
+<link rel="stylesheet" href="app.css">
+<style>.doc{max-width:760px;margin:0 auto}.doc h2{margin:28px 0 8px;font-size:20px;letter-spacing:-.02em}.doc li{margin-bottom:6px}
+.draft{background:var(--accent-soft);color:var(--accent-ink);border-radius:16px;padding:12px 16px;font-weight:600}</style>
+</head>
+<body>
+<header class="top"><div class="brand"><i></i>job-search-agent <small>beta</small></div><a class="btn" href="./">App</a></header>
+<main class="wrap"><article class="doc card">
+<p class="draft">BOZZA da far rivedere a un consulente privacy prima di aprire la beta. I campi tra parentesi quadre vanno completati.</p>
+<h1 class="h">Informativa sulla privacy della beta</h1>
+<p class="note">Ultimo aggiornamento: [data di apertura della beta]</p>
+
+<h2>Chi tratta i dati</h2>
+<p>Titolare del trattamento: [nome e cognome o ragione sociale], [indirizzo], contatto: [email dedicata alla privacy].</p>
+
+<h2>Quali dati e perché</h2>
+<ul>
+<li><b>Email e identificativo dell’accesso</b> (email, Google o Apple): servono a farti entrare e a verificare che tu sia tra gli invitati della beta.</li>
+<li><b>Il CV che carichi</b>: viene letto una sola volta per ricavare un profilo (ruoli, competenze, lingue, anni di esperienza). Il file viene <b>cancellato subito dopo la lettura</b>, anche se la lettura non riesce.</li>
+<li><b>Il profilo ricavato e le tue scelte</b> (paesi, aree di lavoro, lingua dell’interfaccia): servono a calcolare il punteggio delle offerte.</li>
+<li><b>Punteggi e candidature</b>: le offerte adatte a te e gli stati che assegni (es. «Inviata», «Colloquio»).</li>
+</ul>
+<p>Base giuridica: esecuzione del servizio che hai chiesto di usare (art. 6, par. 1, lett. b GDPR). Non c’è profilazione a fini pubblicitari, non vendiamo né cediamo dati, non prendiamo decisioni automatiche che producano effetti giuridici su di te: il punteggio è un suggerimento e la scelta di candidarti resta tua. Il servizio non invia candidature al posto tuo.</p>
+
+<h2>Dove sono i dati</h2>
+<ul>
+<li>Database, accessi e archivio temporaneo dei CV: Supabase, regione UE (Francoforte), come responsabile del trattamento.</li>
+<li>Il programma che legge i CV e calcola i punteggi: un server nell’Unione europea ([fornitore, es. Hetzner, Germania o Finlandia]).</li>
+<li>L’accesso con Google o Apple passa dai loro servizi, secondo le loro informative.</li>
+<li>La libreria che collega l’app al database è scaricata da jsDelivr, che vede l’indirizzo IP del tuo browser.</li>
+</ul>
+<p>Le offerte di lavoro sono annunci pubblici letti dalle pagine carriere dei datori di lavoro; non contengono tuoi dati.</p>
+
+<h2>Cookie e memoria del browser</h2>
+<p>Nessun cookie di profilazione o di statistica. Il browser conserva solo la sessione di accesso e la lingua scelta, che servono a far funzionare l’app.</p>
+
+<h2>Per quanto tempo</h2>
+<p>Il file del CV: il tempo di leggerlo, di norma meno di un minuto. Tutto il resto finché tieni l’account. Alla fine della beta [cosa succede: cancellazione dopo X giorni dal preavviso].</p>
+
+<h2>I tuoi diritti</h2>
+<ul>
+<li><b>Accesso e portabilità</b>: Profilo → «Scarica i miei dati» ti dà tutto in un file JSON.</li>
+<li><b>Cancellazione</b>: Profilo → «Cancella il mio account» elimina account, profilo, punteggi e candidature.</li>
+<li>Rettifica, limitazione, opposizione: scrivi a [email dedicata alla privacy].</li>
+<li>Reclamo al Garante per la protezione dei dati personali: <a href="https://www.garanteprivacy.it/" rel="noopener">garanteprivacy.it</a>.</li>
+</ul>
+</article></main>
+</body>
+</html>

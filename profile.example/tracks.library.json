@@ -897,6 +897,489 @@
         "warehouse"
       ],
       "projects_heading": "Selected operations & program case studies"
+    },
+    {
+      "id": "customer_support",
+      "label": "Customer Support & Service (multilingual)",
+      "summary_key": "customer_support",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "education",
+        "languages"
+      ],
+      "skill_groups": [],
+      "must_have_target": 2,
+      "nice_to_have_target": 3,
+      "domain_target": 2,
+      "cover_angle": "Multilingual service experience: calm with customers, precise with systems, measured on quality.",
+      "titles": {
+        "strong": [
+          "customer service representative",
+          "customer support specialist",
+          "customer care specialist",
+          "customer success associate",
+          "technical support advisor",
+          "customer experience specialist",
+          "customer service agent",
+          "support specialist",
+          "content moderator"
+        ],
+        "good": [
+          "customer service",
+          "customer support",
+          "customer care",
+          "help desk",
+          "service desk",
+          "customer experience",
+          "account support",
+          "order management"
+        ],
+        "weak": [
+          "support",
+          "service",
+          "care",
+          "advisor"
+        ]
+      },
+      "must_have_any": [
+        "customer",
+        "support",
+        "ticket",
+        "email",
+        "chat",
+        "phone",
+        "inbound",
+        "resolution",
+        "service level",
+        "crm"
+      ],
+      "nice_to_have": [
+        "zendesk",
+        "salesforce",
+        "kpi",
+        "sla",
+        "quality",
+        "escalation",
+        "knowledge base",
+        "troubleshooting",
+        "satisfaction"
+      ],
+      "domain": [
+        "customer",
+        "support",
+        "service",
+        "contact centre",
+        "contact center",
+        "helpdesk"
+      ],
+      "anti": [
+        "software engineer",
+        "senior engineer",
+        "driver",
+        "forklift",
+        "warehouse",
+        "nurse"
+      ]
+    },
+    {
+      "id": "sales_account",
+      "label": "Sales & Account Management",
+      "summary_key": "sales_account",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "education",
+        "languages"
+      ],
+      "skill_groups": [],
+      "must_have_target": 2,
+      "nice_to_have_target": 3,
+      "domain_target": 2,
+      "cover_angle": "Commercial experience with clear numbers: pipeline built, accounts grown, clients kept.",
+      "titles": {
+        "strong": [
+          "account executive",
+          "account manager",
+          "sales development representative",
+          "business development representative",
+          "inside sales",
+          "key account manager",
+          "customer success manager",
+          "partner manager"
+        ],
+        "good": [
+          "sales representative",
+          "business development",
+          "sales specialist",
+          "sales manager",
+          "territory manager"
+        ],
+        "weak": [
+          "sales",
+          "account",
+          "business development"
+        ]
+      },
+      "must_have_any": [
+        "sales",
+        "pipeline",
+        "quota",
+        "clients",
+        "accounts",
+        "prospecting",
+        "negotiation",
+        "crm",
+        "revenue"
+      ],
+      "nice_to_have": [
+        "salesforce",
+        "hubspot",
+        "saas",
+        "b2b",
+        "renewal",
+        "upsell",
+        "forecast",
+        "cold outreach"
+      ],
+      "domain": [
+        "sales",
+        "revenue",
+        "b2b",
+        "saas",
+        "partners",
+        "clients"
+      ],
+      "anti": [
+        "software engineer",
+        "driver",
+        "warehouse",
+        "nurse",
+        "door to door"
+      ]
+    },
+    {
+      "id": "finance_accounting",
+      "label": "Finance & Accounting Operations",
+      "summary_key": "finance_accounting",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "education",
+        "languages"
+      ],
+      "skill_groups": [],
+      "must_have_target": 2,
+      "nice_to_have_target": 3,
+      "domain_target": 2,
+      "cover_angle": "Accounting operations done right: reconciled, on time and explainable to an auditor.",
+      "titles": {
+        "strong": [
+          "accounts payable",
+          "accounts receivable",
+          "accountant",
+          "financial analyst",
+          "general ledger",
+          "credit controller",
+          "billing specialist",
+          "p2p analyst",
+          "o2c analyst",
+          "r2r analyst",
+          "payroll specialist"
+        ],
+        "good": [
+          "finance specialist",
+          "finance associate",
+          "controlling",
+          "treasury analyst",
+          "audit associate",
+          "tax associate"
+        ],
+        "weak": [
+          "finance",
+          "accounting",
+          "billing",
+          "invoice"
+        ]
+      },
+      "must_have_any": [
+        "invoice",
+        "reconciliation",
+        "ledger",
+        "accounting",
+        "excel",
+        "erp",
+        "sap",
+        "month end",
+        "payments",
+        "vat"
+      ],
+      "nice_to_have": [
+        "ifrs",
+        "gaap",
+        "oracle",
+        "netsuite",
+        "audit",
+        "forecast",
+        "budget",
+        "variance",
+        "cash"
+      ],
+      "domain": [
+        "finance",
+        "accounting",
+        "payments",
+        "controlling",
+        "shared service"
+      ],
+      "anti": [
+        "software engineer",
+        "driver",
+        "warehouse",
+        "nurse"
+      ]
+    },
+    {
+      "id": "marketing",
+      "label": "Marketing & Communication",
+      "summary_key": "marketing",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "education",
+        "languages"
+      ],
+      "skill_groups": [],
+      "must_have_target": 2,
+      "nice_to_have_target": 3,
+      "domain_target": 2,
+      "cover_angle": "Marketing measured in results: campaigns shipped, audiences grown, numbers reported.",
+      "titles": {
+        "strong": [
+          "marketing specialist",
+          "digital marketing",
+          "performance marketing",
+          "content marketing",
+          "social media manager",
+          "marketing manager",
+          "brand manager",
+          "communications specialist",
+          "seo specialist",
+          "crm marketing"
+        ],
+        "good": [
+          "marketing coordinator",
+          "marketing associate",
+          "content specialist",
+          "copywriter",
+          "localization",
+          "community manager",
+          "growth marketing"
+        ],
+        "weak": [
+          "marketing",
+          "content",
+          "brand",
+          "communication"
+        ]
+      },
+      "must_have_any": [
+        "marketing",
+        "campaign",
+        "content",
+        "social media",
+        "seo",
+        "analytics",
+        "brand",
+        "copy"
+      ],
+      "nice_to_have": [
+        "google ads",
+        "meta ads",
+        "hubspot",
+        "crm",
+        "a/b test",
+        "newsletter",
+        "localisation",
+        "localization",
+        "market"
+      ],
+      "domain": [
+        "marketing",
+        "brand",
+        "media",
+        "content",
+        "communication",
+        "growth"
+      ],
+      "anti": [
+        "software engineer",
+        "driver",
+        "warehouse",
+        "nurse",
+        "door to door"
+      ]
+    },
+    {
+      "id": "software_engineering",
+      "label": "Software Engineering",
+      "summary_key": "software_engineering",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "education",
+        "languages"
+      ],
+      "skill_groups": [],
+      "must_have_target": 2,
+      "nice_to_have_target": 3,
+      "domain_target": 2,
+      "cover_angle": "Software that ships: code in production, tests that catch regressions, systems others rely on.",
+      "titles": {
+        "strong": [
+          "software engineer",
+          "backend engineer",
+          "frontend engineer",
+          "full stack engineer",
+          "fullstack developer",
+          "mobile engineer",
+          "ios engineer",
+          "android engineer",
+          "site reliability engineer",
+          "devops engineer"
+        ],
+        "good": [
+          "software developer",
+          "developer",
+          "platform engineer",
+          "cloud engineer",
+          "qa engineer",
+          "test engineer"
+        ],
+        "weak": [
+          "engineer",
+          "developer"
+        ]
+      },
+      "must_have_any": [
+        "python",
+        "java",
+        "javascript",
+        "typescript",
+        "go",
+        "kotlin",
+        "swift",
+        "c#",
+        "sql",
+        "api",
+        "cloud"
+      ],
+      "nice_to_have": [
+        "aws",
+        "gcp",
+        "azure",
+        "kubernetes",
+        "docker",
+        "react",
+        "ci/cd",
+        "microservices",
+        "testing"
+      ],
+      "domain": [
+        "software",
+        "engineering",
+        "platform",
+        "product",
+        "tech"
+      ],
+      "anti": [
+        "driver",
+        "warehouse",
+        "nurse",
+        "sales representative",
+        "door to door"
+      ]
+    },
+    {
+      "id": "data_analytics",
+      "label": "Data & Analytics",
+      "summary_key": "data_analytics",
+      "sections": [
+        "summary",
+        "skills",
+        "experience",
+        "education",
+        "languages"
+      ],
+      "skill_groups": [],
+      "must_have_target": 2,
+      "nice_to_have_target": 3,
+      "domain_target": 2,
+      "cover_angle": "Analysis people act on: clean data, sound methods and conclusions in plain words.",
+      "titles": {
+        "strong": [
+          "data analyst",
+          "business intelligence analyst",
+          "bi analyst",
+          "analytics engineer",
+          "data scientist",
+          "insights analyst",
+          "reporting analyst",
+          "product analyst"
+        ],
+        "good": [
+          "business analyst",
+          "data engineer",
+          "analytics specialist",
+          "research analyst"
+        ],
+        "weak": [
+          "data",
+          "analytics",
+          "insights",
+          "reporting"
+        ]
+      },
+      "must_have_any": [
+        "sql",
+        "python",
+        "excel",
+        "dashboard",
+        "power bi",
+        "tableau",
+        "analysis",
+        "statistics",
+        "data"
+      ],
+      "nice_to_have": [
+        "looker",
+        "dbt",
+        "r",
+        "a/b test",
+        "forecast",
+        "modelling",
+        "modeling",
+        "experimentation",
+        "bigquery"
+      ],
+      "domain": [
+        "data",
+        "analytics",
+        "insights",
+        "reporting",
+        "business intelligence"
+      ],
+      "anti": [
+        "driver",
+        "warehouse",
+        "nurse",
+        "door to door"
+      ]
     }
   ]
 }
