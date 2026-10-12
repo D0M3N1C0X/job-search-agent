@@ -1,0 +1,37 @@
+# The beta's worker: reads uploaded CVs, fetches the catalogue once a day and
+# scores every member. Installed by cloud/deploy/setup.sh.
+[Unit]
+Description=job-search-agent beta worker
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=jsa
+Group=jsa
+WorkingDirectory=/opt/job-search-agent
+# SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY; readable by root only.
+EnvironmentFile=/etc/jsa-worker.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 -m jsa.cloud.worker
+Restart=always
+RestartSec=30
+
+# The worker only needs the network and a temporary folder.
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/cache/jsa
+Environment=XDG_CACHE_HOME=/var/cache/jsa
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+CapabilityBoundingSet=
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target
