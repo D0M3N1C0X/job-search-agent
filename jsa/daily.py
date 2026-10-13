@@ -229,8 +229,9 @@ def telegram(token: str, method: str, payload: dict[str, Any] | None = None, *,
     """One Bot API call. The token travels in the URL path, as Telegram requires,
     and is never logged."""
     data = json.dumps(payload or {}).encode()
-    req = urllib.request.Request(TELEGRAM.format(token=token, method=method), data=data, method="POST",
-                                 headers={"Content-Type": "application/json", "User-Agent": USER_AGENT})
+    req = urllib.request.Request(  # noqa: S310 - a fixed https://api.telegram.org address
+        TELEGRAM.format(token=token, method=method), data=data, method="POST",
+        headers={"Content-Type": "application/json", "User-Agent": USER_AGENT})
     with opener(req, timeout=20, context=_SSL) as resp:
         return json.loads(resp.read() or b"{}")
 
