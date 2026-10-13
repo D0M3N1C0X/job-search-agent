@@ -439,7 +439,7 @@ def build_apply_page(job: Job, profile: dict[str, Any], answers: dict[str, Any],
      stay empty. Below, every answer is one click from your clipboard.</p>
 </div>
 
-{_form_section(form) if form is not False else ""}
+{"" if isinstance(form, bool) else _form_section(form)}
 
 <h2>Standard answers</h2>
 {''.join(rows)}
