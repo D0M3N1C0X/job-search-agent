@@ -27,6 +27,11 @@ def _answers(cfg: Any) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def folder_for(cfg: Any, job: Job) -> Path:
+    """Where a posting's packet lives: `output/<company>_<role>/`."""
+    return cfg.output_dir / f"{slugify(job.company)}_{slugify(job.title, 32)}"
+
+
 def build_packet(
     cfg: Any,
     job: Job,
@@ -40,7 +45,7 @@ def build_packet(
     extra: tuple[Path, ...] = (),
 ) -> Path:
     """Create `output/<company>_<role>/` with documents, answers and a checklist."""
-    folder = cfg.output_dir / f"{slugify(job.company)}_{slugify(job.title, 32)}"
+    folder = folder_for(cfg, job)
     folder.mkdir(parents=True, exist_ok=True)
 
     for source in (cv_path, cover_path, *extra):
