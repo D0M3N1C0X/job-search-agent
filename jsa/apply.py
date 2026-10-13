@@ -366,9 +366,9 @@ def _form_section(suggestions: list[Any] | None) -> str:
         copy = (f'<button data-copy="f{i}">copy</button>' if s.answer and s.status != "file" else "")
         options = (f'<div class="opts">Options: {html.escape(" · ".join(s.options[:8]))}</div>'
                    if s.status == "write" and s.options else "")
+        star = ' <b style="color:#e0b060">*</b>' if s.required else ""
         rows.append(
-            f'<div class="q"><div class="top"><span class="label">{html.escape(s.label)}'
-            f'{" <b style=\'color:#e0b060\'>*</b>" if s.required else ""}</span>'
+            f'<div class="q"><div class="top"><span class="label">{html.escape(s.label)}{star}</span>'
             f'<span><span class="tag {s.status}">{TAGS.get(s.status, s.status)}</span> {copy}</span></div>'
             + (f'<div class="ans" id="f{i}">{html.escape(s.answer)}</div>' if s.answer else "")
             + (f'<div class="note">{html.escape(s.note)}</div>' if s.note else "")
