@@ -299,25 +299,41 @@ def build_windows_launcher(port: int, home: str | None = None) -> Path:
     return written or targets[0]
 
 
-def build_daily(hour: int, minute: int, home: str | None = None) -> Path:
-    """Run `jsa daily` every day at a set time.
+def parse_times(spec: str) -> list[tuple[int, int]]:
+    """"08:30,13:00,19:00" -> [(8, 30), (13, 0), (19, 0)]; rejects anything not a clock time."""
+    times = []
+    for part in spec.split(","):
+        hour, _, minute = part.strip().partition(":")
+        h, m = int(hour), int(minute or 0)
+        if not (0 <= h < 24 and 0 <= m < 60):
+            raise ValueError(f"not a time of day: {part.strip()!r}")
+        times.append((h, m))
+    return sorted(set(times))
 
-    Calendar-driven rather than an interval, and with no KeepAlive: this is a
-    task that finishes, not a service. If the Mac is asleep at the time, launchd
-    runs it at the next wake.
-    """
-    DAILY_PATH.parent.mkdir(parents=True, exist_ok=True)
-    DAILY_PATH.write_bytes(plistlib.dumps({
+
+def daily_plist(times: list[tuple[int, int]], home: str | None = None) -> dict[str, Any]:
+    return {
         "Label": DAILY_LABEL,
         "ProgramArguments": [sys.executable, "-m", "jsa", "daily"],
         "WorkingDirectory": str(RUN_DIR),
-        "StartCalendarInterval": {"Hour": hour, "Minute": minute},
+        "StartCalendarInterval": [{"Hour": h, "Minute": m} for h, m in times],
         "RunAtLoad": False,
         "ProcessType": "Background",
         "StandardErrorPath": _log_path("daily.log", home),
         "StandardOutPath": _log_path("daily.log", home),
         **_agent_environment(home),
-    }))
+    }
+
+
+def build_daily(times: list[tuple[int, int]], home: str | None = None) -> Path:
+    """Run `jsa daily` every day at the given times.
+
+    Calendar-driven rather than an interval, and with no KeepAlive: this is a
+    task that finishes, not a service. If the Mac is asleep at a time, launchd
+    runs it at the next wake.
+    """
+    DAILY_PATH.parent.mkdir(parents=True, exist_ok=True)
+    DAILY_PATH.write_bytes(plistlib.dumps(daily_plist(times, home)))
     subprocess.run(["launchctl", "unload", str(DAILY_PATH)], capture_output=True, check=False)
     subprocess.run(["launchctl", "load", str(DAILY_PATH)], capture_output=True, check=False)
     return DAILY_PATH
@@ -336,8 +352,7 @@ def install(port: int = 8765, at_login: bool = False, daily: str | None = None,
         if at_login:
             result["agent"] = build_agent(port, home)
         if daily:
-            hour, _, minute = daily.partition(":")
-            result["daily"] = build_daily(int(hour), int(minute or 0), home)
+            result["daily"] = build_daily(parse_times(daily), home)
     elif WINDOWS:
         result["app"] = build_windows_launcher(port, home)
         if at_login:

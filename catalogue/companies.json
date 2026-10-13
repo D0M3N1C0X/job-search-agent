@@ -397,6 +397,29 @@
    "region": "CZ"
   },
   {
+   "company": "Aptiv",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "aptiv/wd5/APTIV_CAREERS",
+   "roles": 144,
+   "europe": 144,
+   "countries": {
+    "PL": 55,
+    "DE": 37,
+    "FR": 28,
+    "PT": 10,
+    "HU": 4,
+    "IE": 3,
+    "SE": 3,
+    "AT": 1,
+    "CH": 1,
+    "ES": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-13",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Asana",
    "board_name": "Asana",
    "provider": "greenhouse",
@@ -897,6 +920,29 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "NL"
+  },
+  {
+   "company": "Cisco",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "cisco/wd5/Cisco_Careers",
+   "roles": 399,
+   "europe": 399,
+   "countries": {
+    "PL": 69,
+    "GB": 51,
+    "IE": 39,
+    "NO": 30,
+    "DE": 22,
+    "SE": 20,
+    "NL": 19,
+    "HU": 15,
+    "IT": 15,
+    "PT": 15
+   },
+   "italian": 0,
+   "verified": "2026-10-13",
+   "region": "WORKDAY"
   },
   {
    "company": "Climedo",
@@ -1567,6 +1613,27 @@
    "italian": 1,
    "verified": "2026-10-08",
    "region": "DE"
+  },
+  {
+   "company": "EVERSANA",
+   "board_name": "EVERSANA",
+   "provider": "smartrecruiters",
+   "handle": "EVERSANA1",
+   "roles": 223,
+   "europe": 30,
+   "countries": {
+    "GB": 12,
+    "IE": 4,
+    "DE": 4,
+    "IT": 3,
+    "ES": 3,
+    "FR": 2,
+    "PL": 1,
+    "PT": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-13",
+   "region": "HR"
   },
   {
    "company": "Expedia Group",
@@ -2281,6 +2348,29 @@
    "region": "DE"
   },
   {
+   "company": "Hitachi",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "hitachi/wd1/hitachi",
+   "roles": 1000,
+   "europe": 1000,
+   "countries": {
+    "DE": 194,
+    "PL": 130,
+    "GB": 102,
+    "BG": 91,
+    "CH": 90,
+    "ES": 81,
+    "IT": 81,
+    "CZ": 54,
+    "FR": 50,
+    "DK": 28
+   },
+   "italian": 1,
+   "verified": "2026-10-13",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Holded",
    "board_name": "Holded",
    "provider": "recruitee",
@@ -2534,6 +2624,29 @@
    "italian": 0,
    "verified": "2026-10-08",
    "region": "FR"
+  },
+  {
+   "company": "Johnson & Johnson",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "jj/wd5/JJ",
+   "roles": 633,
+   "europe": 633,
+   "countries": {
+    "GB": 113,
+    "BE": 81,
+    "CH": 69,
+    "PL": 61,
+    "NL": 60,
+    "DE": 52,
+    "IE": 46,
+    "ES": 34,
+    "FR": 28,
+    "IT": 26
+   },
+   "italian": 0,
+   "verified": "2026-10-13",
+   "region": "WORKDAY"
   },
   {
    "company": "Julius Baer",
@@ -4049,6 +4162,24 @@
    "region": "LU"
   },
   {
+   "company": "Sabre",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "sabre/wd1/SabreJobs",
+   "roles": 37,
+   "europe": 37,
+   "countries": {
+    "PL": 29,
+    "GB": 5,
+    "FR": 1,
+    "GR": 1,
+    "IT": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-13",
+   "region": "WORKDAY"
+  },
+  {
    "company": "Salesforce",
    "board_name": "",
    "provider": "workday",
@@ -4482,6 +4613,27 @@
    "italian": 2,
    "verified": "2026-10-08",
    "region": "DE"
+  },
+  {
+   "company": "State Street",
+   "board_name": "",
+   "provider": "workday",
+   "handle": "statestreet/wd1/Global",
+   "roles": 262,
+   "europe": 262,
+   "countries": {
+    "PL": 110,
+    "GB": 69,
+    "IE": 58,
+    "DE": 10,
+    "LU": 9,
+    "IT": 3,
+    "NL": 2,
+    "FR": 1
+   },
+   "italian": 0,
+   "verified": "2026-10-13",
+   "region": "WORKDAY"
   },
   {
    "company": "Statista",
@@ -5453,5 +5605,5 @@
   }
  ],
  "_comment": "European employers whose job board answered on the date shown. Built by tools/catalogue.py from catalogue/candidates/; never edited by hand. 'europe' counts roles placed in Europe, 'italian' those that mention the Italian language.",
- "updated": "2026-10-12"
+ "updated": "2026-10-13"
 }
