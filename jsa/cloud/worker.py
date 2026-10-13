@@ -26,7 +26,7 @@ import json
 import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable
 
@@ -269,7 +269,7 @@ def main() -> int:
         process_score_requests(db, jobs_loader)
         return 0
 
-    last_day = None
+    last_day: date | None = None
     while True:
         try:
             process_imports(db)

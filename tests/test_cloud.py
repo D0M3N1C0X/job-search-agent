@@ -165,3 +165,59 @@ class TestRows(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SupabaseClientTest(unittest.TestCase):
+    """The REST client, with urlopen replaced: headers, batching and refusals."""
+
+    def _client(self, key: str):
+        from jsa.cloud.rest import Supabase
+        calls = []
+
+        class Resp:
+            def __init__(self, body: bytes) -> None:
+                self.body = body
+            def read(self) -> bytes:
+                return self.body
+            def __enter__(self):
+                return self
+            def __exit__(self, *exc):
+                return False
+
+        def fake(req, timeout=None, context=None):
+            calls.append(req)
+            return Resp(b'[{"id": 1}]' if req.get_method() == "GET" else b"")
+
+        patcher = mock.patch("urllib.request.urlopen", fake)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        return Supabase("https://x.supabase.co/", key), calls
+
+    def test_jwt_key_goes_in_both_headers(self):
+        db, calls = self._client("eyJabc")
+        self.assertEqual(db.select("jobs", {"id": "eq.1"}), [{"id": 1}])
+        self.assertEqual(calls[0].get_header("Authorization"), "Bearer eyJabc")
+        self.assertIn("/rest/v1/jobs?id=eq.1", calls[0].full_url)
+
+    def test_secret_key_goes_in_apikey_only(self):
+        db, calls = self._client("sb_secret_abc")
+        db.select("jobs")
+        self.assertIsNone(calls[0].get_header("Authorization"))
+        self.assertEqual(calls[0].get_header("Apikey"), "sb_secret_abc")
+
+    def test_upsert_batches_and_storage_calls(self):
+        db, calls = self._client("eyJabc")
+        db.upsert("jobs", [{"id": i} for i in range(1200)], on_conflict="id")
+        self.assertEqual(len(calls), 3)
+        self.assertIn("on_conflict=id", calls[0].full_url)
+        db.update("jobs", {"id": "eq.1"}, {"title": "x"})
+        db.delete("jobs", {"id": "eq.1"})
+        db.download("cv-uploads", "u/a b.pdf")
+        db.remove("cv-uploads", ["u/a.pdf"])
+        self.assertEqual([c.get_method() for c in calls[3:]], ["PATCH", "DELETE", "GET", "DELETE"])
+        self.assertTrue(calls[5].full_url.endswith("/storage/v1/object/cv-uploads/u/a%20b.pdf"))
+
+    def test_refuses_to_empty_a_table(self):
+        db, _calls = self._client("eyJabc")
+        with self.assertRaises(ValueError):
+            db.delete("jobs", {})
