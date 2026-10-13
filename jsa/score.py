@@ -12,6 +12,7 @@ narrowed and explained.
 from __future__ import annotations
 
 import re
+import unicodedata
 from dataclasses import dataclass
 from typing import Any
 
@@ -119,6 +120,21 @@ class Gate:
     reason: str
 
 
+_PATTERNS: dict[str, re.Pattern[str]] = {}
+
+
+def _plain(value: str) -> str:
+    """Lowercase, accents folded, punctuation kept."""
+    value = unicodedata.normalize("NFKD", value or "")
+    return "".join(c for c in value if not unicodedata.combining(c)).lower()
+
+
+def _compiled(pattern: str) -> re.Pattern[str]:
+    if pattern not in _PATTERNS:
+        _PATTERNS[pattern] = re.compile(pattern, re.I)
+    return _PATTERNS[pattern]
+
+
 def check_gates(job: Job, profile: dict[str, Any], text: str | None = None) -> list[Gate]:
     prefs = profile.get("preferences", {})
     text = canonical(job.text()) if text is None else text
@@ -128,9 +144,18 @@ def check_gates(job: Job, profile: dict[str, Any], text: str | None = None) -> l
     # not a fit, however good everything else looks.
     levels = {l["code"]: l.get("level", "") for l in profile.get("languages", [])}
     order = ["A1", "A2", "B1", "B2", "C1", "C2", "native"]
-    for rule in prefs.get("language_gates", []):
+    rules = prefs.get("language_gates", [])
+    # Language rules read the posting with its punctuation kept: the canonical
+    # text has no full stops, so "excellent communication. ...our Polish
+    # entities" read as one phrase and rejected roles that never asked for Polish.
+    plain = _plain(job.text()) if rules else ""
+    for rule in rules:
         code = rule["code"]
-        if not re.search(rule["pattern"], text, re.I):
+        # `word` is an optional cheap test (the language's name): most postings
+        # never mention Swedish, and the full pattern is not worth running on them.
+        if rule.get("word") and not _compiled(rule["word"]).search(plain):
+            continue
+        if not _compiled(rule["pattern"]).search(plain):
             continue
         have = levels.get(code, "")
         need = rule.get("min_level", "C1")
@@ -178,7 +203,7 @@ def check_gates(job: Job, profile: dict[str, Any], text: str | None = None) -> l
 
 
 def score_job(job: Job, profile: dict[str, Any], track: dict[str, Any],
-              text: str | None = None) -> Score:
+              text: str | None = None, gates: list[Gate] | None = None) -> Score:
     """Score one job against one positioning track.
 
     `text` is the canonicalised posting; `score_all` computes it once and
@@ -282,7 +307,8 @@ def score_job(job: Job, profile: dict[str, Any], track: dict[str, Any],
     total -= penalty
 
     # --- gates -----------------------------------------------------------
-    gates = check_gates(job, profile, text)
+    if gates is None:
+        gates = check_gates(job, profile, text)
     if gates:
         breakdown["gates"] = [{"gate": g.name, "reason": g.reason} for g in gates]
 
@@ -307,8 +333,10 @@ def score_job(job: Job, profile: dict[str, Any], track: dict[str, Any],
 def score_all(job: Job, profile: dict[str, Any], tracks: list[dict[str, Any]]) -> list[Score]:
     """Score a job against every track. The best track is the one to apply on."""
     text = canonical(job.text())
+    # Gates depend on the posting and the profile, never on the track: checked once.
+    gates = check_gates(job, profile, text)
     return sorted(
-        (score_job(job, profile, t, text) for t in tracks),
+        (score_job(job, profile, t, text, gates) for t in tracks),
         key=lambda s: s.score, reverse=True,
     )
 

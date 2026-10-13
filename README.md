@@ -44,7 +44,9 @@ jsa serve                 # the dashboard, editable: statuses and notes save to 
 `jsa daily` runs the pipeline and notifies you **only** when something new clears
 your threshold or something has gone overdue — silence otherwise, because an
 alert that arrives every morning stops being an alert. `jsa install --daily
-08:30` schedules it.
+08:30,13:00,19:00` schedules it, as often as you like: an overdue reminder still
+interrupts only once a day. `jsa notify telegram` connects a Telegram bot you
+create, so the same notice reaches your phone with links to the postings.
 
 `jsa doctor` checks the whole setup — interpreter, profile, database, network,
 PATH — and explains anything that is wrong. It keeps working when the workspace
@@ -213,8 +215,20 @@ left as `[[WRITE: …]]` parts with hints, and the packet and the helper page sa
 so until they are written.
 
 `jsa autoprepare --min-score 80 --per-week 5` has the daily run build packets
-for the best new postings, at most five a week, and notify you. Nothing is
-ever submitted: a form is a signature, and yours.
+for the best new postings, at most five a week, and notify you. A `tracks` list
+under `preferences.prepare` keeps the packets to the kind of role you are after.
+Nothing is ever submitted: a form is a signature, and yours.
+
+**The form's own questions.** Greenhouse, Ashby and Lever publish the questions
+of an application form next to the posting. The packet reads them and lists
+them on the helper page in the form's order, each with a status: *from profile*
+(name, EU work authorisation), *read it* (a written answer), *write it* (only you
+can: motivation, a figure still TODO), *your choice* (diversity, consent — never
+filled). Open questions that recur — "a process you improved", "a project from
+start to finish" — are answered from `answer_bank.json`, answers you write once
+from facts in the profile (`profile.example/answer_bank.json` shows the shape).
+A choice that would state something untrue is never picked because it starts
+with "Yes": "Yes, I'm based in Barcelona" is left for you.
 
 ---
 

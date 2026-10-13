@@ -7,3 +7,6 @@ os.environ["JSA_BROWSER"] = "none"
 # Nor do they fetch the shared catalogue's hundreds of real boards. Tests that
 # need a catalogue pass one explicitly.
 os.environ["JSA_CATALOGUE"] = os.devnull
+
+# Nor do they read employers' application forms over the network.
+os.environ["JSA_FORMS"] = "off"

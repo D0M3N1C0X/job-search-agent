@@ -177,6 +177,8 @@ def write_digest(summary: dict[str, Any], path: Path, prepared: Sequence[dict[st
         for done in prepared:
             todo = (f" — write the {done['letter_todo']} [[WRITE]] part(s) of the letter first"
                     if done["letter_todo"] else "")
+            if done.get("form_todo"):
+                todo += f" — {done['form_todo']} form question(s) to write"
             lines.append(f"- **{done['score'].score}** {done['job'].title} — {done['job'].company}"
                          f"{todo}  \n  `{done['page']}`")
         lines.append("")
@@ -242,7 +244,8 @@ def phone_text(summary: dict[str, Any], prepared: Sequence[dict[str, Any]] = ())
         lines.append(f"✅ {len(prepared)} ready to check and send")
         for done in prepared[:5]:
             job = done["job"]
-            lines.append(f"• {done['score'].score} — {job.title} · {job.company}\n  {job.url}")
+            todo = f" · {done['form_todo']} to write" if done.get("form_todo") else ""
+            lines.append(f"• {done['score'].score} — {job.title} · {job.company}{todo}\n  {job.url}")
     if summary["fresh"]:
         lines.append(f"🆕 {len(summary['fresh'])} new above threshold")
         for row in summary["fresh"][:5]:
