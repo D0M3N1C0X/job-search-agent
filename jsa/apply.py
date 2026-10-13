@@ -275,6 +275,15 @@ button.ok{border-color:#5fd39a;color:#5fd39a}
 .bm a{display:inline-block;background:#5b9cff;color:#0f1115;font-weight:700;text-decoration:none;
  padding:9px 16px;border-radius:9px;cursor:grab}
 .bm p{color:#a2a9b6;font-size:13.5px;margin:10px 0 0}
+.q{background:#171a21;border:1px solid #262b35;border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.q .top{display:flex;gap:10px;align-items:baseline;justify-content:space-between}
+.q .label{font-size:14px}
+.q .ans{margin-top:8px;font-size:14px;white-space:pre-line;color:#e8eaee;max-height:260px;overflow:auto}
+.q .note{margin-top:6px;font-size:12.5px;color:#e0b060}
+.q .opts{margin-top:6px;font-size:12.5px;color:#767d8b}
+.tag{font-size:11px;font-weight:700;border-radius:6px;padding:2px 7px;white-space:nowrap}
+.tag.auto{background:#14301f;color:#5fd39a}.tag.check{background:#13284a;color:#5b9cff}
+.tag.write{background:#3a2a10;color:#e0b060}.tag.yours,.tag.file{background:#1c2029;color:#a2a9b6}
 ul.check{list-style:none;padding:0;margin:0}
 ul.check li{background:#171a21;border:1px solid #262b35;border-radius:10px;padding:10px 14px;
  margin-bottom:7px;font-size:14px;color:#a2a9b6}
@@ -343,9 +352,36 @@ def _bookmarklet(profile: dict[str, Any], answers: dict[str, Any]) -> str:
     return "javascript:" + html.escape(script, quote=True)
 
 
+TAGS = {"auto": "from profile", "check": "read it", "write": "write it", "yours": "your choice",
+        "file": "attach"}
+
+
+def _form_section(suggestions: list[Any] | None) -> str:
+    """The employer's own questions, in the form's order, with what to put in each."""
+    if suggestions is None:
+        return ('<h2>The form\'s questions</h2><ul class="check"><li>This board does not publish its '
+                'form: open it and use the standard answers below.</li></ul>')
+    rows = []
+    for i, s in enumerate(suggestions):
+        copy = (f'<button data-copy="f{i}">copy</button>' if s.answer and s.status != "file" else "")
+        options = (f'<div class="opts">Options: {html.escape(" · ".join(s.options[:8]))}</div>'
+                   if s.status == "write" and s.options else "")
+        rows.append(
+            f'<div class="q"><div class="top"><span class="label">{html.escape(s.label)}'
+            f'{" <b style=\'color:#e0b060\'>*</b>" if s.required else ""}</span>'
+            f'<span><span class="tag {s.status}">{TAGS.get(s.status, s.status)}</span> {copy}</span></div>'
+            + (f'<div class="ans" id="f{i}">{html.escape(s.answer)}</div>' if s.answer else "")
+            + (f'<div class="note">{html.escape(s.note)}</div>' if s.note else "")
+            + options + "</div>")
+    todo = sum(1 for s in suggestions if s.status == "write" and s.required)
+    head = (f'<div class="warn">{todo} required question{"s" if todo != 1 else ""} still to write yourself.</div>'
+            if todo else "")
+    return f"<h2>The form's questions ({len(suggestions)})</h2>{head}{''.join(rows)}"
+
+
 def build_apply_page(job: Job, profile: dict[str, Any], answers: dict[str, Any],
                      folder: Path, files: list[Path], ats_report: Any = None,
-                     letter_todo: int = 0) -> Path:
+                     letter_todo: int = 0, form: list[Any] | None | bool = False) -> Path:
     """A local page that makes filling the employer's form a copy-and-click job."""
     rows: list[str] = []
     for key, value in answers.items():
@@ -402,6 +438,8 @@ def build_apply_page(job: Job, profile: dict[str, Any], answers: dict[str, Any],
      and tells you how many. It never clicks submit, and fields it does not recognise
      stay empty. Below, every answer is one click from your clipboard.</p>
 </div>
+
+{_form_section(form) if form is not False else ""}
 
 <h2>Standard answers</h2>
 {''.join(rows)}
@@ -483,14 +521,18 @@ def prepare_packet(cfg: Any, store: Any, job: Job, *, track_id: str | None = Non
                           extra=(cv_pdf,) if cv_pdf else ())
     answers_file = cfg.home / "answers.json"
     answers = read_json(answers_file) if answers_file.exists() else {}
+    from . import forms
+    form = forms.prepare(job, cfg.profile, answers, cfg.home, folder,
+                         {"resume": (cv_pdf or cv_path).name, "cover_letter": cover_path.name})
     page = build_apply_page(job, cfg.profile, answers, folder,
                             [*([folder / cv_pdf.name] if cv_pdf else []),
                              folder / cv_path.name, folder / cover_path.name], report,
-                            letter_todo=todo)
+                            letter_todo=todo, form=form)
     store.set_status(job.id, "ready", track=track["id"],
                      cv_path=str(cv_path), cover_path=str(cover_path))
     return {
         "job": job, "score": best, "track": track, "report": report, "answers": answers,
         "folder": folder, "page": page, "own_cv": own_cv, "cv_pdf": cv_pdf, "letter_drafted": drafted,
         "letter_note": letter.get("_draft_note", ""), "letter_todo": todo,
+        "form": form, "form_todo": forms.still_to_write(form),
     }

@@ -98,5 +98,35 @@ class PhoneTest(unittest.TestCase):
         self.assertFalse(daily.send_phone(self.home, "hello", opener=opener))
 
 
+
+class LanguageGateTest(unittest.TestCase):
+    """Language rules read the posting with its full stops, and are checked once per posting."""
+
+    PROFILE = {
+        "languages": [{"code": "en", "level": "C1"}],
+        "preferences": {"language_gates": [{
+            "code": "pl", "min_level": "C1", "word": r"\bpolish\b",
+            "pattern": r"\bfluent\b[^.;\n]{0,45}?\bpolish\b",
+        }]},
+    }
+
+    def _job(self, text):
+        from jsa.models import Job
+        return Job(source="t", company="Acme", title="HR Advisor", url="", description=text)
+
+    def test_a_sentence_boundary_stops_the_match(self):
+        from jsa.score import check_gates
+        self.assertEqual(check_gates(self._job("Fluent English. You will support our Polish entities."),
+                                     self.PROFILE), [])
+        self.assertEqual(len(check_gates(self._job("Fluent in Polish and English."), self.PROFILE)), 1)
+
+    def test_gates_run_once_for_all_tracks(self):
+        from jsa import score
+        tracks = [{"id": "a", "titles": {}}, {"id": "b", "titles": {}}]
+        with mock.patch.object(score, "check_gates", wraps=score.check_gates) as spy:
+            score.score_all(self._job("Fluent in Polish."), self.PROFILE, tracks)
+        self.assertEqual(spy.call_count, 1)
+
+
 if __name__ == "__main__":
     unittest.main()

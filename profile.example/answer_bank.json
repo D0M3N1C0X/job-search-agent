@@ -1,0 +1,15 @@
+{
+  "_comment": "Answers to the open questions application forms keep asking, each built only from facts in profile.json. `match` are regular expressions on the question's wording; `confirmed: false` marks an answer with a part still to check.",
+  "answers": [
+    {
+      "id": "process_improvement",
+      "label": "A process or workflow you improved",
+      "match": [
+        "process .{0,30}improv",
+        "improv\\w* .{0,30}(process|workflow)"
+      ],
+      "confirmed": true,
+      "text": "At Example Corp I noticed that monthly HR reports were rebuilt by hand from three exports. I combined them into one validated workbook with a refresh step, which cut preparation from two days to half a day."
+    }
+  ]
+}
