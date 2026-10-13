@@ -1,0 +1,19 @@
+# Employers that hire HR advisers, employee-relations and people-experience
+# roles across Europe, often with Italian: HR-tech, employer-of-record firms and
+# shared-service centres. Each handle was read from the employer's own careers
+# links on 13/10/2026. Deel and Remote are left out on purpose: their public
+# board APIs return no postings (they list only on their own sites).
+## HR
+Velocity Global | pebl
+RemoFirst | remofirst
+Leapsome | Leapsome
+Lattice | lattice
+Culture Amp | cultureamp
+EVERSANA | EVERSANA1
+## WORKDAY
+Johnson & Johnson | workday:jj/wd5/JJ
+Hitachi | workday:hitachi/wd1/hitachi
+State Street | workday:statestreet/wd1/Global
+Aptiv | workday:aptiv/wd5/APTIV_CAREERS
+Cisco | workday:cisco/wd5/Cisco_Careers
+Sabre | workday:sabre/wd1/SabreJobs

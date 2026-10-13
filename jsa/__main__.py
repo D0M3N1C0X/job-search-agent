@@ -511,7 +511,8 @@ def cmd_add(args: argparse.Namespace, cfg: config.Config,
 @with_workspace
 def cmd_daily(args: argparse.Namespace, cfg: config.Config, store: Store) -> int:
     """Run the pipeline, then speak only if there is a reason to."""
-    from .daily import LAST_RUN, message, notify, prepare_best, summarise, write_digest
+    from .daily import (LAST_RUN, message, notify, phone_text, prepare_best, quiet_repeats,
+                        send_phone, summarise, write_digest)
 
     if not args.no_fetch:
         ns = lambda **kw: argparse.Namespace(home=args.home, **kw)  # noqa: E731
@@ -524,7 +525,9 @@ def cmd_daily(args: argparse.Namespace, cfg: config.Config, store: Store) -> int
         print(f"Prepared  {done['job'].title} — {done['job'].company}  →  {done['folder']}")
     summary = summarise(store, cfg, args.min_score)
     digest = write_digest(summary, cfg.output_dir / "digest.md", prepared)
-    said = message(summary, prepared)
+    # The digest keeps every overdue item; the interruptions give each one once a day.
+    alert = quiet_repeats(summary, store) if not args.quiet else summary
+    said = message(alert, prepared)
 
     print(f"\n{colour('Daily digest', BOLD)}  {digest}")
     if said is None:
@@ -534,8 +537,66 @@ def cmd_daily(args: argparse.Namespace, cfg: config.Config, store: Store) -> int
         print(f"  {text}")
         if not args.quiet:
             notify("job-search-agent", text, subtitle)
+            phone = phone_text(alert, prepared)
+            if phone and send_phone(cfg.home, phone):
+                print("  Sent to your phone.")
     store.set_meta(LAST_RUN, now())
     return 0
+
+
+def cmd_notify(args: argparse.Namespace) -> int:
+    """Connect a Telegram bot so the daily round reaches the phone."""
+    import getpass
+    import json as _json
+    import time
+
+    from .daily import phone_settings, send_phone, telegram
+
+    cfg = config.load(args.home)
+    path = cfg.home / "notify.json"
+    if args.action == "test":
+        if not phone_settings(cfg.home):
+            print(f"No phone set up yet. Run `{config.COMMAND} notify telegram`.")
+            return 1
+        ok = send_phone(cfg.home, "job-search-agent: test message. Notifications reach this chat.")
+        print("Sent." if ok else "Telegram did not accept the message — check the bot token.")
+        return 0 if ok else 1
+    if args.action == "off":
+        path.unlink(missing_ok=True)
+        print("Phone notifications removed.")
+        return 0
+
+    print("1. In Telegram, open @BotFather, send /newbot and follow the two questions.")
+    print("2. BotFather replies with a token. Paste it here (it is not shown, and stays on this Mac).")
+    token = getpass.getpass("Bot token: ").strip()
+    if not token:
+        return 1
+    try:
+        me = telegram(token, "getMe")
+    except (OSError, ValueError):
+        print("Telegram did not recognise that token.")
+        return 1
+    name = me.get("result", {}).get("username", "your bot")
+    print(f"3. Now open @{name} in Telegram and send it any message. Waiting up to two minutes…")
+    chat: str | None = None
+    for _ in range(24):
+        updates = telegram(token, "getUpdates", {"timeout": 0}).get("result", [])
+        for update in reversed(updates):
+            message = update.get("message") or {}
+            if message.get("chat", {}).get("type") == "private":
+                chat = str(message["chat"]["id"])
+                break
+        if chat:
+            break
+        time.sleep(5)
+    if not chat:
+        print("No message arrived. Send one to the bot and run this again.")
+        return 1
+    path.write_text(_json.dumps({"telegram": {"token": token, "chat_id": chat}}), encoding="utf-8")
+    path.chmod(0o600)
+    ok = send_phone(cfg.home, "job-search-agent is connected. New jobs and ready packets will arrive here.")
+    print("Connected — check your phone." if ok else "Saved, but the test message failed.")
+    return 0 if ok else 1
 
 
 @with_workspace
@@ -1120,8 +1181,8 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("install", help="put the dashboard in the Dock as a macOS app")
     p.add_argument("--port", type=int, default=8765)
     p.add_argument("--login", action="store_true", help="also keep the server running from login")
-    p.add_argument("--daily", metavar="HH:MM",
-                   help="also run the pipeline every day at this time and notify if it matters")
+    p.add_argument("--daily", metavar="HH:MM[,HH:MM…]",
+                   help="also run the pipeline every day at these times and notify if it matters")
     p.set_defaults(func=cmd_install)
 
     p = sub.add_parser("uninstall", help="remove the app and the login agent")
@@ -1205,6 +1266,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--text", help="posting text")
     p.add_argument("--file", help="file containing the posting text")
     p.set_defaults(func=cmd_add)
+
+    p = sub.add_parser("notify", help="send the daily round to your phone (Telegram)")
+    p.add_argument("action", choices=["telegram", "test", "off"], nargs="?", default="telegram")
+    p.set_defaults(func=cmd_notify)
 
     p = sub.add_parser("daily", help="run the pipeline and notify only if it matters")
     p.add_argument("--min-score", type=int, default=75)

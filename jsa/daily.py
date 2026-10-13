@@ -8,18 +8,27 @@ application, or something overdue — and stays silent otherwise.
 
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
+import urllib.request
+from collections.abc import Callable, Sequence
 from pathlib import Path
-from collections.abc import Sequence
 from typing import Any
 
 from datetime import datetime, timedelta, timezone
 
 from .store import Store
-from .util import days_between, log, now
+from .util import _SSL, USER_AGENT, days_between, log, now, today
 
 LAST_RUN = "daily:last_notified"
+# The round runs several times a day; a reminder about the same unsent packet
+# is worth one interruption a day, not three.
+OVERDUE_DAY = "daily:overdue_notified_on"
+# A posting not seen by any source for this long is probably gone: preparing a
+# packet for it wastes the one thing the cap protects, the person's attention.
+STALE_DAYS = 3
+TELEGRAM = "https://api.telegram.org/bot{token}/{method}"
 
 
 def _applescript(value: str) -> str:
@@ -60,7 +69,9 @@ def notify(title: str, message: str, subtitle: str = "") -> bool:
 def summarise(store: Store, cfg: Any, threshold: int) -> dict[str, Any]:
     """What has appeared since the last time we spoke, and what is overdue."""
     since = store.get_meta(LAST_RUN)
-    rows = store.best_scores(min_score=threshold, limit=200, include_applied=False)
+    focus = cfg.profile.get("preferences", {}).get("prepare") or {}
+    rows = [r for r in store.best_scores(min_score=threshold, limit=400, include_applied=False)
+            if in_focus(r, focus)]
     fresh = [r for r in rows if not since or r["first_seen"] > since]
 
     prefs = cfg.profile.get("preferences", {})
@@ -82,6 +93,20 @@ def summarise(store: Store, cfg: Any, threshold: int) -> dict[str, Any]:
         "waiting": len(rows),
         "overdue": sorted(overdue, key=lambda item: -item[0]),
     }
+
+
+def in_focus(row: dict[str, Any], settings: dict[str, Any]) -> bool:
+    """Whether a ranked posting is the kind worth a packet: a chosen track, still listed.
+
+    Without this the cap filled up with whatever scored highest on any track —
+    a RevOps role crowding out the HR adviser roles the search is actually for.
+    """
+    tracks = settings.get("tracks") or []
+    if tracks and row.get("track") not in tracks:
+        return False
+    seen = row.get("last_seen")
+    age = days_between(seen) if seen else None
+    return age is None or age <= STALE_DAYS
 
 
 def prepare_best(cfg: Any, store: Store) -> list[dict[str, Any]]:
@@ -108,8 +133,9 @@ def prepare_best(cfg: Any, store: Store) -> list[dict[str, Any]]:
     from .apply import prepare_packet
 
     prepared: list[dict[str, Any]] = []
-    rows = store.best_scores(min_score=int(settings.get("min_score", 80)), include_applied=False,
-                             limit=room * 3)
+    rows = [r for r in store.best_scores(min_score=int(settings.get("min_score", 80)),
+                                         include_applied=False, limit=room * 10)
+            if in_focus(r, settings)]
     for row in rows:
         if len(prepared) >= room:
             break
@@ -171,3 +197,73 @@ def write_digest(summary: dict[str, Any], path: Path, prepared: Sequence[dict[st
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines), encoding="utf-8")
     return path
+
+
+def quiet_repeats(summary: dict[str, Any], store: Store) -> dict[str, Any]:
+    """The same summary, minus overdue reminders already given today."""
+    if not summary["overdue"]:
+        return summary
+    if store.get_meta(OVERDUE_DAY) == today():
+        return {**summary, "overdue": []}
+    store.set_meta(OVERDUE_DAY, today())
+    return summary
+
+
+# ------------------------------------------------------------------- phone
+
+def phone_settings(home: Path) -> dict[str, str] | None:
+    """Telegram token and chat, from `notify.json` in the private workspace."""
+    path = home / "notify.json"
+    try:
+        data = json.loads(path.read_text(encoding="utf-8")).get("telegram") or {}
+    except (OSError, ValueError):
+        return None
+    token, chat = str(data.get("token", "")), str(data.get("chat_id", ""))
+    return {"token": token, "chat_id": chat} if token and chat else None
+
+
+def telegram(token: str, method: str, payload: dict[str, Any] | None = None, *,
+             opener: Callable[..., Any] = urllib.request.urlopen) -> dict[str, Any]:
+    """One Bot API call. The token travels in the URL path, as Telegram requires,
+    and is never logged."""
+    data = json.dumps(payload or {}).encode()
+    req = urllib.request.Request(TELEGRAM.format(token=token, method=method), data=data, method="POST",
+                                 headers={"Content-Type": "application/json", "User-Agent": USER_AGENT})
+    with opener(req, timeout=20, context=_SSL) as resp:
+        return json.loads(resp.read() or b"{}")
+
+
+def phone_text(summary: dict[str, Any], prepared: Sequence[dict[str, Any]] = ()) -> str | None:
+    """A message for the phone: what is ready, what is new, with links to the postings."""
+    if not summary["fresh"] and not summary["overdue"] and not prepared:
+        return None
+    lines: list[str] = []
+    if prepared:
+        lines.append(f"✅ {len(prepared)} ready to check and send")
+        for done in prepared[:5]:
+            job = done["job"]
+            lines.append(f"• {done['score'].score} — {job.title} · {job.company}\n  {job.url}")
+    if summary["fresh"]:
+        lines.append(f"🆕 {len(summary['fresh'])} new above threshold")
+        for row in summary["fresh"][:5]:
+            lines.append(f"• {row['score']} — {row['title']} · {row['company']} "
+                         f"({row['location'] or 'n/a'})\n  {row['url']}")
+    if summary["overdue"]:
+        lines.append(f"⏰ {len(summary['overdue'])} overdue")
+        for age, app, why in summary["overdue"][:3]:
+            lines.append(f"• {app['company']} — {why} for {age} days")
+    return "\n".join(lines)[:3900]  # Telegram's limit is 4,096 characters
+
+
+def send_phone(home: Path, text: str, *, opener: Callable[..., Any] = urllib.request.urlopen) -> bool:
+    settings = phone_settings(home)
+    if not settings:
+        return False
+    try:
+        telegram(settings["token"], "sendMessage",
+                 {"chat_id": settings["chat_id"], "text": text, "disable_web_page_preview": True},
+                 opener=opener)
+        return True
+    except (OSError, ValueError) as exc:
+        log.warning("phone notification failed: %s", type(exc).__name__)
+        return False
