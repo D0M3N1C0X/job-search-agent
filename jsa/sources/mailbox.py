@@ -64,8 +64,12 @@ def _parse(raw: Any) -> EmailMessage:
 
 def _mbox(path: Path) -> Iterator[EmailMessage]:
     # the stubs expect mboxMessage from a factory; any Message is accepted at runtime
-    for message in _mailbox.mbox(str(path), factory=cast(Any, _parse)):
-        yield cast(EmailMessage, message)
+    box = _mailbox.mbox(str(path), factory=cast(Any, _parse))
+    try:
+        for message in box:
+            yield cast(EmailMessage, message)
+    finally:
+        box.close()
 
 
 def iter_messages(path: Path) -> Iterator[EmailMessage]:

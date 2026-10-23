@@ -353,7 +353,7 @@ jsa/
 ├── serve.py       Local writable dashboard (stdlib http.server, loopback only)
 ├── config.py      Profile resolution (./profile, $JSA_HOME, or the demo)
 └── sources/
-    ├── ats.py       Seven ATS providers, fetch split from parse
+    ├── ats.py       Eight ATS providers, fetch split from parse
     ├── linkedin.py  Guest search, best effort
     └── mailbox.py   Job-alert email parsing
 ```
