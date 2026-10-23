@@ -1,5 +1,10 @@
 # job-search-agent
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="site-assets/cover-dark.png">
+  <img alt="A job search that runs as a pipeline: 8 ATS providers, 325 company boards, 344 offline tests." src="site-assets/cover-light.png">
+</picture>
+
 [![Run it](https://img.shields.io/badge/%E2%96%B6%20Run%20it-1f6feb?style=for-the-badge)](#no-terminal)
 [![Open the dashboard](https://img.shields.io/badge/%E2%97%B1%20The%20dashboard-30363d?style=for-the-badge)](#the-dashboard)
 [![CI](https://github.com/D0M3N1C0X/job-search-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/D0M3N1C0X/job-search-agent/actions/workflows/ci.yml)
