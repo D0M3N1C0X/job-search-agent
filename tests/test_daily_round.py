@@ -99,6 +99,16 @@ class PhoneTest(unittest.TestCase):
 
 
 
+class BacklogTest(unittest.TestCase):
+    def test_no_new_packets_while_too_many_wait(self):
+        cfg = mock.Mock(profile={"preferences": {"prepare": {"per_week": 10, "max_waiting": 8}}})
+        store = mock.Mock()
+        # first query: packets made this week; second: packets still waiting to be sent
+        store.db.execute.return_value.fetchone.side_effect = [[0], [8]]
+        self.assertEqual(daily.prepare_best(cfg, store), [])
+        store.best_scores.assert_not_called()
+
+
 class LanguageGateTest(unittest.TestCase):
     """Language rules read the posting with its full stops, and are checked once per posting."""
 

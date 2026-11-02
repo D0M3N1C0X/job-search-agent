@@ -129,6 +129,14 @@ def prepare_best(cfg: Any, store: Store) -> list[dict[str, Any]]:
     room = per_week - this_week
     if room <= 0:
         return []
+    # A pile of unsent packets is not a pace anyone keeps: past `max_waiting`,
+    # stop adding to it until some leave the house (33 had piled up by 2/11/2026).
+    cap = int(settings.get("max_waiting") or 0)
+    if cap:
+        waiting = store.db.execute("SELECT COUNT(*) FROM applications WHERE status = 'ready'").fetchone()[0]
+        room = min(room, cap - waiting)
+        if room <= 0:
+            return []
 
     from .apply import prepare_packet
 

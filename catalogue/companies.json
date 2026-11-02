@@ -3647,20 +3647,6 @@
    "region": "BE"
   },
   {
-   "company": "Payhawk",
-   "board_name": "Jobs at",
-   "provider": "personio",
-   "handle": "payhawk",
-   "roles": 3,
-   "europe": 3,
-   "countries": {
-    "GB": 3
-   },
-   "italian": 0,
-   "verified": "2026-10-08",
-   "region": "BG"
-  },
-  {
    "company": "PayPal",
    "board_name": "",
    "provider": "workday",
