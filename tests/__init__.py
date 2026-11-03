@@ -10,3 +10,6 @@ os.environ["JSA_CATALOGUE"] = os.devnull
 
 # Nor do they read employers' application forms over the network.
 os.environ["JSA_FORMS"] = "off"
+
+# Nor do they look for where a failing board moved.
+os.environ["JSA_REPAIR"] = "off"

@@ -318,7 +318,8 @@ class Store:
         return self.application(job_id) or {}
 
     def applications(self, *, status: str | None = None, open_only: bool = False) -> list[dict[str, Any]]:
-        sql = """SELECT a.*, j.company, j.title, j.location, j.url, j.country
+        sql = """SELECT a.*, j.company, j.title, j.location, j.url, j.country,
+                        j.source, j.last_seen, j.closed_at
                  FROM applications a JOIN jobs j ON j.id = a.job_id"""
         params: list[Any] = []
         clauses = []

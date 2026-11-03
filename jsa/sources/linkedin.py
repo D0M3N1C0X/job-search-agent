@@ -33,6 +33,8 @@ _COMPANY = re.compile(r'base-search-card__subtitle[^>]*>.*?>(.*?)</a>', re.S)
 _LOCATION = re.compile(r'job-search-card__location[^>]*>(.*?)</span>', re.S)
 _POSTED = re.compile(r'datetime="([\d-]+)"')
 _DESCRIPTION = re.compile(r'show-more-less-html__markup.*?>(.*?)</div>', re.S)
+# What the guest page of a closed posting says, in place of the apply button.
+_CLOSED = "No longer accepting applications"
 
 
 def _clean(match: re.Match[str] | None) -> str:
@@ -70,6 +72,15 @@ def parse_cards(html: str) -> list[Job]:
 def fetch_description(job_id: str, **opts: Any) -> str:
     html = http_get(DETAIL.format(job_id=job_id), **opts)
     return _clean(_DESCRIPTION.search(html))
+
+
+def still_open(job_id: str, **opts: Any) -> bool:
+    """Whether a posting still takes applications. Raises FetchError when it cannot tell.
+
+    LinkedIn postings are never re-listed by a later search the way an ATS board
+    lists its roles, so nothing else ever learns that one closed.
+    """
+    return _CLOSED not in http_get(DETAIL.format(job_id=job_id), **opts)
 
 
 @register("linkedin")

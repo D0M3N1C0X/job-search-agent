@@ -82,7 +82,8 @@ def summarise(store: Store, cfg: Any, threshold: int) -> dict[str, Any]:
         if age is None:
             continue
         if app["status"] in ("shortlisted", "drafted", "ready") and age >= 3:
-            overdue.append((age, app, "not sent"))
+            if not app.get("closed_at"):  # a closed posting can no longer be sent
+                overdue.append((age, app, "not sent"))
         elif app["status"] in ("submitted", "screening", "interview") and age >= follow_up:
             overdue.append((age, app, "no reply"))
 
@@ -107,6 +108,54 @@ def in_focus(row: dict[str, Any], settings: dict[str, Any]) -> bool:
     seen = row.get("last_seen")
     age = days_between(seen) if seen else None
     return age is None or age <= STALE_DAYS
+
+
+RECHECK_DAYS = 3
+
+
+def recheck_unsent(store: Store, *, check: Callable[[str], bool] | None = None,
+                   limit: int = 20, pause: float = 1.0) -> int:
+    """Mark closed the LinkedIn postings you still mean to apply to, once they stop taking applications.
+
+    ATS boards list every open role on each fetch, so a role that disappears is
+    closed by `mark_closed`. A LinkedIn posting is met once, in a search, and
+    was never looked at again: packets for roles closed for weeks kept asking to
+    be sent. Each one is checked at most every RECHECK_DAYS, a few per round,
+    and the round stops at the first answer it cannot read (LinkedIn limits).
+    """
+    import time
+
+    from .sources import linkedin
+
+    check = check or (lambda source_id: linkedin.still_open(source_id, retries=1, timeout=15))
+    rows = store.db.execute(
+        """SELECT j.id, j.source_id FROM applications a JOIN jobs j ON j.id = a.job_id
+           WHERE a.status IN ('shortlisted', 'drafted', 'ready') AND j.source = 'linkedin'
+             AND j.closed_at IS NULL AND j.source_id != ''"""
+    ).fetchall()
+    closed = checked = 0
+    for row in rows:
+        key = f"recheck:{row['id']}"
+        last = store.get_meta(key)
+        if last and (days_between(last) or 0) < RECHECK_DAYS:
+            continue
+        if checked >= limit:
+            break
+        if checked:
+            time.sleep(pause)
+        checked += 1
+        try:
+            still = check(row["source_id"])
+        except Exception as exc:  # noqa: BLE001 - a limit or an outage: try again next round
+            log.info("recheck stopped at %s: %s", row["id"], type(exc).__name__)
+            break
+        store.set_meta(key, today())
+        if not still:
+            store.db.execute("UPDATE jobs SET closed_at = ? WHERE id = ?", (now(), row["id"]))
+            store.log_event(row["id"], "closed", "no longer accepting applications on LinkedIn")
+            closed += 1
+    store.commit()
+    return closed
 
 
 def prepare_best(cfg: Any, store: Store) -> list[dict[str, Any]]:

@@ -7,6 +7,7 @@ import csv
 import functools
 import time
 import json
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -189,6 +190,54 @@ def _watchlist_add(args: argparse.Namespace, handle: str, provider: str, count: 
     print(f"  added to watchlist: {company} ({provider}/{handle})")
 
 
+TROUBLE_AFTER = 3  # rounds in a row before a watchlist board is reported broken
+
+
+def board_trouble(cfg: config.Config, store: Store, entry: dict, *, probe=None) -> str:
+    """A watchlist board that failed or went empty: find where it moved, else count the rounds.
+
+    Companies change ATS without notice; the old board then answers 404, or 200
+    with nothing in it. When exactly one other provider answers under the same
+    handle, the watchlist entry is moved there, and the next round reads it.
+    Otherwise the rounds are counted, and from TROUBLE_AFTER on the board is
+    listed in the `boards:trouble` meta, which a front end can turn into one
+    message. Probing costs a request per provider, so it runs on the first bad
+    round, on the third and then every ninth, not on each.
+    """
+    if probe is None:
+        probe = ats_sources.probe if os.environ.get("JSA_REPAIR") != "off" else (lambda handle: [])
+    key = f"trouble:{entry['provider']}:{entry['handle']}"
+    rounds = int(store.get_meta(key) or 0) + 1
+    store.set_meta(key, str(rounds))
+    if rounds in (1, TROUBLE_AFTER) or rounds % 9 == 0:
+        hits = [h for h in probe(entry["handle"]) if h[0] != entry["provider"]]
+        if len(hits) == 1:
+            provider, count = hits[0]
+            path = cfg.home / "watchlist.json"
+            data = read_json(path) if path.exists() else {"companies": []}
+            for c in data["companies"]:
+                if c.get("provider") == entry["provider"] and c.get("handle") == entry["handle"]:
+                    c.update(provider=provider, verified=today(), open_roles=count, moved_from=entry["provider"])
+            write_json(path, data)
+            store.set_meta(key, "")
+            return f"moved to {provider} ({count} open) — watchlist updated"
+    return f"{rounds} round{'s' if rounds > 1 else ''} in a row"
+
+
+def record_trouble(store: Store, entries: list[dict]) -> list[dict]:
+    """The watchlist boards broken for TROUBLE_AFTER rounds or more, saved for the front ends."""
+    broken = []
+    for e in entries:
+        if e.get("catalogue"):
+            continue
+        rounds = int(store.get_meta(f"trouble:{e['provider']}:{e['handle']}") or 0)
+        if rounds >= TROUBLE_AFTER:
+            broken.append({"company": e["company"], "provider": e["provider"], "handle": e["handle"],
+                           "rounds": rounds})
+    store.set_meta("boards:trouble", json.dumps(broken))
+    return broken
+
+
 def warn_about(cfg: config.Config) -> None:
     for warning in cfg.warnings:
         print(colour(f"note: {warning}", YELLOW))
@@ -236,6 +285,7 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
                     reason = str(exc).split(" -> ", 1)[-1]
                     print(f"{entry['company']:<32} {entry['provider']:<16} "
                           + colour(f"failed — {type(exc).__name__}: {reason}"[:100], RED))
+                    print(f"{'':<49}" + colour(board_trouble(cfg, store, entry), YELLOW))
                     continue
                 if jobs is None:  # fetch() returns a list whenever it returns no exception
                     continue
@@ -257,17 +307,22 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
                     shared["listed"] += len(jobs)
                     shared["new"] += counts["new"]
                     continue
-                if not jobs and known:
+                trouble = store.get_meta(f"trouble:{entry['provider']}:{entry['handle']}")
+                if not jobs and (known or trouble):
                     # A board that changed shape answers 200 with nothing in it,
-                    # which looks exactly like a company that stopped hiring. Said
-                    # once, on the run it happens: the count is now recorded as 0.
-                    totals["quiet"] += 1
+                    # which looks exactly like a company that stopped hiring. The
+                    # summary says so once; the rounds after only count.
+                    totals["quiet"] += 1 if known else 0
                     print(f"{entry['company']:<32} {entry['provider']:<16}   0 listed  "
-                          + colour(f"had {known} open — check it: "
-                                   f"`{config.COMMAND} probe {entry['handle']}`", YELLOW))
+                          + colour((f"had {known} open — " if known else "still empty — ")
+                                   + board_trouble(cfg, store, entry), YELLOW))
                     continue
+                if jobs and trouble:
+                    store.set_meta(f"trouble:{entry['provider']}:{entry['handle']}", "")
                 marker = colour(f"+{counts['new']}", GREEN) if counts["new"] else colour("+0", DIM)
                 print(f"{entry['company']:<32} {entry['provider']:<16} {len(jobs):>3} listed  {marker}")
+        if not args.company:  # a partial run would forget the boards it skipped
+            record_trouble(store, entries)
         if shared["boards"] or shared["failed"]:
             failed = colour(f"  ({shared['failed']} did not answer)", YELLOW) if shared["failed"] else ""
             print(f"{'Shared catalogue':<32} {str(shared['boards']) + ' boards':<16} "
@@ -512,13 +567,16 @@ def cmd_add(args: argparse.Namespace, cfg: config.Config,
 def cmd_daily(args: argparse.Namespace, cfg: config.Config, store: Store) -> int:
     """Run the pipeline, then speak only if there is a reason to."""
     from .daily import (LAST_RUN, message, notify, phone_text, prepare_best, quiet_repeats,
-                        send_phone, summarise, write_digest)
+                        recheck_unsent, send_phone, summarise, write_digest)
 
     if not args.no_fetch:
         ns = lambda **kw: argparse.Namespace(home=args.home, **kw)  # noqa: E731
         cmd_fetch(ns(source=args.source, company=None, pages=2, fast=True, cache_ttl=900))
         cmd_enrich(ns(min_score=30, limit=120))
         cmd_score(ns(rescore=False))
+        closed = recheck_unsent(store)
+        if closed:
+            print(f"{closed} posting(s) you had not sent yet stopped taking applications")
 
     prepared = [] if args.no_prepare else prepare_best(cfg, store)
     for done in prepared:
