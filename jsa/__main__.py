@@ -18,7 +18,7 @@ from .models import STATUSES, Job
 from .packet import build_packet
 from .render import Overlay, ats_check, build_cover, build_cv, output_name
 from .util import slugify
-from .score import explain, score_all
+from .score import SCORER_VERSION, explain, score_all
 from .sources import ats as ats_sources
 from .sources import linkedin, mailbox
 from .store import Store
@@ -984,6 +984,35 @@ def cmd_due(args: argparse.Namespace, cfg: config.Config,
     return 0
 
 
+def cmd_evaluate(args: argparse.Namespace) -> int:
+    """How often the scorer is right: on the labelled postings, or on your own decisions."""
+    from . import evaluate
+
+    if args.mine:
+        cfg = config.load(args.home)
+        with Store(cfg.db_path) as store:
+            best = {row["job_id"]: (row["score"], row["verdict"]) for row in store.db.execute(
+                """SELECT s.job_id, s.score, s.verdict FROM scores s
+                   WHERE s.score = (SELECT MAX(s2.score) FROM scores s2 WHERE s2.job_id = s.job_id)
+                   GROUP BY s.job_id""")}
+            stats = evaluate.own_decisions(store.applications(), best)
+        print(json.dumps(stats, indent=2) if args.json else evaluate.report_own(stats))
+        return 0
+
+    # The labels were written for the example candidate, so the example profile scores them.
+    example = config.load(config.example_home())
+    postings = evaluate.load_postings(config.BENCHMARK_PATH)
+    if args.set != "all":
+        postings = [p for p in postings if p.get("set") == args.set]
+    rows = evaluate.benchmark(postings, example.profile, example.tracks)
+    if args.json:
+        print(json.dumps(evaluate.summarise(rows), indent=2))
+    else:
+        print(colour(f"Scorer {SCORER_VERSION} on the {args.set} postings, example profile", BOLD))
+        print(evaluate.report(rows, misses=not args.quiet))
+    return 0
+
+
 @with_workspace
 def cmd_stats(args: argparse.Namespace, cfg: config.Config,
               store: Store) -> int:
@@ -1397,6 +1426,15 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("stats", help="pipeline and funnel numbers")
     p.set_defaults(func=cmd_stats)
+
+    p = sub.add_parser("evaluate", help="how often the scorer is right, measured")
+    p.add_argument("--mine", action="store_true",
+                   help="against your own decisions: what you pursued and what you dismissed")
+    p.add_argument("--set", choices=["all", "development", "held-out"], default="held-out",
+                   help="which labelled postings (default: the ones the rules were never tuned on)")
+    p.add_argument("--quiet", action="store_true", help="the summary only, without the postings scored differently")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_evaluate)
 
     p = sub.add_parser("dashboard", help="export the dashboard as a static HTML file")
     p.add_argument("--out")

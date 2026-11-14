@@ -151,6 +151,7 @@ reply, where good postings actually come from.
 | **Package** | (part of `jsa docs`) | One folder per application: documents, standard form answers, submission checklist |
 | **Track** | `jsa status` / `jsa due` | Application state machine with follow-up and ghosting horizons |
 | **Measure** | `jsa stats` / `jsa dashboard` | Funnel, response rate by track, source mix — as text or a self-contained HTML page |
+| **Check the scorer** | `jsa evaluate` | Precision and recall on labelled postings, or against your own apply and skip decisions |
 | **Work** | `jsa serve` | The dashboard as a local app: filter, read the full breakdown, change a status, keep a note — written straight to SQLite |
 
 All of it in one command: `jsa run` (add `--serve` to open the dashboard when it finishes).
@@ -190,7 +191,19 @@ Human Capital Consultant  →  big4_consulting   →  advisory framing, client l
 Some things are not a matter of degree. A role demanding native Polish from a
 candidate at A2 is rejected whatever else it scores, and the rejection says
 which sentence in the posting triggered it. Gates cover language level,
-country, seniority and unpaid or commission-only terms.
+country, seniority, years of experience asked far beyond the profile's, and
+unpaid or commission-only terms. Sixteen languages are recognised as
+requirements with no setup, and a language that is only named ("Dutch is a
+plus", "free Dutch lessons") is not one.
+
+### Measured, not asserted
+
+`jsa evaluate` scores 130 labelled postings and says how often the verdict
+matches what a person would decide. On the 30 held out from tuning, 20 are
+scored as labelled, 73% of passes are postings worth applying to, and no
+posting worth applying to is rejected; [docs/scoring.md](docs/scoring.md#how-often-it-is-right)
+lists what it still gets wrong. `jsa evaluate --mine` does the same against
+your own decisions.
 
 ### Nothing is invented
 

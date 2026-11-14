@@ -117,7 +117,12 @@ PROFILE_FILES = ("profile.json", "tracks.json", "watchlist.json", "answers.json"
 # to answer. Everyone gets it without configuring anything; a personal
 # watchlist only adds to it.
 CATALOGUE_PATH = (REPO_ROOT / "catalogue" / "companies.json" if CHECKOUT
-                  else PACKAGE_DIR / "catalogue.json")
+                  else PACKAGE_DIR / "catalogue" / "companies.json")
+
+# The labelled postings `jsa evaluate` scores (evaluation/postings.json). In an
+# installed package they sit inside it as jsa/evaluation/.
+BENCHMARK_PATH = (REPO_ROOT / "evaluation" / "postings.json" if CHECKOUT
+                  else PACKAGE_DIR / "evaluation" / "postings.json")
 
 
 @dataclass(slots=True)

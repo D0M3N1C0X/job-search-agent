@@ -1,0 +1,1822 @@
+[
+ {
+  "id": "adv-01",
+  "set": "development",
+  "title": "HR Advisor",
+  "company": "Northwind Logistics",
+  "location": "Amsterdam, Netherlands",
+  "description": "You will be the first point of contact for managers and employees across our Benelux sites. You handle employee relations cases from first conversation to outcome: absence, performance, grievance and disciplinary. You advise on HR policy and Dutch and EU employment law with the support of our legal counsel, keep case files in the HRIS and look after onboarding and offboarding. We ask for two to four years in an HR advisory or generalist role, fluent English and a careful, practical way of working. Hybrid, three days in the office.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "The core role, in a preferred city"
+  }
+ },
+ {
+  "id": "adv-02",
+  "set": "development",
+  "title": "Employee Relations Specialist",
+  "company": "Halden Retail Group",
+  "location": "Rotterdam, Netherlands",
+  "description": "Our People team is looking for an Employee Relations Specialist. You manage a caseload of disciplinary, grievance and long-term sickness cases, coach line managers, and make sure outcomes are consistent with policy and labour law. You work with payroll on leave and final pay, and improve our case management process and knowledge base. Three years of experience in employee relations. English is our working language.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Employee relations case work, preferred city"
+  }
+ },
+ {
+  "id": "adv-03",
+  "set": "development",
+  "title": "People Operations Specialist (EMEA)",
+  "company": "Corvid Software",
+  "location": "Remote, Europe",
+  "description": "You run the employee lifecycle for 600 colleagues in nine countries: onboarding, contract changes, leave, payroll input and offboarding. You answer employee queries through our ticketing tool within SLA, keep Workday accurate and document every process as an SOP. You will work with our employment law advisers in each country. Experience in a multi-country HR operations or shared services team, excellent written English. Fully remote within Europe.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "People operations across countries, remote in Europe"
+  }
+ },
+ {
+  "id": "adv-04",
+  "set": "development",
+  "title": "HR Generalist",
+  "company": "Meridian Biotech",
+  "location": "Leiden, Netherlands",
+  "description": "As HR Generalist you support 180 employees on everything from onboarding to exit: contracts, absence, performance cycles, employee relations and HR policy questions. You maintain the HRIS, prepare payroll changes and report on headcount and turnover. You have a bachelor's degree, at least two years in a generalist role and good knowledge of employment law. English required; Dutch is a plus.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Generalist role; Dutch is only a plus"
+  }
+ },
+ {
+  "id": "adv-05",
+  "set": "development",
+  "title": "HR Business Partner",
+  "company": "Kestrel Energy",
+  "location": "Utrecht, Netherlands",
+  "description": "You partner with the leaders of our Operations division (350 people) on workforce planning, organisational design, performance and employee relations. You translate HR strategy into practice, lead change management for site moves and work with the centres of expertise on reward and talent. Four to six years of HR experience, of which two as a business partner. Strong stakeholder management. Working language English.",
+  "expect": {
+   "decision": "maybe",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "The right field, but a business partner seat asking four to six years from a profile with three"
+  }
+ },
+ {
+  "id": "adv-06",
+  "set": "development",
+  "title": "People Advisor",
+  "company": "Lumen Hospitality",
+  "location": "Barcelona, Spain",
+  "description": "Buscamos un/a People Advisor para nuestro equipo de Personas en Barcelona. Gestionarás las consultas de empleados y managers, los casos de relaciones laborales, las bajas y permisos, y la incorporación de nuevas personas. Trabajarás con nóminas y con asesoría laboral. Requisitos: dos años de experiencia en recursos humanos, castellano nativo e inglés alto.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Written in Spanish for a native Spanish speaker; the vocabulary the tracks look for is English"
+  }
+ },
+ {
+  "id": "adv-07",
+  "set": "development",
+  "title": "HR Officer",
+  "company": "Brightwater Housing",
+  "location": "Dublin, Ireland",
+  "description": "Reporting to the Head of HR, the HR Officer provides a full generalist service: recruitment administration, onboarding, employee relations, absence management and policy advice. You will keep our HRIS up to date, support payroll each month and prepare reports for the leadership team. CIPD qualification or equivalent experience, and two years in a similar role.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Reports to a Head of HR; the role itself is officer level"
+  }
+ },
+ {
+  "id": "adv-08",
+  "set": "development",
+  "title": "People Operations",
+  "company": "Tallis Payments",
+  "location": "Lisbon, Portugal",
+  "description": "We are hiring for our People Operations team. You will report to the Director of People and own onboarding, employee queries, leave and benefits administration, and the accuracy of our HRIS. You improve processes, write them down and help with employment law questions in Portugal and Spain. One to three years in HR operations. Spanish is an advantage.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "No level in the title; the body names a Director only as the line manager"
+  }
+ },
+ {
+  "id": "pa-01",
+  "set": "development",
+  "title": "People Analytics Analyst",
+  "company": "Corvid Software",
+  "location": "Remote, Europe",
+  "description": "You turn workforce data into answers. You build dashboards in Tableau on headcount, attrition and engagement, write SQL against our Workday reporting layer and use Python for the analyses a dashboard cannot do: regression on attrition drivers, pay equity checks ahead of the EU pay transparency rules. You explain the results to HR business partners who are not statisticians. Two years in people analytics or a similar analyst role.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "The analytics role, remote in Europe"
+  }
+ },
+ {
+  "id": "pa-02",
+  "set": "development",
+  "title": "HR Reporting Analyst",
+  "company": "Halden Retail Group",
+  "location": "Rotterdam, Netherlands",
+  "description": "You own the monthly HR reporting pack: headcount, turnover, absence and recruitment, built in Power BI from our HRIS. You check data quality at source, automate what is still done in Excel and answer ad hoc data analysis requests from the People team. Strong SQL, good statistics and an eye for a clear chart. Experience with Workday reporting is welcome.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "Reporting on HR data in a preferred city"
+  }
+ },
+ {
+  "id": "pa-03",
+  "set": "development",
+  "title": "Workforce Analytics Specialist",
+  "company": "Aldermoor Bank",
+  "location": "Frankfurt, Germany",
+  "description": "The Workforce Analytics team supports strategic workforce planning for 12,000 employees. You develop data models and dashboards, run statistics on retention and internal mobility, and prepare the pay gap analysis for our reporting. You work in SQL and Python and present to senior HR stakeholders. Three years of experience in analytics, ideally in HR. Working language English; German is helpful but not required.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "Analytics in Germany; German only helpful"
+  }
+ },
+ {
+  "id": "pa-04",
+  "set": "development",
+  "title": "Compensation Analyst",
+  "company": "Meridian Biotech",
+  "location": "Basel, Switzerland",
+  "description": "You support the annual salary review and bonus cycle: market benchmarking, salary range maintenance and the analysis behind every proposal. You maintain our job architecture in Workday, build reporting on pay equity and prepare for pay transparency reporting. Advanced Excel, good data analysis skills, some SQL. Two to four years in compensation or HR analytics.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "Reward analysis: a 'good' title for the analytics track"
+  }
+ },
+ {
+  "id": "pa-05",
+  "set": "development",
+  "title": "Data Analyst, People Team",
+  "company": "Tallis Payments",
+  "location": "Lisbon, Portugal",
+  "description": "Join the People team as its first data analyst. You will build the reporting the team does not have yet: headcount, hiring funnel, engagement survey results and attrition. SQL and a BI tool such as Looker are a must; Python is a plus. You care about definitions and about what HR will do with a number.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "Generic title, but the team and the work are people analytics"
+  }
+ },
+ {
+  "id": "pa-06",
+  "set": "development",
+  "title": "HRIS Analyst",
+  "company": "Kestrel Energy",
+  "location": "Utrecht, Netherlands",
+  "description": "You administer and improve our Workday tenant: business processes, security roles, integrations with payroll and reporting. You test each release, train HR users and build the dashboards the People team asks for. Two years of HRIS experience and solid data analysis skills.",
+  "expect": {
+   "decision": "maybe",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "Systems administration more than analysis: worth reading, not an obvious fit"
+  }
+ },
+ {
+  "id": "co-01",
+  "set": "development",
+  "title": "HR Consultant",
+  "company": "Ashby & Rowe Advisory",
+  "location": "Amsterdam, Netherlands",
+  "description": "Our People & Organisation practice advises clients on HR transformation: HR operating model design, shared services, HR technology selection and change management. As a consultant you analyse the current state, build the business case and support implementation. You bring two to four years in HR or consulting, knowledge of employment law in at least one European country and structured, client-ready writing.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "big4_consulting",
+   "why": "Consulting in the candidate's field, preferred city"
+  }
+ },
+ {
+  "id": "co-02",
+  "set": "development",
+  "title": "Human Capital Consultant",
+  "company": "Verity Partners",
+  "location": "Madrid, Spain",
+  "description": "You will work on workforce transformation projects for clients in financial services and energy: organisational design, workforce planning, reward and the HR policy changes that follow. You prepare analyses and workshops, manage a workstream and present to client stakeholders. Two to five years of experience; Spanish and English at a professional level.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "big4_consulting",
+   "why": "Human capital consulting; needs Spanish, which the profile has"
+  }
+ },
+ {
+  "id": "co-03",
+  "set": "development",
+  "title": "People Consulting Analyst",
+  "company": "Dunmore LLP",
+  "location": "Dublin, Ireland",
+  "description": "Analysts in People Consulting support engagements on HR transformation, employee experience and change management. You gather and analyse workforce data, benchmark HR operating models and draft client deliverables. Graduate or up to two years of experience, an interest in HR strategy and good Excel and PowerPoint.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "big4_consulting",
+   "why": "Entry consulting role inside the target levels"
+  }
+ },
+ {
+  "id": "co-04",
+  "set": "development",
+  "title": "Management Consultant, Organisation",
+  "company": "Stratmoor",
+  "location": "Zurich, Switzerland",
+  "description": "We advise industrial clients on organisational design and operating models. Consultants lead analysis modules, run stakeholder interviews and shape recommendations on structure, roles and governance. Three to five years in strategy or organisation consulting. Fluent German is required for client work.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "big4_consulting",
+   "why": "Fluent German required; the profile has none"
+  }
+ },
+ {
+  "id": "mid-01",
+  "set": "development",
+  "title": "HR Specialist, Learning & Development",
+  "company": "Northwind Logistics",
+  "location": "Antwerp, Belgium",
+  "description": "You coordinate our training calendar, manage the learning platform and support managers with development plans. You organise onboarding days and track compliance training. Some exposure to general HR is useful. English and either Dutch or French.",
+  "expect": {
+   "decision": "maybe",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "HR, but learning and development rather than advisory; language is either/or and loosely stated"
+  }
+ },
+ {
+  "id": "mid-02",
+  "set": "development",
+  "title": "Senior HR Advisor",
+  "company": "Aldermoor Bank",
+  "location": "Amsterdam, Netherlands",
+  "description": "As Senior HR Advisor you handle the most complex employee relations cases, including reorganisations and works council consultation, and coach the advisory team. You have at least six years of HR advisory experience in the Netherlands and deep knowledge of Dutch employment law.",
+  "expect": {
+   "decision": "maybe",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Right work and city, but senior and six years against three"
+  }
+ },
+ {
+  "id": "mid-03",
+  "set": "development",
+  "title": "HR Coordinator",
+  "company": "Lumen Hospitality",
+  "location": "Vienna, Austria",
+  "description": "You support the HR team with contracts, personnel files, onboarding, time and attendance and payroll preparation. You answer employee questions and keep our HRIS current. First experience in HR administration. Good English; German at conversational level is expected for daily contact with staff.",
+  "expect": {
+   "decision": "maybe",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Administration, and conversational German expected: not a hard requirement, but a real gap"
+  }
+ },
+ {
+  "id": "mid-04",
+  "set": "development",
+  "title": "Talent Acquisition Partner",
+  "company": "Corvid Software",
+  "location": "Remote, Europe",
+  "description": "You run full-cycle recruitment for our commercial teams across Europe: intake, sourcing, interviews and offers. You advise hiring managers and improve our process and employer brand. Three years of in-house recruitment experience.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "In-house recruitment: an HR-adjacent job the profile does not position for"
+  }
+ },
+ {
+  "id": "mid-05",
+  "set": "development",
+  "title": "Specialist, People Team",
+  "company": "Tallis Payments",
+  "location": "Remote, Europe",
+  "description": "A broad role in a small People team. You look after onboarding, employee queries, HR policy updates and the occasional employee relations case, and you keep our people data clean for reporting. Two years in HR.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "The title says little; the body is the advisory role"
+  }
+ },
+ {
+  "id": "mid-06",
+  "set": "development",
+  "title": "HR Advisor (12-month maternity cover)",
+  "company": "Brightwater Housing",
+  "location": "Cork, Ireland",
+  "description": "Fixed-term cover for our HR Advisor. Employee relations casework, policy advice to managers, absence management and support for the annual pay review. Two years of generalist or advisory experience.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Contract type in the title should not change the match"
+  }
+ },
+ {
+  "id": "mid-07",
+  "set": "development",
+  "title": "Payroll Specialist",
+  "company": "Halden Retail Group",
+  "location": "Rotterdam, Netherlands",
+  "description": "You process monthly payroll for 2,000 employees in the Netherlands with our provider, check inputs, handle leave and sickness corrections and answer employee queries about payslips. Three years of Dutch payroll experience and a payroll diploma (PDL) are required.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Payroll processing with a Dutch payroll diploma: a different profession"
+  }
+ },
+ {
+  "id": "mid-08",
+  "set": "development",
+  "title": "People Partner",
+  "company": "Verity Partners",
+  "location": "Milan, Italy",
+  "description": "You are the People Partner for our Italian offices. You advise managers on employee relations, performance and organisation, apply the collective agreement and work with payroll and legal. Fluent Italian is required, with good English.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "Fluent Italian required; not among the profile's languages"
+  }
+ },
+ {
+  "id": "no-01",
+  "set": "development",
+  "title": "Recruitment Consultant",
+  "company": "Pinnacle Talent Solutions",
+  "location": "Amsterdam, Netherlands",
+  "description": "Join our recruitment agency as a 360 recruiter. You win new clients through cold calling, place candidates in IT roles and earn uncapped commission on top of a basic salary. No experience needed, full training given.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Agency sales, not HR"
+  }
+ },
+ {
+  "id": "no-02",
+  "set": "development",
+  "title": "Software Engineer, HR Tech",
+  "company": "Corvid Software",
+  "location": "Remote, Europe",
+  "description": "You build the services behind our HR platform in Go and TypeScript: payroll integrations, an employee data model and reporting APIs. Five years of backend experience.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Engineering for an HR product"
+  }
+ },
+ {
+  "id": "no-03",
+  "set": "development",
+  "title": "Marketing Data Analyst",
+  "company": "Lumen Hospitality",
+  "location": "Barcelona, Spain",
+  "description": "You analyse campaign performance and web analytics, build dashboards in Looker and run A/B tests with the growth team. SQL and Python required. Marketing analytics experience preferred.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Analytics, but marketing"
+  }
+ },
+ {
+  "id": "no-04",
+  "set": "development",
+  "title": "Financial Analyst",
+  "company": "Kestrel Energy",
+  "location": "Utrecht, Netherlands",
+  "description": "You support budgeting and forecasting, prepare monthly variance reporting in Power BI and model capital projects. Three years in FP&A. Strong Excel and SQL.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Finance"
+  }
+ },
+ {
+  "id": "no-05",
+  "set": "development",
+  "title": "Sales Development Representative",
+  "company": "Tallis Payments",
+  "location": "Dublin, Ireland",
+  "description": "You generate pipeline through outbound sales: calls, emails and social. You qualify leads for account executives and hit monthly targets. Commission plan on top of base.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Sales"
+  }
+ },
+ {
+  "id": "no-06",
+  "set": "development",
+  "title": "Registered Nurse, Occupational Health",
+  "company": "Northwind Logistics",
+  "location": "Rotterdam, Netherlands",
+  "description": "You run the occupational health service at our distribution centre: health surveillance, absence case conferences with HR and first aid. Nursing registration required.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Occupational health nursing that mentions HR"
+  }
+ },
+ {
+  "id": "no-07",
+  "set": "development",
+  "title": "Customer Support Specialist (Spanish)",
+  "company": "Corvid Software",
+  "location": "Lisbon, Portugal",
+  "description": "You help our Spanish-speaking customers by chat and email, document recurring issues in the knowledge base and work to SLA. Native Spanish and good English.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Support work that shares vocabulary (SLA, knowledge base) with HR operations"
+  }
+ },
+ {
+  "id": "no-08",
+  "set": "development",
+  "title": "Warehouse Team Leader",
+  "company": "Northwind Logistics",
+  "location": "Venlo, Netherlands",
+  "description": "You lead a shift of 25 warehouse operatives, plan the workforce for each day, manage absence and performance conversations and report to the operations manager.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Line management that mentions workforce and absence"
+  }
+ },
+ {
+  "id": "lang-01",
+  "set": "development",
+  "title": "HR Advisor",
+  "company": "Gemeente Services BV",
+  "location": "The Hague, Netherlands",
+  "description": "You advise managers on absence, performance and employment conditions under the collective agreement and handle employee relations cases. Fluent Dutch and good English are required, as all case files are in Dutch.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "Fluent Dutch required, in English"
+  }
+ },
+ {
+  "id": "lang-02",
+  "set": "development",
+  "title": "HR Adviseur",
+  "company": "Zorggroep Rijnland",
+  "location": "Leiden, Netherlands",
+  "description": "Als HR adviseur ondersteun je leidinggevenden bij verzuim, functioneren en arbeidsrecht. Je behandelt casuistiek en werkt samen met de salarisadministratie. Je beheerst de Nederlandse taal vloeiend in woord en geschrift en hebt minimaal twee jaar ervaring.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "Fluent Dutch required, asked for in Dutch"
+  }
+ },
+ {
+  "id": "lang-03",
+  "set": "development",
+  "title": "People Operations Specialist",
+  "company": "Kestrel Energy",
+  "location": "Utrecht, Netherlands",
+  "description": "You run onboarding, leave and employee queries for our Dutch workforce and keep the HRIS accurate. Dutch is a must for this role because you will speak with field staff every day. English is our office language.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "'Dutch is a must'"
+  }
+ },
+ {
+  "id": "lang-04",
+  "set": "development",
+  "title": "HR Generalist",
+  "company": "Baumann Maschinenbau",
+  "location": "Stuttgart, Germany",
+  "description": "You support our plant with the full range of HR work: contracts, employee relations, works council matters and payroll preparation. Business fluent German is essential; English is used with the group.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "German essential; the profile has no rule for German, only for Dutch"
+  }
+ },
+ {
+  "id": "lang-05",
+  "set": "development",
+  "title": "HR Business Partner (m/w/d)",
+  "company": "Baumann Maschinenbau",
+  "location": "Munich, Germany",
+  "description": "Sie beraten Führungskräfte in allen personalrelevanten Fragen, begleiten Veränderungsprozesse und arbeiten eng mit dem Betriebsrat zusammen. Sie bringen mehrjährige Erfahrung in der Personalarbeit und fließende Deutschkenntnisse mit; gutes Englisch runden Ihr Profil ab.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "Posting written in German asking for fluent German"
+  }
+ },
+ {
+  "id": "lang-06",
+  "set": "development",
+  "title": "Chargé(e) RH",
+  "company": "Maison Valière",
+  "location": "Lyon, France",
+  "description": "Vous gérez l'administration du personnel, l'intégration, les absences et les relations sociales au quotidien. Vous conseillez les managers en droit du travail. Français courant indispensable, anglais professionnel.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "Fluent French indispensable, asked for in French"
+  }
+ },
+ {
+  "id": "lang-07",
+  "set": "development",
+  "title": "Specjalista ds. HR",
+  "company": "Wisla Tech",
+  "location": "Kraków, Poland",
+  "description": "Szukamy specjalisty ds. HR do obsługi kadrowej, onboardingu i spraw pracowniczych. Wymagana biegła znajomość języka polskiego oraz dobra znajomość języka angielskiego. Minimum dwa lata doświadczenia.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "Fluent Polish required, asked for in Polish"
+  }
+ },
+ {
+  "id": "lang-08",
+  "set": "development",
+  "title": "People Analytics Analyst",
+  "company": "Nordhaven Insurance",
+  "location": "Stockholm, Sweden",
+  "description": "You build workforce reporting in Power BI, analyse attrition and engagement survey data in Python and SQL and support workforce planning. Fluency in Swedish and English is required.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "people_analytics",
+   "why": "'Fluency in Swedish and English is required'"
+  }
+ },
+ {
+  "id": "trap-01",
+  "set": "development",
+  "title": "HR Advisor",
+  "company": "Corvid Software",
+  "location": "Amsterdam, Netherlands",
+  "description": "You handle employee relations cases, advise managers on HR policy and employment law and own onboarding for the Amsterdam hub. Our working language is English and most of the team are expats; we offer free Dutch lessons to everyone who joins.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Dutch lessons are a benefit, not a requirement"
+  }
+ },
+ {
+  "id": "trap-02",
+  "set": "development",
+  "title": "HR Operations Specialist",
+  "company": "Aldermoor Bank",
+  "location": "Amsterdam, Netherlands",
+  "description": "You process contract changes, leave and offboarding for our Dutch and German entities and answer employee queries through the HR service desk. Excellent communication skills. You work with payroll and the HRIS team. English at C1; Dutch or German is a nice to have.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "'Our Dutch and German entities' and 'a nice to have'"
+  }
+ },
+ {
+  "id": "trap-03",
+  "set": "development",
+  "title": "HR Advisor, Iberia",
+  "company": "Halden Retail Group",
+  "location": "Madrid, Spain",
+  "description": "You advise managers in Spain and Portugal on employee relations, absence and HR policy and work with our labour law firm. Native Spanish is required and English at a good level; Portuguese is a plus.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "A language requirement the profile meets (native Spanish)"
+  }
+ },
+ {
+  "id": "trap-04",
+  "set": "development",
+  "title": "People Analytics Analyst",
+  "company": "Meridian Biotech",
+  "location": "Leiden, Netherlands",
+  "description": "You build dashboards on headcount and attrition, run pay equity analyses and support engagement survey reporting. SQL, Python or R and a BI tool. Fluent English is required; knowledge of Dutch is not needed.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "'Knowledge of Dutch is not needed'"
+  }
+ },
+ {
+  "id": "trap-05",
+  "set": "development",
+  "title": "HR Advisor",
+  "company": "Brightwater Housing",
+  "location": "Brussels, Belgium",
+  "description": "You support managers with employee relations, absence and performance, and keep policies in line with Belgian employment law. You are fluent in English and have a good command of either Dutch or French.",
+  "expect": {
+   "decision": "maybe",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Either Dutch or French at a good level: the profile's Dutch is B1, so this is a judgement call"
+  }
+ },
+ {
+  "id": "loc-01",
+  "set": "development",
+  "title": "HR Advisor",
+  "company": "Northwind Logistics",
+  "location": "New York, NY",
+  "description": "You advise managers across our US East region on employee relations, leave and HR policy, and partner with payroll and legal. Three years of HR generalist experience.",
+  "expect": {
+   "decision": "skip",
+   "gate": "location",
+   "track": "hr_advisory",
+   "why": "United States"
+  }
+ },
+ {
+  "id": "loc-02",
+  "set": "development",
+  "title": "People Analytics Analyst",
+  "company": "Corvid Software",
+  "location": "Bangalore, India",
+  "description": "You build people analytics dashboards and attrition models in SQL and Python for our global People team. Two years of experience.",
+  "expect": {
+   "decision": "skip",
+   "gate": "location",
+   "track": "people_analytics",
+   "why": "India"
+  }
+ },
+ {
+  "id": "loc-03",
+  "set": "development",
+  "title": "HR Generalist",
+  "company": "Kestrel Energy",
+  "location": "Wilmington, DE",
+  "description": "Generalist support for our Delaware site: onboarding, employee relations, benefits and HRIS. Two years of HR experience.",
+  "expect": {
+   "decision": "skip",
+   "gate": "location",
+   "track": "hr_advisory",
+   "why": "Delaware, not Germany"
+  }
+ },
+ {
+  "id": "loc-04",
+  "set": "development",
+  "title": "Employee Relations Specialist",
+  "company": "Halden Retail Group",
+  "location": "Birmingham, AL",
+  "description": "You manage employee relations cases for our southern stores, advise managers on policy and partner with legal. Three years of experience.",
+  "expect": {
+   "decision": "skip",
+   "gate": "location",
+   "track": "hr_advisory",
+   "why": "Alabama, not England"
+  }
+ },
+ {
+  "id": "loc-05",
+  "set": "development",
+  "title": "People Operations Specialist",
+  "company": "Tallis Payments",
+  "location": "Remote - United States",
+  "description": "Fully remote within the United States. You own onboarding, leave administration and employee queries and keep the HRIS accurate. Two years in HR operations.",
+  "expect": {
+   "decision": "skip",
+   "gate": "location",
+   "track": "hr_advisory",
+   "why": "Remote, but only in the United States"
+  }
+ },
+ {
+  "id": "loc-06",
+  "set": "development",
+  "title": "HR Advisor",
+  "company": "Lumen Hospitality",
+  "location": "Remote (EMEA)",
+  "description": "You advise hotel managers across EMEA on employee relations, absence and HR policy, working with local employment law advisers. Two to four years of HR advisory experience and fluent English.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Remote across EMEA"
+  }
+ },
+ {
+  "id": "loc-07",
+  "set": "development",
+  "title": "People Analytics Analyst",
+  "company": "Aldermoor Bank",
+  "location": "München, Deutschland",
+  "description": "You develop workforce reporting and run statistics on attrition and pay equity in SQL and Python. The team works in English. Two years of analytics experience.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "Location written in German with an umlaut"
+  }
+ },
+ {
+  "id": "loc-08",
+  "set": "development",
+  "title": "HR Operations Specialist",
+  "company": "Corvid Software",
+  "location": "",
+  "description": "You handle onboarding, leave, employee queries and HRIS data for our European offices and document each process. Two years in HR operations or shared services.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "No location given: benefit of the doubt"
+  }
+ },
+ {
+  "id": "loc-09",
+  "set": "development",
+  "title": "HR Advisor",
+  "company": "Northwind Logistics",
+  "location": "Dubai, United Arab Emirates",
+  "description": "You advise managers on employee relations and HR policy across our Gulf operations. Three years of experience.",
+  "expect": {
+   "decision": "skip",
+   "gate": "location",
+   "track": "hr_advisory",
+   "why": "Outside Europe"
+  }
+ },
+ {
+  "id": "sen-01",
+  "set": "development",
+  "title": "Head of People",
+  "company": "Corvid Software",
+  "location": "Amsterdam, Netherlands",
+  "description": "You lead the People function of 14 across HR operations, talent and reward, sit on the leadership team and set the people strategy. Ten years of HR experience, five in leadership.",
+  "expect": {
+   "decision": "skip",
+   "gate": "seniority",
+   "track": "hr_advisory",
+   "why": "Head of function"
+  }
+ },
+ {
+  "id": "sen-02",
+  "set": "development",
+  "title": "HR Director, Benelux",
+  "company": "Halden Retail Group",
+  "location": "Rotterdam, Netherlands",
+  "description": "You are responsible for HR in the Benelux: employee relations, works council, reward and organisation development, with a team of 20.",
+  "expect": {
+   "decision": "skip",
+   "gate": "seniority",
+   "track": "hr_advisory",
+   "why": "Director"
+  }
+ },
+ {
+  "id": "sen-03",
+  "set": "development",
+  "title": "VP People & Culture",
+  "company": "Tallis Payments",
+  "location": "Remote, Europe",
+  "description": "You own the people strategy for a 900-person company and report to the CEO.",
+  "expect": {
+   "decision": "skip",
+   "gate": "seniority",
+   "track": "hr_advisory",
+   "why": "Vice president"
+  }
+ },
+ {
+  "id": "sen-04",
+  "set": "development",
+  "title": "Senior HR Business Partner",
+  "company": "Aldermoor Bank",
+  "location": "Amsterdam, Netherlands",
+  "description": "You partner with the executive committee of our Markets division on organisation, succession and reward, lead reorganisations and coach senior leaders. At least eight years of HR business partnering experience in financial services.",
+  "expect": {
+   "decision": "skip",
+   "gate": "experience",
+   "track": "hr_advisory",
+   "why": "Eight years asked of a profile with three: not a serious application"
+  }
+ },
+ {
+  "id": "sen-05",
+  "set": "development",
+  "title": "HR Intern",
+  "company": "Meridian Biotech",
+  "location": "Leiden, Netherlands",
+  "description": "A six-month paid internship in our HR team for students. You help with onboarding, HR administration and reporting and learn how employee relations work in practice. You must be enrolled at a university for the duration.",
+  "expect": {
+   "decision": "skip",
+   "gate": "seniority",
+   "track": "hr_advisory",
+   "why": "A paid internship for enrolled students, for someone with three years of experience"
+  }
+ },
+ {
+  "id": "sen-06",
+  "set": "development",
+  "title": "People Analytics Lead",
+  "company": "Nordhaven Insurance",
+  "location": "Copenhagen, Denmark",
+  "description": "You lead a team of four analysts, set the people analytics roadmap and present to the executive team. Seven years of analytics experience, three leading a team.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "A team lead asking seven years"
+  }
+ },
+ {
+  "id": "sen-07",
+  "set": "development",
+  "title": "Junior HR Advisor",
+  "company": "Brightwater Housing",
+  "location": "Dublin, Ireland",
+  "description": "A first advisory role. You support employee relations cases, answer policy questions from managers and help with onboarding and absence management, with coaching from two senior advisors.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Junior is inside the target levels; 'senior advisors' are colleagues"
+  }
+ },
+ {
+  "id": "terms-01",
+  "set": "development",
+  "title": "HR Assistant (unpaid internship)",
+  "company": "Small Steps Foundation",
+  "location": "Amsterdam, Netherlands",
+  "description": "An unpaid internship supporting our HR volunteer coordinator with onboarding and records.",
+  "expect": {
+   "decision": "skip",
+   "gate": "keyword",
+   "track": "hr_advisory",
+   "why": "Unpaid"
+  }
+ },
+ {
+  "id": "terms-02",
+  "set": "development",
+  "title": "HR Consultant (commission only)",
+  "company": "PeopleFirst Franchise",
+  "location": "Remote, Europe",
+  "description": "Sell our HR outsourcing packages to small businesses. Commission only, unlimited earning potential.",
+  "expect": {
+   "decision": "skip",
+   "gate": "keyword",
+   "track": "big4_consulting",
+   "why": "Commission only"
+  }
+ },
+ {
+  "id": "terms-03",
+  "set": "development",
+  "title": "HR Advisor",
+  "company": "Kestrel Energy",
+  "location": "Utrecht, Netherlands",
+  "description": "You handle employee relations cases, advise on HR policy and employment law and support onboarding. Benefits: 27 days of leave, pension, and two paid volunteering days a year for a charity of your choice.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Volunteering days are a benefit"
+  }
+ },
+ {
+  "id": "terms-04",
+  "set": "development",
+  "title": "People Operations Volunteer",
+  "company": "Open Shelter Network",
+  "location": "Remote, Europe",
+  "description": "A volunteer position for four hours a week: help us onboard new volunteers and keep our people records. This role is on a voluntary basis and is not paid.",
+  "expect": {
+   "decision": "skip",
+   "gate": "terms",
+   "track": "hr_advisory",
+   "why": "Voluntary and unpaid"
+  }
+ },
+ {
+  "id": "yrs-01",
+  "set": "development",
+  "title": "HR Advisor",
+  "company": "Halden Retail Group",
+  "location": "Rotterdam, Netherlands",
+  "description": "Halden has been trading for 25 years and employs 4,000 people. You handle employee relations cases, advise managers on HR policy and employment law and support onboarding. Two years of HR advisory experience.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "'25 years' is the company's age"
+  }
+ },
+ {
+  "id": "yrs-02",
+  "set": "development",
+  "title": "People Analytics Analyst",
+  "company": "Tallis Payments",
+  "location": "Remote, Europe",
+  "description": "You build dashboards in Looker and analyse attrition, engagement and pay equity in SQL and Python. In the past 3 years our headcount has tripled and reporting has not kept up. One to three years of analyst experience.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "'3 years' describes growth"
+  }
+ },
+ {
+  "id": "yrs-03",
+  "set": "development",
+  "title": "HR Advisor",
+  "company": "Aldermoor Bank",
+  "location": "Amsterdam, Netherlands",
+  "description": "You handle complex employee relations cases, advise managers on HR policy and employment law. Minimum 10 years of experience in HR advisory within banking.",
+  "expect": {
+   "decision": "skip",
+   "gate": "experience",
+   "track": "hr_advisory",
+   "why": "Ten years asked of a profile with three"
+  }
+ },
+ {
+  "id": "h-01",
+  "set": "development",
+  "title": "HR Shared Services Advisor",
+  "company": "Orlin Foods",
+  "location": "Eindhoven, Netherlands",
+  "description": "You are part of the HR service centre for 3,000 colleagues in the Benelux. You answer questions from employees and managers about leave, contracts and policies, process changes in SAP SuccessFactors and escalate complex employee relations matters to the HR business partners. One to two years of HR administration experience. English fluent; Dutch would be an asset.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "'Dutch would be an asset'"
+  }
+ },
+ {
+  "id": "h-02",
+  "set": "development",
+  "title": "People Experience Specialist",
+  "company": "Fennel Labs",
+  "location": "Berlin, Germany",
+  "description": "You design and run the moments that matter: onboarding, probation, parental leave and offboarding. You own our people policies, answer employee questions and work with managers on performance conversations. English is the company language. Two years in a people operations or HR generalist role.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "People operations under another title, English-speaking company in Berlin"
+  }
+ },
+ {
+  "id": "h-03",
+  "set": "development",
+  "title": "Workforce Planning Analyst",
+  "company": "Orlin Foods",
+  "location": "Eindhoven, Netherlands",
+  "description": "You maintain the headcount forecast with finance, analyse turnover and absence trends and build dashboards in Power BI for the HR leadership. You are comfortable with SQL and Excel modelling. Experience with workforce data is an advantage.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "Workforce planning: a 'good' title for the analytics track"
+  }
+ },
+ {
+  "id": "h-04",
+  "set": "development",
+  "title": "People Insights Analyst",
+  "company": "Fennel Labs",
+  "location": "Remote (Europe)",
+  "description": "You run our engagement survey, analyse the results with Python and present the story to leadership. You also own the quarterly attrition and diversity reporting and help reward with pay gap analysis. Two years of experience in people analytics, research or a comparable analyst job.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "People insights, remote in Europe"
+  }
+ },
+ {
+  "id": "h-05",
+  "set": "development",
+  "title": "Organisational Development Consultant",
+  "company": "Calder Advisory",
+  "location": "Brussels, Belgium",
+  "description": "You support clients through reorganisations: organisational design, change management and the HR policy work that follows. You facilitate workshops, analyse workforce data and write recommendations. Three years in consulting or an internal change role. English and French are both used with clients; you are fully professional in both.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "big4_consulting",
+   "why": "Professional French needed, worded without 'fluent' or 'required'"
+  }
+ },
+ {
+  "id": "h-06",
+  "set": "development",
+  "title": "HR Policy Advisor",
+  "company": "Tessel Mobility",
+  "location": "The Hague, Netherlands",
+  "description": "You keep our HR policies current with Dutch and EU employment law, advise HR advisors and managers on their application and prepare works council submissions. You hold a law or HR degree, have two years of policy or employment law experience and you speak and write Dutch fluently.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "'You speak and write Dutch fluently': the adverb comes after the language"
+  }
+ },
+ {
+  "id": "h-07",
+  "set": "development",
+  "title": "Employee Relations Advisor",
+  "company": "Tessel Mobility",
+  "location": "Rotterdam, Netherlands",
+  "description": "You advise managers on absence, performance and conduct, lead investigations and prepare case files for hearings. Languages: English (fluent) and Dutch (fluent). Three years in employee relations.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "Languages given as a list: 'Dutch (fluent)'"
+  }
+ },
+ {
+  "id": "h-08",
+  "set": "development",
+  "title": "HR Advisor",
+  "company": "Orlin Foods",
+  "location": "Hamburg, Germany",
+  "description": "You are the contact for our German sites on all HR matters: contracts, works council, employee relations and payroll input. Proficiency in German (C1) is required; English is used with headquarters.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "'Proficiency in German (C1) is required'"
+  }
+ },
+ {
+  "id": "h-09",
+  "set": "development",
+  "title": "HR Generalist",
+  "company": "Calder Advisory",
+  "location": "Luxembourg",
+  "description": "A generalist role for our Luxembourg office of 120: onboarding, employee relations, payroll liaison and policy. French mother tongue or equivalent, with good English. German is an asset.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "'French mother tongue': the level comes after the language"
+  }
+ },
+ {
+  "id": "h-10",
+  "set": "development",
+  "title": "Swedish-speaking HR Advisor",
+  "company": "Nordhaven Insurance",
+  "location": "Malmö, Sweden",
+  "description": "You advise managers in our Swedish business on employee relations and employment law and handle union consultations.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "The language is in the title"
+  }
+ },
+ {
+  "id": "h-11",
+  "set": "development",
+  "title": "People Operations Specialist",
+  "company": "Fennel Labs",
+  "location": "Lisbon, Portugal",
+  "description": "You run onboarding, benefits and employee queries for our Lisbon hub and help polish our handbook and our processes as we grow. You will work with our Portuguese payroll provider. English fluent. Two years in HR operations.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "'polish our handbook' and 'our Portuguese payroll provider' ask for no language"
+  }
+ },
+ {
+  "id": "h-12",
+  "set": "development",
+  "title": "HR Advisor, France & Benelux",
+  "company": "Halden Retail Group",
+  "location": "Amsterdam, Netherlands",
+  "description": "Based in Amsterdam, you advise store managers on employee relations and absence and work with our French and Belgian labour lawyers. Experience with the French market is useful. Knowledge of Dutch is an advantage; the team works in English.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Languages named only as useful"
+  }
+ },
+ {
+  "id": "h-13",
+  "set": "development",
+  "title": "HR Operations Specialist",
+  "company": "Orlin Foods",
+  "location": "Warsaw, Poland",
+  "description": "You handle employee lifecycle transactions for our European entities in Workday, answer employee queries and prepare payroll input. English at C1 is required. Polish is not required, although you will hear a lot of it in the office.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "'Polish is not required'"
+  }
+ },
+ {
+  "id": "h-14",
+  "set": "development",
+  "title": "HR Advisor",
+  "company": "Calder Advisory",
+  "location": "Toronto, ON",
+  "description": "You advise managers on employee relations, leave and HR policy across our Canadian offices. Three years of HR generalist experience.",
+  "expect": {
+   "decision": "skip",
+   "gate": "location",
+   "track": "hr_advisory",
+   "why": "Canada"
+  }
+ },
+ {
+  "id": "h-15",
+  "set": "development",
+  "title": "People Analytics Analyst",
+  "company": "Fennel Labs",
+  "location": "Sydney, Australia",
+  "description": "You build people dashboards and attrition models in SQL and Python. Two years of experience.",
+  "expect": {
+   "decision": "skip",
+   "gate": "location",
+   "track": "people_analytics",
+   "why": "Australia"
+  }
+ },
+ {
+  "id": "h-16",
+  "set": "development",
+  "title": "HR Generalist",
+  "company": "Tessel Mobility",
+  "location": "Atlanta, GA",
+  "description": "Generalist support for our US headquarters: onboarding, employee relations and benefits. Two years of experience.",
+  "expect": {
+   "decision": "skip",
+   "gate": "location",
+   "track": "hr_advisory",
+   "why": "Georgia the US state, not the country"
+  }
+ },
+ {
+  "id": "h-17",
+  "set": "development",
+  "title": "HR Advisor",
+  "company": "Halden Retail Group",
+  "location": "London, UK",
+  "description": "You advise store and area managers on employee relations, absence and performance, and support TUPE and restructuring projects. CIPD Level 5 or equivalent experience, two years in an advisory role.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "United Kingdom, a target country"
+  }
+ },
+ {
+  "id": "h-18",
+  "set": "development",
+  "title": "Chief People Officer",
+  "company": "Fennel Labs",
+  "location": "Berlin, Germany",
+  "description": "You lead People for a 700-person scale-up and sit on the executive team.",
+  "expect": {
+   "decision": "skip",
+   "gate": "seniority",
+   "track": "hr_advisory",
+   "why": "Executive"
+  }
+ },
+ {
+  "id": "h-19",
+  "set": "development",
+  "title": "Associate Director, HR Consulting",
+  "company": "Calder Advisory",
+  "location": "Dublin, Ireland",
+  "description": "You lead HR transformation engagements, manage a team of consultants and grow client accounts. Ten years of consulting experience.",
+  "expect": {
+   "decision": "skip",
+   "gate": "seniority",
+   "track": "big4_consulting",
+   "why": "Director level"
+  }
+ },
+ {
+  "id": "h-20",
+  "set": "development",
+  "title": "HR Manager",
+  "company": "Orlin Foods",
+  "location": "Ghent, Belgium",
+  "description": "You manage the HR team of three at our Ghent plant and are responsible for social relations with the unions, recruitment, payroll and HR policy. You have a minimum of 7 years' experience in HR, including people management. Fluent Dutch and French.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "Manager, seven years, fluent Dutch and French"
+  }
+ },
+ {
+  "id": "h-21",
+  "set": "development",
+  "title": "Working Student HR (m/f/d)",
+  "company": "Fennel Labs",
+  "location": "Berlin, Germany",
+  "description": "You support the People team 16 to 20 hours a week alongside your studies: onboarding preparation, personnel files and reporting. You are enrolled at a German university.",
+  "expect": {
+   "decision": "skip",
+   "gate": "seniority",
+   "track": "hr_advisory",
+   "why": "A student job"
+  }
+ },
+ {
+  "id": "h-22",
+  "set": "development",
+  "title": "Graduate HR Programme",
+  "company": "Halden Retail Group",
+  "location": "Rotterdam, Netherlands",
+  "description": "A two-year rotation through HR operations, employee relations and reward for recent graduates. You have a master's degree completed within the last two years and no more than one year of work experience.",
+  "expect": {
+   "decision": "maybe",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "A graduate scheme that caps experience at one year: the profile has three"
+  }
+ },
+ {
+  "id": "h-23",
+  "set": "development",
+  "title": "Senior People Analytics Analyst",
+  "company": "Aldermoor Bank",
+  "location": "Amsterdam, Netherlands",
+  "description": "You lead complex analyses on retention and pay equity, mentor two analysts and own our data model. 5 years' experience in analytics, with strong Python and SQL.",
+  "expect": {
+   "decision": "maybe",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "Senior, five years against three: a stretch worth reading"
+  }
+ },
+ {
+  "id": "h-24",
+  "set": "development",
+  "title": "HR Business Partner",
+  "company": "Tessel Mobility",
+  "location": "Utrecht, Netherlands",
+  "description": "You partner with the technology organisation on organisation design, performance and employee relations. You bring a decade of HR experience, half of it in business partnering.",
+  "expect": {
+   "decision": "skip",
+   "gate": "experience",
+   "track": "hr_advisory",
+   "why": "'A decade of HR experience'"
+  }
+ },
+ {
+  "id": "h-25",
+  "set": "development",
+  "title": "HR Assistant",
+  "company": "Open Shelter Network",
+  "location": "Amsterdam, Netherlands",
+  "description": "This is a voluntary, unpaid role of one day a week supporting our HR coordinator with records and onboarding.",
+  "expect": {
+   "decision": "skip",
+   "gate": "terms",
+   "track": "hr_advisory",
+   "why": "'A voluntary, unpaid role'"
+  }
+ },
+ {
+  "id": "h-26",
+  "set": "development",
+  "title": "HR Software Sales Executive",
+  "company": "Corvid Software",
+  "location": "Amsterdam, Netherlands",
+  "description": "You sell our HR platform to mid-market companies: prospecting, demos and closing. Quota-carrying role with uncapped commission. Experience selling HR technology or payroll software.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Selling HR software"
+  }
+ },
+ {
+  "id": "h-27",
+  "set": "development",
+  "title": "Recruiter",
+  "company": "Tallis Payments",
+  "location": "Dublin, Ireland",
+  "description": "You hire for our operations and compliance teams: sourcing, interviewing, offers. Two years of recruiting experience in-house or agency.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Recruiting"
+  }
+ },
+ {
+  "id": "h-28",
+  "set": "development",
+  "title": "Office Manager with HR responsibilities",
+  "company": "Calder Advisory",
+  "location": "Amsterdam, Netherlands",
+  "description": "You run the office: suppliers, events, travel. About a third of the role is HR administration: contracts, onboarding, absence registration and first-line employee questions, with our external HR adviser.",
+  "expect": {
+   "decision": "maybe",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "A third HR: worth a look, not the role"
+  }
+ },
+ {
+  "id": "h-29",
+  "set": "development",
+  "title": "Data Engineer, People Data",
+  "company": "Aldermoor Bank",
+  "location": "Amsterdam, Netherlands",
+  "description": "You build and run the pipelines that feed our people analytics platform: Workday extracts, dbt models and Airflow. Four years of data engineering experience.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Engineering behind people analytics"
+  }
+ },
+ {
+  "id": "h-30",
+  "set": "development",
+  "title": "HR Advisor",
+  "company": "Kestrel Energy",
+  "location": "Utrecht, Netherlands",
+  "description": "You handle employee relations cases, advise managers on HR policy and employment law and coordinate onboarding. We ask for 3-5 years of HR experience. Dutch: native or near-native. English: good.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "'Dutch: native or near-native'"
+  }
+ },
+ {
+  "id": "f-01",
+  "set": "held-out",
+  "title": "HR Advisor",
+  "company": "Marlow Aviation Services",
+  "location": "Amsterdam Schiphol, Netherlands",
+  "description": "You are the HR contact for 400 ground staff: sickness absence, performance, conduct and questions about the collective agreement. You run investigations, sit in on hearings and keep the case notes. You work with the planners on rosters and with payroll on corrections. Two years in an operational HR role. We work in English on the ramp and in the office.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Operational HR advisory near a preferred city"
+  }
+ },
+ {
+  "id": "f-02",
+  "set": "held-out",
+  "title": "People Operations Associate",
+  "company": "Quill Robotics",
+  "location": "Remote in the EU",
+  "description": "First hire in People Operations. You will set up onboarding, write our handbook, administer benefits and contracts in four countries with our EOR provider and be the person everyone asks. Some HR experience and a lot of initiative.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Associate level people operations, remote in the EU"
+  }
+ },
+ {
+  "id": "f-03",
+  "set": "held-out",
+  "title": "HR Data Analyst",
+  "company": "Sable Retail",
+  "location": "Antwerp, Belgium",
+  "description": "You produce the weekly and monthly HR figures for 9,000 store employees: headcount, absence, turnover and labour cost. You build the data models behind our dashboards in Power BI and investigate anything that looks off. SQL is required; Python is useful. The HR analytics team works in English.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "HR data analysis, English-speaking team in Belgium"
+  }
+ },
+ {
+  "id": "f-04",
+  "set": "held-out",
+  "title": "Reward Analyst",
+  "company": "Sable Retail",
+  "location": "Antwerp, Belgium",
+  "description": "You run salary benchmarking, maintain pay ranges and job grades, and prepare the analysis for the pay transparency directive: gender pay gap by category of workers and the joint pay assessment. Strong Excel and data analysis; SQL a plus. Two years in reward or HR analytics.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "Reward analysis with pay transparency reporting"
+  }
+ },
+ {
+  "id": "f-05",
+  "set": "held-out",
+  "title": "Junior Consultant, People Advisory",
+  "company": "Greywell Consulting",
+  "location": "Vienna, Austria",
+  "description": "You join client teams on HR transformation and workforce projects: process analysis, organisational design support, change communication and project management office tasks. German and English, both at business level, are a must for our Austrian clients.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "big4_consulting",
+   "why": "German at business level is a must, in a chain with English"
+  }
+ },
+ {
+  "id": "f-06",
+  "set": "held-out",
+  "title": "HR Consultant",
+  "company": "Greywell Consulting",
+  "location": "Remote, Europe",
+  "description": "We advise scale-ups without an HR team: handbooks, HR policy, employment law questions across Europe, compensation frameworks and reorganisations. You manage four to six clients at a time. Three years in HR advisory or consulting; any additional European language is welcome.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "big4_consulting",
+   "why": "HR consulting for scale-ups; 'any additional European language is welcome'"
+  }
+ },
+ {
+  "id": "f-07",
+  "set": "held-out",
+  "title": "HR Advisor (Italian speaker)",
+  "company": "Marlow Aviation Services",
+  "location": "Lisbon, Portugal",
+  "description": "You support our Italian employees and managers from the Lisbon shared service centre: contracts, leave, employee relations and policy questions.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "'Italian speaker' in the title"
+  }
+ },
+ {
+  "id": "f-08",
+  "set": "held-out",
+  "title": "HR Operations Specialist",
+  "company": "Quill Robotics",
+  "location": "Prague, Czechia",
+  "description": "You administer the employee lifecycle for our Prague office and support audits. Czech at a native level and English at B2 are needed because you will deal with the authorities.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "'Czech at a native level'"
+  }
+ },
+ {
+  "id": "f-09",
+  "set": "held-out",
+  "title": "People Analytics Analyst",
+  "company": "Hollin Pharma",
+  "location": "Copenhagen, Denmark",
+  "description": "You develop the people dashboard suite, run analyses on engagement and retention and advise HR partners on what the data shows. SQL, Python or R. You have full professional proficiency in English; Danish language skills are not a requirement.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "'Danish language skills are not a requirement'"
+  }
+ },
+ {
+  "id": "f-10",
+  "set": "held-out",
+  "title": "HR Generalist",
+  "company": "Hollin Pharma",
+  "location": "Milan, Italy",
+  "description": "Supporterai i manager nella gestione del personale: amministrazione, relazioni sindacali, selezione e formazione. Richiesta laurea e due anni di esperienza. Completano il profilo la conoscenza fluente dell'italiano e un buon inglese.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "Italian required, in Italian, with a wording the patterns were not written for"
+  }
+ },
+ {
+  "id": "f-11",
+  "set": "held-out",
+  "title": "HR Advisor",
+  "company": "Sable Retail",
+  "location": "Lille, France",
+  "description": "You advise store managers in northern France on employee relations and working time and work with our social law firm. You must be able to work in French every day; English is used with the group HR team.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "'You must be able to work in French every day'"
+  }
+ },
+ {
+  "id": "f-12",
+  "set": "held-out",
+  "title": "Employee Relations Specialist",
+  "company": "Hollin Pharma",
+  "location": "Basel, Switzerland",
+  "description": "You handle employee relations cases across our Swiss sites and advise on Swiss employment law. Required languages: German (C1), English (B2).",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "'Required languages: German (C1)'"
+  }
+ },
+ {
+  "id": "f-13",
+  "set": "held-out",
+  "title": "HR Advisor",
+  "company": "Marlow Aviation Services",
+  "location": "Rotterdam, Netherlands",
+  "description": "You handle employee relations and absence cases and advise managers on policy. Colleagues in the hangar speak Dutch, Polish and Romanian; our working language is English and interpreters are available for hearings.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Languages named as what colleagues speak"
+  }
+ },
+ {
+  "id": "f-14",
+  "set": "held-out",
+  "title": "People Partner",
+  "company": "Quill Robotics",
+  "location": "Zurich, Switzerland",
+  "description": "You are the people partner for our engineering teams: organisation, performance, employee relations and compensation reviews. Three years of HR experience. English is our company language. German skills are beneficial but by no means essential.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "'German skills are beneficial but by no means essential'"
+  }
+ },
+ {
+  "id": "f-15",
+  "set": "held-out",
+  "title": "HR Advisor",
+  "company": "Sable Retail",
+  "location": "Singapore",
+  "description": "You advise managers across our Asia-Pacific stores on employee relations and HR policy. Three years of experience.",
+  "expect": {
+   "decision": "skip",
+   "gate": "location",
+   "track": "hr_advisory",
+   "why": "Singapore"
+  }
+ },
+ {
+  "id": "f-16",
+  "set": "held-out",
+  "title": "People Operations Specialist",
+  "company": "Quill Robotics",
+  "location": "Austin, TX (Hybrid)",
+  "description": "You own onboarding, benefits administration and employee questions for our US team.",
+  "expect": {
+   "decision": "skip",
+   "gate": "location",
+   "track": "hr_advisory",
+   "why": "Texas"
+  }
+ },
+ {
+  "id": "f-17",
+  "set": "held-out",
+  "title": "HR Generalist",
+  "company": "Hollin Pharma",
+  "location": "Remote - Canada",
+  "description": "Generalist support for our Canadian employees: onboarding, employee relations, benefits.",
+  "expect": {
+   "decision": "skip",
+   "gate": "location",
+   "track": "hr_advisory",
+   "why": "Remote, but in Canada"
+  }
+ },
+ {
+  "id": "f-18",
+  "set": "held-out",
+  "title": "HR Advisor",
+  "company": "Greywell Consulting",
+  "location": "Valletta, Malta",
+  "description": "You advise client managers on employee relations and HR policy and keep employment contracts and handbooks up to date. Two years in HR. English is the working language.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Malta, a target country"
+  }
+ },
+ {
+  "id": "f-19",
+  "set": "held-out",
+  "title": "Global Head of Employee Relations",
+  "company": "Hollin Pharma",
+  "location": "Basel, Switzerland",
+  "description": "You set the employee relations strategy for 40 countries and lead a team of 25.",
+  "expect": {
+   "decision": "skip",
+   "gate": "seniority",
+   "track": "hr_advisory",
+   "why": "Head of a global function"
+  }
+ },
+ {
+  "id": "f-20",
+  "set": "held-out",
+  "title": "HR Lead",
+  "company": "Quill Robotics",
+  "location": "Amsterdam, Netherlands",
+  "description": "You are the most senior HR person in a 150-person company, reporting to the COO: you build the function, lead two people and handle everything from employment law to reward. Eight or more years of experience.",
+  "expect": {
+   "decision": "skip",
+   "gate": "experience",
+   "track": "hr_advisory",
+   "why": "'Eight or more years of experience'"
+  }
+ },
+ {
+  "id": "f-21",
+  "set": "held-out",
+  "title": "HR Trainee",
+  "company": "Sable Retail",
+  "location": "Antwerp, Belgium",
+  "description": "A one-year traineeship for school leavers in our HR administration team, combined with part-time study.",
+  "expect": {
+   "decision": "skip",
+   "gate": "seniority",
+   "track": "hr_advisory",
+   "why": "A traineeship for school leavers"
+  }
+ },
+ {
+  "id": "f-22",
+  "set": "held-out",
+  "title": "HR Advisor",
+  "company": "Marlow Aviation Services",
+  "location": "Dublin, Ireland",
+  "description": "You handle employee relations casework and advise managers on policy and employment law. The ideal candidate will have 4+ years' experience, though we will consider strong applicants with less.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Four years asked, with an explicit door open to less"
+  }
+ },
+ {
+  "id": "f-23",
+  "set": "held-out",
+  "title": "Senior Reward Analyst",
+  "company": "Hollin Pharma",
+  "location": "Basel, Switzerland",
+  "description": "You lead the annual compensation review, executive pay analysis and equity plan administration. A minimum of nine years in compensation is required.",
+  "expect": {
+   "decision": "skip",
+   "gate": "experience",
+   "track": "people_analytics",
+   "why": "Nine years required"
+  }
+ },
+ {
+  "id": "f-24",
+  "set": "held-out",
+  "title": "HR Advisor",
+  "company": "Greywell Consulting",
+  "location": "Amsterdam, Netherlands",
+  "description": "Freelance assignment, paid per closed client: you sell and deliver HR check-ups to small businesses. There is no fixed salary; your income is your commission.",
+  "expect": {
+   "decision": "skip",
+   "gate": "terms",
+   "track": "hr_advisory",
+   "why": "No fixed salary, commission as income, worded differently"
+  }
+ },
+ {
+  "id": "f-25",
+  "set": "held-out",
+  "title": "Talent Development Specialist",
+  "company": "Hollin Pharma",
+  "location": "Copenhagen, Denmark",
+  "description": "You design leadership programmes, run the talent review and manage our learning platform. Three years in learning and development.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Learning and development, not the profile's field"
+  }
+ },
+ {
+  "id": "f-26",
+  "set": "held-out",
+  "title": "Payroll & HR Administrator",
+  "company": "Marlow Aviation Services",
+  "location": "Dublin, Ireland",
+  "description": "You run the monthly Irish payroll for 300 employees, handle revenue submissions and pensions, and cover HR administration: contracts, onboarding and absence records. Payroll qualification (IPASS) required.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Payroll first, with a payroll qualification required"
+  }
+ },
+ {
+  "id": "f-27",
+  "set": "held-out",
+  "title": "Customer Success Manager, HR Tech",
+  "company": "Quill Robotics",
+  "location": "Remote, Europe",
+  "description": "You look after 40 customers of our HR platform: onboarding, adoption, renewals. You understand HR processes and can talk to HR directors.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Account management for an HR product"
+  }
+ },
+ {
+  "id": "f-28",
+  "set": "held-out",
+  "title": "HR Project Coordinator",
+  "company": "Greywell Consulting",
+  "location": "Brussels, Belgium",
+  "description": "You coordinate an HR transformation programme: planning, status reporting, stakeholder meetings and the change management calendar. Two years in project coordination, ideally in HR. English; French or Dutch useful.",
+  "expect": {
+   "decision": "maybe",
+   "gate": null,
+   "track": "big4_consulting",
+   "why": "Project coordination inside HR: adjacent, readable"
+  }
+ },
+ {
+  "id": "f-29",
+  "set": "held-out",
+  "title": "People Analytics Analyst",
+  "company": "Sable Retail",
+  "location": "Antwerp, Belgium",
+  "description": "You analyse absence, turnover and engagement, build dashboards in Power BI and support workforce planning. SQL and statistics. Two years of experience. You are bilingual Dutch/French.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "people_analytics",
+   "why": "'Bilingual Dutch/French': a slash that means both, not either"
+  }
+ },
+ {
+  "id": "f-30",
+  "set": "held-out",
+  "title": "HR Business Partner",
+  "company": "Hollin Pharma",
+  "location": "Dublin, Ireland",
+  "description": "You partner with commercial leaders on organisation design, talent and employee relations. Five years of HR experience including two in business partnering.",
+  "expect": {
+   "decision": "maybe",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Five years against three: a stretch"
+  }
+ }
+]

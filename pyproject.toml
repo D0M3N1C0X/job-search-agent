@@ -34,16 +34,21 @@ Issues = "https://github.com/D0M3N1C0X/job-search-agent/issues"
 jsa = "jsa.__main__:main"
 
 [tool.setuptools]
-packages = ["jsa", "jsa.sources", "jsa.example"]
+packages = ["jsa", "jsa.sources", "jsa.example", "jsa.evaluation", "jsa.catalogue"]
 
 # The synthetic example profile ships inside the package as jsa/example/, so an
 # installed copy can run the demo and seed a new workspace. In a clone it stays
-# where people look for it, at the top of the repository.
+# where people look for it, at the top of the repository. The labelled postings
+# of `jsa evaluate` and the shared employer catalogue ship the same way.
 [tool.setuptools.package-dir]
 "jsa.example" = "profile.example"
+"jsa.evaluation" = "evaluation"
+"jsa.catalogue" = "catalogue"
 
 [tool.setuptools.package-data]
 "jsa.example" = ["*.json"]
+"jsa.evaluation" = ["*.json"]
+"jsa.catalogue" = ["companies.json"]
 "jsa" = ["assets/*.woff2", "assets/OFL.txt"]
 
 # Lint runs in CI only (`ruff check .`); nothing here is needed to run the tool.
