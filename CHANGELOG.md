@@ -7,6 +7,18 @@ you set up by hand (profile, tracks, database) needs attention.
 
 ## [Unreleased]
 
+### Changed
+
+- **Scorer 1.2.0.** Language requirements written as a duty ("you must be able
+  to work in French every day", "German and English, both at business level,
+  are a must") or in Italian as "conoscenza fluente dell'italiano"; "eight or
+  more years"; pay written as a story ("no fixed salary; your income is your
+  commission"). Tracks gain `titles.avoid`: a title that names another job
+  ("Payroll & HR Administrator", "Customer Success Manager, HR Tech") earns no
+  title points. **Measured honestly, it does not generalise:** on a new
+  held-out set written after these fixes, 1.2.0 scores 21 of 30 as labelled,
+  exactly as 1.1.0 does. `docs/scoring.md` says what that means.
+
 ### Added
 
 - **`jsa evaluate`: how often the scorer is right, measured.** 130 labelled

@@ -52,6 +52,20 @@
           "human resources",
           "people",
           "talent"
+        ],
+        "avoid": [
+          "payroll",
+          "recruiter",
+          "recruitment",
+          "talent acquisition",
+          "learning",
+          "training",
+          "customer success",
+          "account manager",
+          "account executive",
+          "sales",
+          "office manager",
+          "engineer"
         ]
       },
       "must_have_any": [
@@ -168,6 +182,14 @@
           "data analyst",
           "insights analyst",
           "reporting specialist"
+        ],
+        "avoid": [
+          "engineer",
+          "marketing",
+          "sales",
+          "finance",
+          "customer success",
+          "product"
         ]
       },
       "must_have_any": [
@@ -212,7 +234,10 @@
         "workforce",
         "talent",
         "employee",
-        "people team"
+        "people team",
+        "reward",
+        "compensation",
+        "pay"
       ],
       "domain_target": 4,
       "anti": [
@@ -288,6 +313,14 @@
         "weak": [
           "consultant",
           "advisory"
+        ],
+        "avoid": [
+          "sales",
+          "account executive",
+          "customer success",
+          "engineer",
+          "recruiter",
+          "payroll"
         ]
       },
       "must_have_any": [

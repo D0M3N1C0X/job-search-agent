@@ -1401,7 +1401,7 @@
  },
  {
   "id": "f-01",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Advisor",
   "company": "Marlow Aviation Services",
   "location": "Amsterdam Schiphol, Netherlands",
@@ -1415,7 +1415,7 @@
  },
  {
   "id": "f-02",
-  "set": "held-out",
+  "set": "development",
   "title": "People Operations Associate",
   "company": "Quill Robotics",
   "location": "Remote in the EU",
@@ -1429,7 +1429,7 @@
  },
  {
   "id": "f-03",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Data Analyst",
   "company": "Sable Retail",
   "location": "Antwerp, Belgium",
@@ -1443,7 +1443,7 @@
  },
  {
   "id": "f-04",
-  "set": "held-out",
+  "set": "development",
   "title": "Reward Analyst",
   "company": "Sable Retail",
   "location": "Antwerp, Belgium",
@@ -1457,7 +1457,7 @@
  },
  {
   "id": "f-05",
-  "set": "held-out",
+  "set": "development",
   "title": "Junior Consultant, People Advisory",
   "company": "Greywell Consulting",
   "location": "Vienna, Austria",
@@ -1471,7 +1471,7 @@
  },
  {
   "id": "f-06",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Consultant",
   "company": "Greywell Consulting",
   "location": "Remote, Europe",
@@ -1485,7 +1485,7 @@
  },
  {
   "id": "f-07",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Advisor (Italian speaker)",
   "company": "Marlow Aviation Services",
   "location": "Lisbon, Portugal",
@@ -1499,7 +1499,7 @@
  },
  {
   "id": "f-08",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Operations Specialist",
   "company": "Quill Robotics",
   "location": "Prague, Czechia",
@@ -1513,7 +1513,7 @@
  },
  {
   "id": "f-09",
-  "set": "held-out",
+  "set": "development",
   "title": "People Analytics Analyst",
   "company": "Hollin Pharma",
   "location": "Copenhagen, Denmark",
@@ -1527,7 +1527,7 @@
  },
  {
   "id": "f-10",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Generalist",
   "company": "Hollin Pharma",
   "location": "Milan, Italy",
@@ -1541,7 +1541,7 @@
  },
  {
   "id": "f-11",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Advisor",
   "company": "Sable Retail",
   "location": "Lille, France",
@@ -1555,7 +1555,7 @@
  },
  {
   "id": "f-12",
-  "set": "held-out",
+  "set": "development",
   "title": "Employee Relations Specialist",
   "company": "Hollin Pharma",
   "location": "Basel, Switzerland",
@@ -1569,7 +1569,7 @@
  },
  {
   "id": "f-13",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Advisor",
   "company": "Marlow Aviation Services",
   "location": "Rotterdam, Netherlands",
@@ -1583,7 +1583,7 @@
  },
  {
   "id": "f-14",
-  "set": "held-out",
+  "set": "development",
   "title": "People Partner",
   "company": "Quill Robotics",
   "location": "Zurich, Switzerland",
@@ -1597,7 +1597,7 @@
  },
  {
   "id": "f-15",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Advisor",
   "company": "Sable Retail",
   "location": "Singapore",
@@ -1611,7 +1611,7 @@
  },
  {
   "id": "f-16",
-  "set": "held-out",
+  "set": "development",
   "title": "People Operations Specialist",
   "company": "Quill Robotics",
   "location": "Austin, TX (Hybrid)",
@@ -1625,7 +1625,7 @@
  },
  {
   "id": "f-17",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Generalist",
   "company": "Hollin Pharma",
   "location": "Remote - Canada",
@@ -1639,7 +1639,7 @@
  },
  {
   "id": "f-18",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Advisor",
   "company": "Greywell Consulting",
   "location": "Valletta, Malta",
@@ -1653,7 +1653,7 @@
  },
  {
   "id": "f-19",
-  "set": "held-out",
+  "set": "development",
   "title": "Global Head of Employee Relations",
   "company": "Hollin Pharma",
   "location": "Basel, Switzerland",
@@ -1667,7 +1667,7 @@
  },
  {
   "id": "f-20",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Lead",
   "company": "Quill Robotics",
   "location": "Amsterdam, Netherlands",
@@ -1681,7 +1681,7 @@
  },
  {
   "id": "f-21",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Trainee",
   "company": "Sable Retail",
   "location": "Antwerp, Belgium",
@@ -1695,7 +1695,7 @@
  },
  {
   "id": "f-22",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Advisor",
   "company": "Marlow Aviation Services",
   "location": "Dublin, Ireland",
@@ -1709,7 +1709,7 @@
  },
  {
   "id": "f-23",
-  "set": "held-out",
+  "set": "development",
   "title": "Senior Reward Analyst",
   "company": "Hollin Pharma",
   "location": "Basel, Switzerland",
@@ -1723,7 +1723,7 @@
  },
  {
   "id": "f-24",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Advisor",
   "company": "Greywell Consulting",
   "location": "Amsterdam, Netherlands",
@@ -1737,7 +1737,7 @@
  },
  {
   "id": "f-25",
-  "set": "held-out",
+  "set": "development",
   "title": "Talent Development Specialist",
   "company": "Hollin Pharma",
   "location": "Copenhagen, Denmark",
@@ -1751,7 +1751,7 @@
  },
  {
   "id": "f-26",
-  "set": "held-out",
+  "set": "development",
   "title": "Payroll & HR Administrator",
   "company": "Marlow Aviation Services",
   "location": "Dublin, Ireland",
@@ -1765,7 +1765,7 @@
  },
  {
   "id": "f-27",
-  "set": "held-out",
+  "set": "development",
   "title": "Customer Success Manager, HR Tech",
   "company": "Quill Robotics",
   "location": "Remote, Europe",
@@ -1779,7 +1779,7 @@
  },
  {
   "id": "f-28",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Project Coordinator",
   "company": "Greywell Consulting",
   "location": "Brussels, Belgium",
@@ -1793,7 +1793,7 @@
  },
  {
   "id": "f-29",
-  "set": "held-out",
+  "set": "development",
   "title": "People Analytics Analyst",
   "company": "Sable Retail",
   "location": "Antwerp, Belgium",
@@ -1807,7 +1807,7 @@
  },
  {
   "id": "f-30",
-  "set": "held-out",
+  "set": "development",
   "title": "HR Business Partner",
   "company": "Hollin Pharma",
   "location": "Dublin, Ireland",
@@ -1817,6 +1817,426 @@
    "gate": null,
    "track": "hr_advisory",
    "why": "Five years against three: a stretch"
+  }
+ },
+ {
+  "id": "g-01",
+  "set": "held-out",
+  "title": "HR Advisor",
+  "company": "Tamsin Hotels",
+  "location": "Edinburgh, United Kingdom",
+  "description": "You advise general managers across our Scottish hotels on absence, disciplinary and grievance matters, support TUPE transfers when we take on a property and keep our policies aligned with UK employment law. Two years of generalist or advisory HR experience. Full UK right to work.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Advisory role in the UK, a target country"
+  }
+ },
+ {
+  "id": "g-02",
+  "set": "held-out",
+  "title": "HR Services Specialist",
+  "company": "Brannock Telecom",
+  "location": "Remote (Europe)",
+  "description": "You are part of a European HR services team answering employee and manager tickets on contracts, leave, benefits and policies within SLA, and you process data changes in SAP SuccessFactors. Experience in an HR service centre. Excellent written English.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "HR services, remote in Europe"
+  }
+ },
+ {
+  "id": "g-03",
+  "set": "held-out",
+  "title": "Employee Relations Partner",
+  "company": "Ostrava Steelworks",
+  "location": "Katowice, Poland",
+  "description": "You lead investigations and disciplinary cases for our Polish plants and work with the works council. Excellent command of Polish is indispensable, together with good English.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "'Excellent command of Polish is indispensable'"
+  }
+ },
+ {
+  "id": "g-04",
+  "set": "held-out",
+  "title": "People Data Analyst",
+  "company": "Brannock Telecom",
+  "location": "Dublin, Ireland",
+  "description": "You maintain our people data warehouse tables, build Tableau dashboards on headcount, attrition and hiring, and run the analysis behind the annual engagement survey. SQL is essential; Python or R is a plus.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "People data analysis in Ireland"
+  }
+ },
+ {
+  "id": "g-05",
+  "set": "held-out",
+  "title": "Compensation & Benefits Specialist",
+  "company": "Tamsin Hotels",
+  "location": "London, United Kingdom",
+  "description": "You run benefits renewals, maintain salary bands and support the annual pay review with benchmarking and analysis. Advanced Excel. Two years in reward.",
+  "expect": {
+   "decision": "maybe",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "Reward with benefits administration: analysis is part of it, not the core"
+  }
+ },
+ {
+  "id": "g-06",
+  "set": "held-out",
+  "title": "HR Consultant",
+  "company": "Lindqvist Partners",
+  "location": "Stockholm, Sweden",
+  "description": "You advise clients on HR transformation and organisational design. Our clients are Swedish companies and all client work is conducted in Swedish.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "big4_consulting",
+   "why": "'All client work is conducted in Swedish'"
+  }
+ },
+ {
+  "id": "g-07",
+  "set": "held-out",
+  "title": "Organisation Design Consultant",
+  "company": "Haverford Advisory",
+  "location": "London, United Kingdom",
+  "description": "You work on organisation design and operating model projects for public sector clients: current state analysis, spans and layers, role design and the HR policy changes that follow. Two to four years in consulting or an internal OD role.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "big4_consulting",
+   "why": "Organisation design consulting in the UK"
+  }
+ },
+ {
+  "id": "g-08",
+  "set": "held-out",
+  "title": "HR Advisor",
+  "company": "Kirchner Logistik",
+  "location": "Vienna, Austria",
+  "description": "You support our Austrian warehouses with employee relations, absence and payroll input. German at native level and good English.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "'German at native level'"
+  }
+ },
+ {
+  "id": "g-09",
+  "set": "held-out",
+  "title": "HR Advisor (Dutch speaking)",
+  "company": "Brannock Telecom",
+  "location": "Amsterdam, Netherlands",
+  "description": "You advise managers on employee relations and absence for our Dutch call centres.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "'Dutch speaking' in the title"
+  }
+ },
+ {
+  "id": "g-10",
+  "set": "held-out",
+  "title": "People Operations Specialist",
+  "company": "Lindqvist Partners",
+  "location": "Copenhagen, Denmark",
+  "description": "You run onboarding, leave and employee queries for our Nordic offices and keep the HRIS accurate. We work in English. Knowledge of a Scandinavian language would be nice but is not expected.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "A Scandinavian language 'would be nice'"
+  }
+ },
+ {
+  "id": "g-11",
+  "set": "held-out",
+  "title": "HR Generalist",
+  "company": "Kirchner Logistik",
+  "location": "Rotterdam, Netherlands",
+  "description": "You support our Rotterdam hub with onboarding, employee relations and absence. Our workforce is international: colleagues speak Polish, Romanian, Portuguese and Dutch, and English is the common language on site.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Languages named as what colleagues speak"
+  }
+ },
+ {
+  "id": "g-12",
+  "set": "held-out",
+  "title": "HR Business Partner",
+  "company": "Haverford Advisory",
+  "location": "Paris, France",
+  "description": "Vous accompagnez les managers sur l'organisation, la performance et les relations sociales. Maîtrise parfaite du français indispensable.",
+  "expect": {
+   "decision": "skip",
+   "gate": "language",
+   "track": "hr_advisory",
+   "why": "'Maîtrise parfaite du français indispensable'"
+  }
+ },
+ {
+  "id": "g-13",
+  "set": "held-out",
+  "title": "HR Advisor",
+  "company": "Tamsin Hotels",
+  "location": "Chicago, IL",
+  "description": "You advise hotel managers across the Midwest on employee relations and HR policy.",
+  "expect": {
+   "decision": "skip",
+   "gate": "location",
+   "track": "hr_advisory",
+   "why": "United States"
+  }
+ },
+ {
+  "id": "g-14",
+  "set": "held-out",
+  "title": "People Analytics Analyst",
+  "company": "Brannock Telecom",
+  "location": "Mexico City, Mexico",
+  "description": "You build workforce dashboards and attrition analyses in SQL and Python.",
+  "expect": {
+   "decision": "skip",
+   "gate": "location",
+   "track": "people_analytics",
+   "why": "Mexico"
+  }
+ },
+ {
+  "id": "g-15",
+  "set": "held-out",
+  "title": "HR Operations Specialist",
+  "company": "Lindqvist Partners",
+  "location": "Tallinn, Estonia",
+  "description": "You handle onboarding, contract changes and employee queries for our Baltic offices. English is our working language. Two years of HR operations experience.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Estonia, a target country"
+  }
+ },
+ {
+  "id": "g-16",
+  "set": "held-out",
+  "title": "Director, People Operations",
+  "company": "Brannock Telecom",
+  "location": "Dublin, Ireland",
+  "description": "You lead HR operations for Europe with a team of twelve.",
+  "expect": {
+   "decision": "skip",
+   "gate": "seniority",
+   "track": "hr_advisory",
+   "why": "Director"
+  }
+ },
+ {
+  "id": "g-17",
+  "set": "held-out",
+  "title": "HR Placement Student",
+  "company": "Tamsin Hotels",
+  "location": "London, United Kingdom",
+  "description": "A 12-month paid placement for undergraduates on a sandwich degree, supporting the HR team.",
+  "expect": {
+   "decision": "skip",
+   "gate": "seniority",
+   "track": "hr_advisory",
+   "why": "A student placement"
+  }
+ },
+ {
+  "id": "g-18",
+  "set": "held-out",
+  "title": "HR Advisor",
+  "company": "Kirchner Logistik",
+  "location": "Hamburg, Germany",
+  "description": "You advise managers on employee relations and HR policy for our northern German sites. We are looking for 12+ years of experience in HR, ideally in logistics. Fluent English; German is helpful.",
+  "expect": {
+   "decision": "skip",
+   "gate": "experience",
+   "track": "hr_advisory",
+   "why": "'12+ years of experience'"
+  }
+ },
+ {
+  "id": "g-19",
+  "set": "held-out",
+  "title": "Senior Employee Relations Advisor",
+  "company": "Haverford Advisory",
+  "location": "London, United Kingdom",
+  "description": "You handle the most complex employee relations cases and coach junior advisors. Four years of employee relations experience in a fast-paced environment.",
+  "expect": {
+   "decision": "maybe",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Senior, four years against three"
+  }
+ },
+ {
+  "id": "g-20",
+  "set": "held-out",
+  "title": "HR Advisor",
+  "company": "Lindqvist Partners",
+  "location": "Oslo, Norway",
+  "description": "You support managers with employee relations, absence and onboarding. This is a commission-based role with no guaranteed base pay.",
+  "expect": {
+   "decision": "skip",
+   "gate": "terms",
+   "track": "hr_advisory",
+   "why": "'Commission-based role with no guaranteed base pay'"
+  }
+ },
+ {
+  "id": "g-21",
+  "set": "held-out",
+  "title": "Payroll Analyst",
+  "company": "Brannock Telecom",
+  "location": "Dublin, Ireland",
+  "description": "You reconcile multi-country payroll, investigate variances and report payroll cost to finance. Three years of payroll experience and a payroll technician qualification.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Payroll as a profession"
+  }
+ },
+ {
+  "id": "g-22",
+  "set": "held-out",
+  "title": "Learning Experience Designer",
+  "company": "Haverford Advisory",
+  "location": "Remote, Europe",
+  "description": "You design e-learning modules and blended programmes for our clients' HR teams.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Learning design"
+  }
+ },
+ {
+  "id": "g-23",
+  "set": "held-out",
+  "title": "Talent Acquisition Coordinator",
+  "company": "Tamsin Hotels",
+  "location": "Edinburgh, United Kingdom",
+  "description": "You schedule interviews, post job ads and keep our applicant tracking system up to date. HR administration background welcome.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Recruitment coordination"
+  }
+ },
+ {
+  "id": "g-24",
+  "set": "held-out",
+  "title": "Workforce Management Analyst",
+  "company": "Brannock Telecom",
+  "location": "Dublin, Ireland",
+  "description": "You forecast call volumes and build agent schedules for our contact centres in NICE and Excel. Two years of workforce management experience in a contact centre.",
+  "expect": {
+   "decision": "skip",
+   "gate": null,
+   "track": null,
+   "why": "Contact-centre scheduling that shares the word 'workforce'"
+  }
+ },
+ {
+  "id": "g-25",
+  "set": "held-out",
+  "title": "HR Advisor",
+  "company": "Kirchner Logistik",
+  "location": "Antwerp, Belgium",
+  "description": "You support store managers with employee relations, absence and performance. You are fluent in English and either Dutch or French; the other is an advantage.",
+  "expect": {
+   "decision": "maybe",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Either Dutch or French fluently: the profile's Dutch is B1"
+  }
+ },
+ {
+  "id": "g-26",
+  "set": "held-out",
+  "title": "People Partner",
+  "company": "Lindqvist Partners",
+  "location": "Berlin, Germany",
+  "description": "You partner with our product and engineering teams on organisation, performance and employee relations. English is our company language. Three years of HR experience.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "People partner in an English-speaking company"
+  }
+ },
+ {
+  "id": "g-27",
+  "set": "held-out",
+  "title": "HR Analyst",
+  "company": "Haverford Advisory",
+  "location": "Lisbon, Portugal",
+  "description": "You support the HR team with reporting on headcount, absence and turnover, build Power BI dashboards and help with the annual pay gap report. SQL and Excel.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "people_analytics",
+   "why": "HR reporting and analysis"
+  }
+ },
+ {
+  "id": "g-28",
+  "set": "held-out",
+  "title": "HR Advisor, Retail",
+  "company": "Tamsin Hotels",
+  "location": "Madrid, Spain",
+  "description": "Asesorarás a los directores de tienda en relaciones laborales, absentismo y política de personas, y trabajarás con nuestro despacho laboralista. Experiencia de dos años en recursos humanos. Castellano nativo e inglés profesional.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "In Spanish, for a native Spanish speaker"
+  }
+ },
+ {
+  "id": "g-29",
+  "set": "held-out",
+  "title": "Employee Experience Specialist",
+  "company": "Brannock Telecom",
+  "location": "Remote (Europe)",
+  "description": "You improve the employee lifecycle: onboarding journeys, the HR knowledge base and the employee survey. You work with HR operations on processes and with people analytics on survey results. Two years in HR or employee experience.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "Employee experience, a 'good' title for advisory"
+  }
+ },
+ {
+  "id": "g-30",
+  "set": "held-out",
+  "title": "HR Generalist",
+  "company": "Kirchner Logistik",
+  "location": "Warsaw, Poland",
+  "description": "You support our Warsaw office: onboarding, employee relations, policy and payroll liaison. English is required; Polish would be a strong advantage given the local workforce.",
+  "expect": {
+   "decision": "apply",
+   "gate": null,
+   "track": "hr_advisory",
+   "why": "'Polish would be a strong advantage'"
   }
  }
 ]
