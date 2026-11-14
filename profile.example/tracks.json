@@ -70,7 +70,15 @@
         "hris",
         "employee lifecycle",
         "ticketing",
-        "employee queries"
+        "employee queries",
+        "absence",
+        "performance management",
+        "works council",
+        "offboarding",
+        "investigation",
+        "restructuring",
+        "policy advice",
+        "people policy"
       ],
       "must_have_target": 3,
       "nice_to_have": [
@@ -104,7 +112,13 @@
         "360 recruiter",
         "cold calling",
         "door to door",
-        "commission only"
+        "commission only",
+        "software engineer",
+        "data engineer",
+        "developer",
+        "sales executive",
+        "account executive",
+        "sales development"
       ]
     },
     {
@@ -217,7 +231,13 @@
         "risk analyst",
         "procurement",
         "data scientist",
-        "experimentation"
+        "experimentation",
+        "software engineer",
+        "data engineer",
+        "developer",
+        "sales executive",
+        "account executive",
+        "sales development"
       ]
     },
     {
