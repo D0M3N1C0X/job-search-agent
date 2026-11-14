@@ -9,6 +9,31 @@ you set up by hand (profile, tracks, database) needs attention.
 
 ### Added
 
+- **`jsa evaluate`: how often the scorer is right, measured.** 130 labelled
+  postings in `evaluation/`, each with what a person reading it for the example
+  candidate would do (apply, maybe, skip), the gate that should fire and the
+  track it should go on. The report prints precision, recall, which gates fired
+  where they should and where they should not, and every posting scored
+  differently from its label. 30 of the postings are held out: written after the
+  last change to the rules and scored once. On them the scorer goes from 15 to
+  20 as labelled, precision from 54% to 73%, and no posting labelled apply is
+  rejected. `docs/scoring.md` lists what it still gets wrong.
+- `jsa evaluate --mine` compares the scorer with your own decisions: what you
+  drafted or sent against what you skipped, and the pass mark that would have
+  agreed with you most often.
+- **Language requirements are recognised without setup**, for sixteen
+  languages, asked for in English or in the language itself, with the level
+  before or after the name ("fluent Dutch", "Dutch (fluent)", "French mother
+  tongue"). A language named without being required — "Dutch is a plus", "free
+  Dutch lessons", "our Dutch entities", "fluent German or English" for someone
+  with English — no longer counts. The profile's own `language_gates` still add
+  to them; `preferences.language_gates_builtin: false` turns the built-in ones
+  off. Before, only the languages the setup wizard had written a rule for were
+  checked: of 18 language requirements in the benchmark, 3 were caught.
+- An `experience` gate: a posting asking five or more years beyond the profile
+  is rejected; three or four years beyond can reach review, not pass.
+- An internship is rejected for a profile with two years of experience or more.
+
 - CI runs mypy on the package and measures test coverage (78%, with a floor);
   both are CI-only, so the tool still installs nothing.
 - A shared employer catalogue, used with no setup: `catalogue/companies.json`
@@ -25,6 +50,27 @@ you set up by hand (profile, tracks, database) needs attention.
 - `jsa apply` adds a typeset CV PDF when Chrome, Edge or Chromium is installed.
 
 ### Fixed
+
+- **"Years of experience" read numbers that were not about experience**: a
+  company "trading for 25 years" asked 25 years of the candidate, and "in the
+  past 3 years our headcount tripled" asked three. A number now counts only
+  with "experience", "at least", a "+" or similar next to it; a range counts from
+  its lower end; numbers up to fifteen may be written out, and "a decade" is ten.
+- **A role reporting to a director read as a director's role**: "you will report
+  to the Director of People" in the body made an untitled People Operations role
+  a `head` and rejected it. The body can still make a role senior or junior,
+  never a head of function.
+- Keywords now match their plain plural: "dashboard" finds "dashboards", "HR
+  policy" finds "HR policies". Terms under four letters do not, so "hr" never
+  finds "hrs".
+- An anti-keyword in the title weighs three times as much as one in the body:
+  "Software Engineer, HR Tech" is the job, not a mention.
+- The example tracks list the advisory work they were missing (absence,
+  performance management, works council, investigations) and the neighbouring
+  jobs they should push away (software, data engineering, software sales).
+- The shared employer catalogue was missing from the installed package: an
+  installed copy fetched only its own watchlist. It now ships inside it, with
+  the labelled postings.
 
 - **Alert emails saved as .mbox gave no jobs.** mbox files were read as legacy
   messages without `get_content()`, the error was swallowed, and every body came
