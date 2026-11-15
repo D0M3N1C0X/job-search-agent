@@ -2,7 +2,7 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="site-assets/cover-dark.png">
-  <img alt="A job search that runs as a pipeline: 8 ATS providers, 325 company boards, 344 offline tests." src="site-assets/cover-light.png">
+  <img alt="A job search that runs as a pipeline: 21 of 30 held-out postings scored as a person labelled them, none worth applying to thrown away, 380 offline tests." src="site-assets/cover-light.png">
 </picture>
 
 [![Run it](https://img.shields.io/badge/%E2%96%B6%20Run%20it-1f6feb?style=for-the-badge)](#no-terminal)
@@ -49,7 +49,7 @@ python3 -m jsa install    # from here on `jsa` works from any directory
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/dashboard-dark.png">
-  <img alt="The dashboard: a triage deck of scored postings, each with a plain-language reason and the catch" src="docs/img/dashboard-light.png">
+  <img alt="The dashboard: the roles worth an hour, why one scored 94, every posting with its verdict, and the application funnel" src="docs/img/dashboard.webp">
 </picture>
 
 Then point it at your own search (the installer starts the first two for you):
