@@ -254,7 +254,9 @@ with "Yes": "Yes, I'm based in Barcelona" is left for you.
 
 | Source | Access | Reliability |
 |---|---|---|
-| Greenhouse, Lever, Ashby, SmartRecruiters, Recruitee, Workable, Personio | Public JSON/XML board APIs, no key | **High** — this is the backbone |
+| Greenhouse, Lever, Ashby, SmartRecruiters, Recruitee, Workable, Personio, Workday | Public JSON/XML board APIs, no key | **High** — this is the backbone |
+| Arbeitnow | Free public API of European postings, no key | **High** — the newest 900 postings, kept only where a track's title and an accepted country match |
+| Adzuna | Search API across ten European markets, a free key of your own | **High** once the key is set; skipped, and says so, without one |
 | Job-alert emails | Local `.eml` / `.mbox` files you save | **High** — lets the portal do the searching, no scraping |
 | LinkedIn guest search | Unauthenticated endpoints | Best effort — rate-limited, degrades without stopping the run |
 | Manual | `jsa add` | Always works |
@@ -266,6 +268,15 @@ uses:
 jsa probe revolut monzo personio --add
 # revolut   greenhouse   84 open roles   → added to watchlist
 ```
+
+Arbeitnow runs by default (`"arbeitnow": false` under `search` in your profile
+turns it off). Adzuna runs when `search.adzuna` lists queries, such as
+`[{"what": "hr advisor", "country": "nl"}]`, and a key is set: register at
+developer.adzuna.com, then set `JSA_ADZUNA_APP_ID` and `JSA_ADZUNA_APP_KEY`, or
+write `{"adzuna": {"app_id": "…", "app_key": "…"}}` to `secrets.json` in your
+workspace. The key never goes in `profile.json`. Portals without a public API
+(StepStone, Pracuj, InfoJobs without a developer account) are not scraped; save
+their alert emails instead.
 
 Job postings and emails are treated as **data, never instructions**: text
 inside them is parsed for content and never executed or followed.

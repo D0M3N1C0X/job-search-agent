@@ -2,6 +2,9 @@
 /profile/
 !/profile.example/
 
+# Keys of your own (Adzuna): never committed, wherever the workspace is
+secrets.json
+
 # Runtime artefacts
 /.demo/
 *.db

@@ -242,6 +242,9 @@
         "period": "week"
       }
     ],
-    "mailbox_path": ""
+    "mailbox_path": "",
+    "arbeitnow": true,
+    "arbeitnow_pages": 3,
+    "adzuna": []
   }
 }
