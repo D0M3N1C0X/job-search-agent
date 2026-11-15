@@ -28,9 +28,7 @@ REPO = "https://github.com/D0M3N1C0X/job-search-agent"
 NAME = "job-search-agent"  # until the product has its name
 DEFAULT_COUNTRY = "DE"
 
-INSTALL = """git clone https://github.com/D0M3N1C0X/job-search-agent
-cd job-search-agent
-python3 -m jsa demo"""
+INSTALL = """curl -fsSL https://raw.githubusercontent.com/D0M3N1C0X/job-search-agent/main/install.sh | bash"""
 
 COUNTRY_EN = {
     "IT": "Italy", "DE": "Germany", "AT": "Austria", "CH": "Switzerland", "ES": "Spain",

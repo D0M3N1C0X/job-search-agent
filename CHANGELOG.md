@@ -7,6 +7,30 @@ you set up by hand (profile, tracks, database) needs attention.
 
 ## [Unreleased]
 
+## [1.2.0] — 2026-11-15
+
+### Added — installing and updating
+
+- **One line installs it**, with no git and no terminal knowledge beyond
+  pasting: `curl -fsSL https://raw.githubusercontent.com/D0M3N1C0X/job-search-agent/main/install.sh | bash`.
+  It finds a Python 3.10 or newer (skipping the macOS 3.9 stub, which would
+  open a dialog box), downloads the code into `~/job-search-agent`, runs
+  `jsa install`, and the first time asks whether to read your CV (drag the file
+  into the window), ask you questions, or show the demo, then opens the
+  dashboard. It never installs Python itself and never asks for a password.
+  Run again, it updates the code and leaves `profile/` alone; a folder it did
+  not create is refused rather than overwritten.
+- **`Install.command`**: the same, by double-click, for a downloaded ZIP.
+- **`jsa update`** brings the code up to date however it was installed: `git
+  pull --ff-only` in a clone, a fresh download for an installer copy (`jsa/`
+  replaced whole, so a removed module cannot linger; `profile/` never written),
+  and the pipx or pip command for a package. `jsa update --check` only says
+  whether a newer version exists. Downloaded archives are refused whole if any
+  entry is a link or would land outside their folder.
+- The two launchers find Python the same way as the installer.
+- CI runs the installer on Ubuntu and macOS, twice: a fresh install, then an
+  update over a workspace that must come through untouched.
+
 ### Added — sources
 
 - **Arbeitnow**: a free public API of European postings, read by `jsa fetch`
@@ -237,6 +261,7 @@ The first public release.
   statuses and notes written to SQLite. `jsa demo` shows it on synthetic data.
 - `jsa install` puts `jsa` on PATH and, on macOS, adds a Dock app.
 
-[Unreleased]: https://github.com/D0M3N1C0X/job-search-agent/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/D0M3N1C0X/job-search-agent/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/D0M3N1C0X/job-search-agent/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/D0M3N1C0X/job-search-agent/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/D0M3N1C0X/job-search-agent/releases/tag/v1.0.0
