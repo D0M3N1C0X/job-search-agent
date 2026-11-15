@@ -21,25 +21,40 @@ positioning actually gets replies.
 no LaTeX, no headless browser, no API keys. Runs on macOS and Linux; Windows
 works on a best-effort basis.
 
+**Install it with one line** — paste it into Terminal (macOS: ⌘-Space, "Terminal"):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/D0M3N1C0X/job-search-agent/main/install.sh | bash
+```
+
+It needs Python 3.10 or newer and says where to get it if you do not have it;
+it does not need git, an administrator password, or anything outside your home
+directory. It puts the code in `~/job-search-agent`, a `jsa` command on your
+PATH and, on macOS, a **Job Pipeline** app; then it asks whether to read the CV
+you already have (drag the file into the window), ask you questions instead, or
+show the demo, and opens the dashboard. [`install.sh`](install.sh) is short
+enough to read first, and that is the point of it.
+
+Run the same line again, or `jsa update`, to update: the code is replaced and
+`profile/` — your CV, tracks and database — is never touched. Downloaded the ZIP
+from GitHub instead? Double-click **`Install.command`** inside it.
+
+To work on the code, clone it as usual:
+
 ```bash
 git clone https://github.com/D0M3N1C0X/job-search-agent && cd job-search-agent
 python3 -m jsa demo       # see it working on synthetic data — nothing is fetched
+python3 -m jsa install    # from here on `jsa` works from any directory
 ```
-
-> `python3 -m jsa` only works from inside the repository. Run
-> `python3 -m jsa install` once and `jsa` becomes a command you can use from
-> anywhere — that is the last time you need to think about which directory you
-> are in.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/dashboard-dark.png">
   <img alt="The dashboard: a triage deck of scored postings, each with a plain-language reason and the catch" src="docs/img/dashboard-light.png">
 </picture>
 
-Then point it at your own search:
+Then point it at your own search (the installer starts the first two for you):
 
 ```bash
-python3 -m jsa install    # `jsa` on your PATH, plus a Dock app on macOS
 jsa import ~/cv.pdf       # start from the CV you already have (.docx, .pdf, .txt)
 jsa setup                 # or answer questions instead — no JSON either way
 jsa run                   # fetch, enrich, score, shortlist, dashboard — the whole loop
@@ -73,6 +88,12 @@ already up. Add `--login` to keep the server running from login, or
 `jsa uninstall` to remove all of it. `jsa where` says what is installed, where
 your data lives, and whether the dashboard is reachable.
 
+`jsa update` brings the code up to date however you installed it: `git pull
+--ff-only` in a clone (it refuses, and changes nothing, if you edited the code
+yourself), a fresh download for a copy the installer made, and the right pipx
+or pip command for a package. `jsa update --check` only says whether there is a
+newer version.
+
 If you would rather not keep a clone at all, install it as a package:
 
 ```bash
@@ -88,16 +109,19 @@ dependencies either way.
 
 ### Two launchers, if you prefer files
 
-If you would rather not type anything, the repository ships two launchers.
+If you would rather not type anything, the repository ships three launchers.
 Double-click them in Finder:
 
 | | |
 |---|---|
+| **`Install.command`** | Runs `install.sh` on this folder: the command, the app, your profile |
 | **`Run pipeline.command`** | Runs the whole loop, then opens the dashboard |
 | **`Open dashboard.command`** | Opens the dashboard on what is already in the database |
 
-They work from wherever the repository lives — nothing is hard-coded. On the
-first double-click macOS asks whether you trust the file; the equivalents on
+They work from wherever the repository lives — nothing is hard-coded — and
+find a Python 3.10 or newer the way the installer does. On the first
+double-click macOS asks whether you trust the file (the one-line install avoids
+the question, since nothing it downloads is marked as from the internet); the equivalents on
 Linux and Windows are `jsa run --serve` and `jsa serve`.
 
 Once the dashboard is open there is a **Run pipeline** button beside the title,
@@ -300,9 +324,7 @@ to report a problem privately.
 ## Install and set up
 
 ```bash
-git clone https://github.com/D0M3N1C0X/job-search-agent
-cd job-search-agent
-python3 -m jsa install      # from here on, `jsa` works from any directory
+curl -fsSL https://raw.githubusercontent.com/D0M3N1C0X/job-search-agent/main/install.sh | bash
 jsa setup                   # answer questions; it writes the profile for you
 jsa probe <company-slugs> --add
 jsa run

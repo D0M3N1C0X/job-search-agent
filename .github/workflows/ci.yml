@@ -77,6 +77,50 @@ jobs:
         run: |
           test ! -d profile || (echo "profile/ must stay untracked" && exit 1)
 
+  installer:
+    # install.sh as a person runs it: piped into bash, from a tarball of this
+    # commit instead of GitHub, into an empty home directory. Then again, as an
+    # update, over a workspace that has to come through untouched.
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Fresh install
+        run: |
+          git archive --prefix=job-search-agent-main/ -o "$RUNNER_TEMP/code.tar.gz" HEAD
+          export HOME="$RUNNER_TEMP/home" JSA_SOURCE="$RUNNER_TEMP/code.tar.gz" JSA_NONINTERACTIVE=1
+          mkdir -p "$HOME" && cd "$HOME"
+          cat "$GITHUB_WORKSPACE/install.sh" | bash
+          test -f "$HOME/job-search-agent/jsa/__init__.py"
+          test -f "$HOME/job-search-agent/.jsa-download"
+          if [ "$RUNNER_OS" = macOS ]; then test -d "$HOME/Applications/Job Pipeline.app"; fi
+          cd "$HOME/job-search-agent" && python -m jsa where && python -m jsa doctor --offline
+      - name: Run again as an update; the workspace survives
+        run: |
+          export HOME="$RUNNER_TEMP/home" JSA_SOURCE="$RUNNER_TEMP/code.tar.gz" JSA_NONINTERACTIVE=1
+          cd "$HOME/job-search-agent"
+          python -m jsa init
+          echo '{"mine": true}' > profile/notes.json
+          touch jsa/removed_upstream.py
+          cd "$HOME" && cat "$GITHUB_WORKSPACE/install.sh" | bash
+          grep -q '"mine": true' "$HOME/job-search-agent/profile/notes.json"
+          test -f "$HOME/job-search-agent/profile/profile.json"
+          test ! -e "$HOME/job-search-agent/jsa/removed_upstream.py"
+      - name: A folder the installer did not make is refused
+        run: |
+          export HOME="$RUNNER_TEMP/home" JSA_SOURCE="$RUNNER_TEMP/code.tar.gz" JSA_NONINTERACTIVE=1
+          mkdir -p "$RUNNER_TEMP/theirs" && echo keep > "$RUNNER_TEMP/theirs/file"
+          if JSA_DIR="$RUNNER_TEMP/theirs" bash -c 'cat "$GITHUB_WORKSPACE/install.sh" | bash'; then
+            echo "the installer wrote into a folder it did not create"; exit 1
+          fi
+          test "$(cat "$RUNNER_TEMP/theirs/file")" = keep
+
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -89,6 +133,8 @@ jobs:
         run: pipx run ruff==0.16.9 check --output-format=github .
       - name: mypy
         run: pipx run mypy==2.4.0
+      - name: shellcheck (installer and launchers)
+        run: shellcheck -x -s bash install.sh tools/python.sh ./*.command
 
   coverage:
     runs-on: ubuntu-latest

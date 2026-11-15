@@ -1199,6 +1199,47 @@ def cmd_install(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_update(args: argparse.Namespace) -> int:
+    """Bring the code up to date; the workspace is never touched."""
+    from . import update
+
+    how = update.kind()
+    if args.check:
+        latest = update.latest_version()
+        if not latest:
+            print("Could not read the latest version from GitHub.")
+            return 3
+        if update.as_tuple(latest) > update.as_tuple(__version__):
+            print(f"{colour(latest, GREEN)} is available; this is {__version__}. Run `jsa update`.")
+        else:
+            print(f"Up to date: {__version__}.")
+        return 0
+    if how == "package":
+        print(update.package_hint())
+        return 0
+    if how == "copy":
+        print("This folder was not installed by install.sh and is not a git clone, so it is not updated "
+              "in place:\nchanges you made to it would be overwritten. To update, run the one-line "
+              "installer, which\nputs a fresh copy in ~/job-search-agent and moves nothing of yours:\n"
+              f"  curl -fsSL {INSTALLER} | bash\n"
+              f"or, to update this folder anyway: touch \"{update.REPO_ROOT / update.MARKER}\" && jsa update")
+        return 1
+    if how == "git":
+        code, output = update.update_git()
+        print(output)
+        if code:
+            print(colour("\ngit did not update the clone; nothing was changed.", YELLOW))
+        return code
+    print(f"Downloading the latest version into {update.REPO_ROOT} …")
+    done = update.update_download()
+    if done["before"] == done["after"]:
+        print(f"Reinstalled {done['after']}: the version was already current.")
+    else:
+        print(f"Updated {done['before']} → {colour(done['after'], GREEN)}.")
+    print("Your profile, tracks and database were not touched. CHANGELOG.md says what changed.")
+    return 0
+
+
 def cmd_uninstall(args: argparse.Namespace) -> int:
     from .install import uninstall
 
@@ -1270,6 +1311,8 @@ def cmd_export(args: argparse.Namespace, cfg: config.Config,
 
 # ------------------------------------------------------------------ parser
 
+INSTALLER = "https://raw.githubusercontent.com/D0M3N1C0X/job-search-agent/main/install.sh"
+
 WORKSPACE_HELP = "where to write it (default: the workspace every other command reads — see --home)"
 
 
@@ -1315,6 +1358,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--daily", metavar="HH:MM[,HH:MM…]",
                    help="also run the pipeline every day at these times and notify if it matters")
     p.set_defaults(func=cmd_install)
+
+    p = sub.add_parser("update", help="bring the code up to date (your profile is never touched)")
+    p.add_argument("--check", action="store_true", help="only say whether a newer version exists")
+    p.set_defaults(func=cmd_update)
 
     p = sub.add_parser("uninstall", help="remove the app and the login agent")
     p.set_defaults(func=cmd_uninstall)
