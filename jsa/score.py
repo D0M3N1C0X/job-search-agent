@@ -18,7 +18,7 @@ from typing import Any
 
 from .models import Job, Score, canonical, normalize_title
 
-SCORER_VERSION = "1.1.0"
+SCORER_VERSION = "1.2.0"
 
 # Points available per dimension. They sum to 100.
 WEIGHTS: dict[str, float] = {
@@ -59,7 +59,7 @@ _NUMBER_WORDS = {w: i for i, w in enumerate(
 _NUM = r"(\d{1,2}|" + "|".join(_NUMBER_WORDS) + r")"
 _UNIT = r"(?:years?|yrs?|anni|lata?|jahren?|ans|anos|jaar)"
 _YEARS = re.compile(
-    _NUM + r"\s*(\+)?\s*(?:(?:-|–|to|bis|a|do)\s*(?:\d{1,2}|" + "|".join(_NUMBER_WORDS) + r")\s*)?(\+)?\s*"
+    _NUM + r"\s*(\+|\s+or\s+more|\s+or\s+above|\s+plus)?\s*(?:(?:-|–|to|bis|a|do)\s*(?:\d{1,2}|" + "|".join(_NUMBER_WORDS) + r")\s*)?(\+)?\s*"
     + _UNIT + r"\b([^.;\n]{0,70})", re.I)
 _YEARS_LEAD = re.compile(
     r"(at least|minimum( of)?|min\.?|more than|over|mindestens|almeno|au moins|al menos|minimaal|co najmniej)\s*$", re.I)
@@ -212,7 +212,8 @@ LANGUAGES: dict[str, tuple[str, str]] = {
            r"(espanol|castellano)\s+(nativo|fluido|bilingue|alto)"
            r"|(nivel\s+alto|dominio)\s+(de|del)\s+(espanol|castellano)|lengua\s+materna\s+(espanol|castellan)"),
     "it": ("Italian",
-           r"(ottima|eccellente|perfetta)\s+(conoscenza|padronanza)\s+(della lingua\s+italiana|dell\W?italiano)"
+           r"(ottima|eccellente|perfetta|fluente|approfondita)\s+(conoscenza|padronanza)\s+(della lingua\s+italiana|dell\W?italiano)"
+           r"|(conoscenza|padronanza)\s+(fluente|ottima|eccellente|perfetta)\s+(della lingua\s+italiana|dell\W?italiano)"
            r"|italiano\s+(fluente|madrelingua|ottimo)|madrelingua\s+italian|lingua\s+italiana\s+fluente"),
     "pt": ("Portuguese", r"portugues\s+(fluente|nativo)|fluencia\s+em\s+portugues"),
     "sv": ("Swedish", ""), "da": ("Danish", ""), "cs": ("Czech", ""), "hu": ("Hungarian", ""),
@@ -244,7 +245,16 @@ _REQUIREMENT = re.compile(
     rf"|{_CHAIN}\s+(?i:(?P<trail>mother[- ]tongue|native speakers?|native level|fluently|"
     rf"at (?:an? )?(?:native|fluent|c1|c2) level))\b"                                 # French mother tongue
     rf"|{_CHAIN}(?i:(?P<speaking>[- ]speak(?:ing|er)s?))\b"                            # German-speaking
+    # German and English, both at business level, are a must
+    rf"|{_CHAIN}(?i:,?\s+(?:both\s+|each\s+)?at\s+(?:an?\s+)?(?:(?P<level_strong>native|fluent|c1|c2|mother[- ]tongue)|"
+    rf"(?P<level_solid>business|professional|working|full professional|advanced|b2))(?:\s+proficiency)?\s+level)"
+    # you must be able to work in French every day; ability to communicate in German
+    rf"|(?i:\b(?P<duty>must|need to|required to|have to|expected to|ability to|able to)\s+(?:be able to\s+)?"
+    rf"(?:work|communicate|speak|write|converse|deal with \w+|liaise)\s+(?:fluently\s+|confidently\s+)?in\s+){_CHAIN}"
 )
+_NAME_WORD = re.compile(r"(?:" + "|".join(f"{n}|{n.upper()}" for n in _NAMES) + r")\b")
+_MUST_AFTER = re.compile(r"\b(must|required|mandatory|essential|necessary|needed|prerequisite|requirement)\b", re.I)
+_MUST_BEFORE = re.compile(r"\b(must|required|requires?|mandatory|essential|need|needed|expected|you will need)\b", re.I)
 _TITLE_LANGUAGE = re.compile(rf"\b(?i:with|mit|con|avec)\s+({_NAME})|\(({_NAME})\)|({_NAME})(?i:[- ]speak)")
 _EITHER = re.compile(r"/|\b(?:or|oder)\b", re.I)
 # What turns a requirement into a wish, when it follows the language in the same clause.
@@ -291,9 +301,16 @@ def language_requirements(job: Job, levels: dict[str, str]) -> list[tuple[str, s
             after = text[match.end():stop.start() if stop else len(text)]
             if _SOFT.search(re.split(r"\b(?:and|but)\b", after)[0]) or _SOFT_BEFORE.search(text[start:match.start()]):
                 continue
-            chain = next(g for g in match.groups()[2:] if g and g[0].isupper())
+            chain = next(g for g in match.groups() if g and _NAME_WORD.match(g))
             codes = [_NAMES[n.capitalize()] for n in re.findall("|".join(_NAMES), chain, re.I)]
-            strong = match.group("strong") or match.group("after") or match.group("trail") or match.group("speaking")
+            if match.group("level_solid") and not _MUST_AFTER.search(after) and not _MUST_BEFORE.search(
+                    text[start:match.start()]):
+                continue                  # "English at business level" alone states a level, not a requirement
+            if match.group("duty") and match.group("duty").lower() in ("ability to", "able to") \
+                    and not _MUST_BEFORE.search(text[start:match.start()] + " " + match.group(0)):
+                continue
+            strong = (match.group("strong") or match.group("after") or match.group("trail") or match.group("speaking")
+                      or match.group("level_strong"))
             level = "C1" if strong else "B2"
             if _EITHER.search(chain) and any(has(c, level) for c in codes):
                 continue                                   # either of them, and the profile has one
@@ -411,7 +428,8 @@ def check_gates(job: Job, profile: dict[str, Any], text: str | None = None) -> l
     # volunteering days is a perk, and treating it as a red flag rejected 671
     # perfectly good postings before anyone noticed.
     if re.search(
-        r"\b(commission[- ]only|100% commission|no basic salary|no salary"
+        r"\b(commission[- ]only|100% commission|no basic salary|no salary|no (fixed|base) (salary|pay)"
+        r"|(your )?income is (your |entirely |only )?commission|paid (only )?(per|on) (closed|successful) (client|deal|sale)s?"
         r"|unpaid (internship|position|role|placement|work)"
         r"|volunteer (position|role|opportunity|basis|placement)"
         r"|on a voluntary basis|without remuneration)\b", text
@@ -438,6 +456,9 @@ def score_job(job: Job, profile: dict[str, Any], track: dict[str, Any],
 
     # --- title -----------------------------------------------------------
     titles = track.get("titles", {})
+    # A title that names another job ("Payroll & HR Administrator", "Customer
+    # Success Manager, HR Tech") is that job, whatever HR vocabulary follows.
+    avoid = _matches(titles.get("avoid", []), title_c)
     strong = _matches(titles.get("strong", []), title_c)
     good = _matches(titles.get("good", []), title_c)
     weak = _matches(titles.get("weak", []), title_c)
@@ -451,9 +472,11 @@ def score_job(job: Job, profile: dict[str, Any], track: dict[str, Any],
         # Nothing in the title, but the body may still describe the job.
         body_hits = _matches(titles.get("strong", []) + titles.get("good", []), text)
         title_points = WEIGHTS["title"] * 0.2 if body_hits else 0.0
+    if avoid and not strong:
+        title_points = 0.0
     breakdown["title"] = {
         "points": round(title_points, 1), "max": WEIGHTS["title"],
-        "strong": strong, "good": good, "weak": weak,
+        "strong": strong, "good": good, "weak": weak, "avoid": avoid,
     }
     total += title_points
 
@@ -583,6 +606,8 @@ def explain(score: Score) -> str:
         if dim == "title":
             hits = d["strong"] + d["good"] + d["weak"]
             detail = ", ".join(hits[:4]) or "no title keyword"
+            if d.get("avoid") and not d["strong"]:
+                detail = f"names another job: {', '.join(d['avoid'][:3])}"
         elif dim == "skills":
             detail = ", ".join((d["must_have"] + d["nice_to_have"])[:6]) or "no skill overlap"
         elif dim == "domain":

@@ -89,7 +89,7 @@ class Benchmark(unittest.TestCase):
         """A floor, not a target: a change that makes the scorer worse here fails the suite."""
         dev = [p for p in self.postings if p["set"] == "development"]
         s = evaluate.summarise(evaluate.benchmark(dev, self.profile, self.tracks))
-        self.assertGreaterEqual(s["right"], 88)
+        self.assertGreaterEqual(s["right"], 115)
         self.assertEqual(s["missed"], [])                 # nothing worth applying to is rejected
         self.assertLessEqual(len(s["wasted"]), 1)
         for gate, g in s["gates"].items():

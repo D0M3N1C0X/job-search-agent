@@ -1,6 +1,6 @@
 # Labelled postings
 
-`postings.json` holds 130 job postings, written for this benchmark, each labelled with what a person reading it
+`postings.json` holds 160 job postings, written for this benchmark, each labelled with what a person reading it
 for the example candidate (`profile.example/`) would do: **apply**, **maybe** or **skip**, the rule that ends the
 conversation where there is one (`gate`), the track it should be sent on, and one line saying why.
 
@@ -8,10 +8,16 @@ conversation where there is one (`gate`), the track it should be sent on, and on
 
 ## Two sets, and why
 
-- **development** (100 postings): written in two rounds and used to find and fix the scorer's mistakes. A rule
+- **development** (130 postings): written in four rounds and used to find and fix the scorer's mistakes. A rule
   that scores these well has been fitted to them, so their figures flatter.
 - **held-out** (30 postings): written after the last change to the rules and scored once. Nothing in the scorer
   or the tracks was changed afterwards to make any of them come out right. These are the figures to quote.
+
+| Round | Written for | Held-out result when written | Now |
+|---|---|---|---|
+| 1-2 | scorer 1.0.0 | (used for development from the start) | development |
+| 3 (`f-`) | scorer 1.1.0 | 1.0.0: 15 of 30 · 1.1.0: 20 of 30 | development |
+| 4 (`g-`) | scorer 1.2.0 | 1.1.0: 21 of 30 · 1.2.0: 21 of 30 | **held-out** |
 
 When the scorer changes again, the held-out set becomes development and a new held-out set is written before
 the next figures are published. A held-out set that has been tuned on is just more development data.

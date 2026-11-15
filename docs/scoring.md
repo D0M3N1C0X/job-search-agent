@@ -64,24 +64,35 @@ If the engine keeps picking the wrong track, that is a bug in
 
 ## How often it is right
 
-`jsa evaluate` scores 130 labelled postings ([evaluation/](../evaluation/README.md))
+`jsa evaluate` scores 160 labelled postings ([evaluation/](../evaluation/README.md))
 and compares each verdict with what a person reading the posting for the
 example candidate decided. The figures to quote are the **held-out** ones: 30
 postings written after the last change to the rules and scored once.
 
-| Held-out, 30 postings | Scorer 1.0.0 | Scorer 1.1.0 |
-|---|---:|---:|
-| Scored as labelled | 15 | 20 |
-| Of the postings scored pass, labelled apply (precision) | 54% | 73% |
-| Of the postings labelled apply, scored pass (recall) | 70% | 80% |
-| Skips scored as a pass | 5 | 2 |
-| Applies rejected | 0 | 0 |
-| Language requirements caught | 0 of 7 | 4 of 7 |
+Each round of postings was held out for one version of the scorer, then used
+to fix the next one:
 
-On the 100 development postings, which the rules were fixed against and so
-flatter them, 1.1.0 scores 88 as labelled (1.0.0: 66).
+| Held-out round | 1.0.0 | 1.1.0 | 1.2.0 |
+|---|---:|---:|---:|
+| Round 3, written for 1.1.0 | 15 of 30 | **20 of 30** | (tuned on) |
+| Round 4, written for 1.2.0 | | 21 of 30 | **21 of 30** |
 
-What it still gets wrong on the held-out set, said plainly:
+Round 4 is the one to quote now: 21 of 30 as labelled, 67% precision, 67%
+recall, three skips scored as a pass, no apply rejected.
+
+**What that table says.** 1.1.0, the first rules written against a benchmark,
+gained five postings on data it had never seen. 1.2.0 fixed every phrase round
+3 exposed ("must be able to work in French", "eight or more years", "your income
+is your commission") and gained nothing on round 4, which phrases the same
+requirements differently: "excellent command of Polish is indispensable", "all
+client work is conducted in Swedish", "no guaranteed base pay". Adding one
+phrase at a time has stopped generalising. The next gain has to come from a
+different way of reading requirements, not from more phrases.
+
+On the 130 development postings, which the rules were fixed against and so
+flatter them, 1.2.0 scores 115 as labelled.
+
+What 1.1.0 got wrong on round 3, all fixed in 1.2.0:
 
 - **Language requirements worded as a duty, not a level**: *"you must be able
   to work in French every day"*, *"German and English, both at business level,
@@ -96,6 +107,12 @@ What it still gets wrong on the held-out set, said plainly:
 - **"Eight or more years of experience"** is not read as a number of years: the
   words between the number and "years" hide it. The role (an *HR Lead*) scored
   review instead of being rejected.
+
+What 1.2.0 still gets wrong on round 4: three requirements in wordings the
+rules do not know (above), two judgement calls labelled maybe, and four
+postings worth applying to that scored review, not pass: a Spanish-language
+posting whose vocabulary the English tracks do not read, an organisation design
+role, an HR analyst and a people partner each a few points short.
 
 None of these rejected a posting worth applying to. Every posting labelled
 apply was at least kept for review, on both sets: the errors that remain cost
