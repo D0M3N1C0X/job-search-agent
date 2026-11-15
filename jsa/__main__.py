@@ -7,6 +7,7 @@ import csv
 import functools
 import time
 import json
+from typing import Any
 import os
 import shutil
 import sys
@@ -20,7 +21,7 @@ from .render import Overlay, ats_check, build_cover, build_cv, output_name
 from .util import slugify
 from .score import SCORER_VERSION, explain, score_all
 from .sources import ats as ats_sources
-from .sources import linkedin, mailbox
+from .sources import feeds, linkedin, mailbox
 from .store import Store
 from .util import (FetchError, days_between, decode_entities, log, now, read_json, safe_url,
                    setup_logging, spreadsheet_safe, today, write_json)
@@ -243,6 +244,46 @@ def warn_about(cfg: config.Config) -> None:
         print(colour(f"note: {warning}", YELLOW))
 
 
+def fetch_feeds(cfg: config.Config, store: Store, totals: dict[str, int], *, cache_ttl: int = 900) -> None:
+    """Arbeitnow and Adzuna: many employers in one feed, kept only where a track and a country match."""
+    search = cfg.profile.get("search", {})
+    terms = feeds.title_terms(cfg.tracks)
+    countries = cfg.profile.get("preferences", {}).get("countries_allowed") or []
+    runs: list[tuple[str, str, Any]] = []
+    if search.get("arbeitnow", True):
+        runs.append(("Arbeitnow", "arbeitnow", lambda: feeds.arbeitnow(
+            pages=int(search.get("arbeitnow_pages", 3)), terms=terms, countries=countries,
+            cache_dir=cfg.cache_dir, cache_ttl=cache_ttl, retries=2)))
+    if search.get("adzuna"):
+        def adzuna_run() -> tuple[list[Job], int]:
+            app_id, app_key = feeds.adzuna_keys(cfg.home)
+            return feeds.adzuna(queries=search["adzuna"], app_id=app_id, app_key=app_key,
+                                terms=terms, countries=countries, cache_dir=cfg.cache_dir,
+                                cache_ttl=cache_ttl, retries=2)
+        runs.append(("Adzuna", "adzuna", adzuna_run))
+    for name, source, run in runs:
+        try:
+            found, read = run()
+        except feeds.MissingKey as exc:
+            print(f"{name:<32} {source:<16} " + colour(f"skipped — {exc}"[:120], YELLOW))
+            continue
+        except Exception as exc:  # noqa: BLE001 - a feed is one source among many
+            totals["failed"] += 1
+            reason = str(exc).split(" -> ", 1)[-1]
+            print(f"{name:<32} {source:<16} " + colour(f"failed — {type(exc).__name__}: {reason}"[:100], RED))
+            continue
+        counts = {"new": 0, "seen": 0}
+        for job in found:
+            counts[store.upsert_job(job)] += 1
+        totals["new"] += counts["new"]
+        totals["seen"] += counts["seen"]
+        # Say how many were read, not only kept: "0 listed" from a feed that read
+        # 900 postings is a filter at work, not a source that went quiet.
+        print(f"{name:<32} {source:<16} {len(found):>3} listed  "
+              f"{colour('+' + str(counts['new']), GREEN if counts['new'] else DIM)}"
+              + colour(f"  (of {read} read, kept where a track and a country match)", DIM))
+
+
 @with_workspace
 def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
               store: Store) -> int:
@@ -347,6 +388,9 @@ def cmd_fetch(args: argparse.Namespace, cfg: config.Config,
                 reason = str(exc).split(" -> ", 1)[-1]
                 print(f"{'LinkedIn (guest)':<32} {'linkedin':<16} "
                       + colour(f"unavailable — {type(exc).__name__}: {reason}"[:100], YELLOW))
+
+    if wanted in ("all", "feeds"):
+        fetch_feeds(cfg, store, totals, cache_ttl=args.cache_ttl)
 
     if wanted in ("all", "mailbox"):
         try:
@@ -1239,7 +1283,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", required=True)
 
     p = sub.add_parser("run", help="fetch, enrich, score and refresh the dashboard — the daily command")
-    p.add_argument("--source", choices=["all", "ats", "linkedin", "mailbox"], default="all")
+    p.add_argument("--source", choices=["all", "ats", "feeds", "linkedin", "mailbox"], default="all")
     p.add_argument("--min-score", type=int, default=65, help="threshold for the shortlist it prints")
     p.add_argument("--limit", type=int, default=20)
     p.add_argument("--pages", type=int, default=2)
@@ -1308,7 +1352,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.set_defaults(func=cmd_probe)
 
     p = sub.add_parser("fetch", help="pull jobs from every configured source")
-    p.add_argument("--source", choices=["all", "ats", "linkedin", "mailbox"], default="all")
+    p.add_argument("--source", choices=["all", "ats", "feeds", "linkedin", "mailbox"], default="all")
     p.add_argument("--company", help="only boards whose company name contains this")
     p.add_argument("--no-catalogue", action="store_true",
                    help="only your own watchlist, not the shared employer catalogue")

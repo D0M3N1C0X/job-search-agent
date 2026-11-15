@@ -7,6 +7,26 @@ you set up by hand (profile, tracks, database) needs attention.
 
 ## [Unreleased]
 
+### Added — sources
+
+- **Arbeitnow**: a free public API of European postings, read by `jsa fetch`
+  with no setup. It has no search, so the newest 900 postings are read and only
+  those whose title names a job one of your tracks scores, in a country your
+  profile accepts, are kept; the fetch line says how many were read and how many
+  kept. `search.arbeitnow: false` turns it off, `search.arbeitnow_pages` reads
+  more or fewer pages.
+- **Adzuna**: search across ten European markets with a free key of your own,
+  from `JSA_ADZUNA_APP_ID` / `JSA_ADZUNA_APP_KEY` or `secrets.json` in the
+  workspace (git-ignored), never `profile.json`. Queries go in `search.adzuna`.
+  Without a key the source is skipped with a line saying where to get one. The
+  parser follows Adzuna's documented response; it has not yet been run against
+  a live answer.
+- `jsa fetch --source feeds` runs only these two.
+
+Not added: the Bundesagentur für Arbeit API answered 403 to every request from
+the build environment; StepStone, Pracuj and InfoJobs have no public API, and
+are not scraped.
+
 ### Changed
 
 - **Scorer 1.2.0.** Language requirements written as a duty ("you must be able

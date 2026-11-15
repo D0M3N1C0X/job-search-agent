@@ -22,6 +22,6 @@ def register(name: str) -> Callable[[Fetcher], Fetcher]:
     return wrap
 
 
-from . import ats, linkedin, mailbox  # noqa: E402,F401  (import for side effects)
+from . import ats, feeds, linkedin, mailbox  # noqa: E402,F401  (import for side effects)
 
-__all__ = ["REGISTRY", "register", "ats", "linkedin", "mailbox"]
+__all__ = ["REGISTRY", "register", "ats", "feeds", "linkedin", "mailbox"]

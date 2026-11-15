@@ -314,7 +314,7 @@ def collect_search(preferences: dict[str, Any], tracks: list[dict[str, Any]]) ->
         {"keywords": track["titles"]["strong"][0].title(), "location": location, "period": "week"}
         for track in tracks[:4]
     ]
-    return {"linkedin_queries": queries, "mailbox_path": ""}
+    return {"linkedin_queries": queries, "mailbox_path": "", "arbeitnow": True, "adzuna": []}
 
 
 # --------------------------------------------------------------------- run
