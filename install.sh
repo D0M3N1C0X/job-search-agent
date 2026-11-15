@@ -83,9 +83,9 @@ JSA_PYTHON=/path/to/python3."
 # repository (Install.command does that): then there is nothing to download.
 local_checkout() {
   local here
-  [ -n "${BASH_SOURCE[0]:-}" ] && [ -f "${BASH_SOURCE[0]}" ] || return 1
+  if [ -z "${BASH_SOURCE[0]:-}" ] || [ ! -f "${BASH_SOURCE[0]}" ]; then return 1; fi
   here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-  [ -f "$here/jsa/__init__.py" ] && [ -f "$here/profile.example/profile.json" ] || return 1
+  if [ ! -f "$here/jsa/__init__.py" ] || [ ! -f "$here/profile.example/profile.json" ]; then return 1; fi
   printf '%s\n' "$here"
 }
 
@@ -106,8 +106,9 @@ download() {
   mkdir "$tmp/new"
   tar -xzf "$tmp/code.tar.gz" -C "$tmp/new" || fail "The download is not a valid archive; nothing was changed."
   top=$(find "$tmp/new" -mindepth 1 -maxdepth 1 -type d | head -n 1)
-  [ -n "$top" ] && [ -f "$top/jsa/__init__.py" ] \
-    || fail "The download does not contain job-search-agent; nothing was changed."
+  if [ -z "$top" ] || [ ! -f "$top/jsa/__init__.py" ]; then
+    fail "The download does not contain job-search-agent; nothing was changed."
+  fi
   rm -rf "$top/profile"            # never shipped, but never let an archive bring one either
 
   if [ -d "$dir/.git" ]; then
@@ -175,7 +176,7 @@ open_dashboard() {
     return 0
   fi
   if [ "$(uname -s)" = Darwin ] && [ -d "$HOME/Applications/Job Pipeline.app" ]; then
-    open "$HOME/Applications/Job Pipeline.app" && say "The dashboard is opening in your browser."
+    if open "$HOME/Applications/Job Pipeline.app"; then say "The dashboard is opening in your browser."; fi
   else
     say "Open the dashboard with: jsa serve"
   fi
